@@ -7,7 +7,7 @@
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-
+	return 0;
 }
 
 bool g_bisPlaying = false;
