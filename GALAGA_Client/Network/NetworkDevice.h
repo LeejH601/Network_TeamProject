@@ -3,6 +3,8 @@
 
 class CNetworkDevice
 {
+private:
+	SOCKET sock;
 public:
 	DECLARE_SINGLE(CNetworkDevice);
 public:
