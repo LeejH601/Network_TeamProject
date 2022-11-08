@@ -62,7 +62,6 @@ void CCore::Collision(float fDeltaTime)
 
 bool CCore::Init()
 {
-
 	// 해상도 설정
 	m_tRS.iW = 600;
 	m_tRS.iH = 750;
