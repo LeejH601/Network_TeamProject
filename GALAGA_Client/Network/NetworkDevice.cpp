@@ -15,3 +15,11 @@ bool CNetworkDevice::Init()
 	// 네트워크 소켓 초기화
 	return true;
 }
+
+void CNetworkDevice::SendToNetwork()
+{
+}
+
+void CNetworkDevice::RecvByNetwork()
+{
+}
