@@ -141,11 +141,21 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="GALAGA_Client.h" />
+    <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="Object\ObjectManager.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Sound\SoundManager.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp" />
+    <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="Object\ObjectManager.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Sound\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GALAGA_Client.rc" />

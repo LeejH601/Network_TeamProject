@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\03.Object">
+      <UniqueIdentifier>{9f5c0a34-1aed-41b8-b8a6-7c35612e8b25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Scene">
+      <UniqueIdentifier>{40a52f1f-d3b6-42ab-9028-49af62fc542f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Sound">
+      <UniqueIdentifier>{ca41618e-f234-4bc8-94f5-86cbd42cc526}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -27,10 +36,40 @@
     <ClInclude Include="GALAGA_Client.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Object.h">
+      <Filter>소스 파일\03.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ObjectManager.h">
+      <Filter>소스 파일\03.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>소스 파일\02.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>소스 파일\02.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundManager.h">
+      <Filter>소스 파일\04.Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Object.cpp">
+      <Filter>소스 파일\03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ObjectManager.cpp">
+      <Filter>소스 파일\03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>소스 파일\02.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>소스 파일\02.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundManager.cpp">
+      <Filter>소스 파일\04.Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
