@@ -39,19 +39,21 @@ void CCore::Logic()
 
 int CCore::Update(float fDeltaTime)
 {
+	std::cout << "Server Update" << std::endl;
 
 	return 0;
 }
 
 int CCore::LateUpdate(float fDeltaTime)
 {
+	std::cout << "Server LateUpdate" << std::endl;
 
 	return 0;
 }
 
 void CCore::Collision(float fDeltaTime)
 {
-
+	std::cout << "Server Collision" << std::endl;
 }
 
 
@@ -69,7 +71,7 @@ bool CCore::Init()
 	// 타이머를 초기화 합니다. 
 	if (!CTimer::GetInst()->Init())
 		return false;
-	
+
 
 	// 장면 관리자를 초기화 합니다. 
 
@@ -85,19 +87,9 @@ int CCore::Run()
 	// 기본 메시지 루프입니다
 	while (m_bLoop)
 	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-
-		}
-		// 윈도우 데드타임일 경우
-		else
-		{
-			// 게임구동 logic 이 구현됩니다.
-			Logic();
-		}
+		// 게임구동 logic 이 구현됩니다.
+		Logic();
 	}
 
-	return (int)msg.wParam;
+	return 1;
 }

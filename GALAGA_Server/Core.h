@@ -41,6 +41,7 @@ public:
 
 private:
 	static CCore* m_pInst;
+
 public:
 	// static 멤버 함수 : 클래스 네임스페이스만으로 호출 가능
 	static CCore* GetInst()
