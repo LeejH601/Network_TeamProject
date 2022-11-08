@@ -13,37 +13,51 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="01.Core">
+      <UniqueIdentifier>{1a9d614f-6759-4d99-8d40-44bf8606c818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Core\01-0_Core">
+      <UniqueIdentifier>{fb21b6bb-06d5-4468-b93a-c8e10e688a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Core\01-1_Timer">
+      <UniqueIdentifier>{b17bd2b4-0624-42eb-b86a-f5ebc0150f4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Network">
+      <UniqueIdentifier>{657f2704-44dd-44bf-be37-26bcfdbc1961}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="Core.h">
+      <Filter>01.Core\01-0_Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="Macro.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="Types.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GALAGA_Client.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Core\Timer.h">
+      <Filter>01.Core\01-1_Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\NetworkDevice.h">
+      <Filter>05.Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="GALAGA_Client.rc">
-      <Filter>리소스 파일</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="GALAGA_Client.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
+    <ClCompile Include="Core.cpp">
+      <Filter>01.Core\01-0_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Timer.cpp">
+      <Filter>01.Core\01-1_Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\NetworkDevice.cpp">
+      <Filter>05.Network</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
