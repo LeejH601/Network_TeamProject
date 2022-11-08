@@ -31,6 +31,9 @@
     <Filter Include="02.Scene\02-2.Scene">
       <UniqueIdentifier>{93cb4dea-d2db-4ce3-9103-7cf25592649a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05.Network">
+      <UniqueIdentifier>{e498dbc8-435c-47da-a641-12b1fc619da4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enum.h">
@@ -57,6 +60,9 @@
     <ClInclude Include="Scene\Scene.h">
       <Filter>02.Scene\02-2.Scene</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkDevice.h">
+      <Filter>05.Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -73,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkDevice.cpp">
+      <Filter>05.Network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

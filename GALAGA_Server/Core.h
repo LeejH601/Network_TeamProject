@@ -22,9 +22,11 @@ public:
 public:
 	bool Init();
 	int Run();
-private:
+	
 	void Logic();
 
+private:
+	
 	int Update(float fDeltaTime);					// * 업데이트
 	// Update 가 끝나고 충돌전 후처리가 필요한 경우
 	int LateUpdate(float fDeltaTime);				// * 업데이트 후처리
@@ -41,6 +43,7 @@ public:
 
 private:
 	static CCore* m_pInst;
+
 public:
 	// static 멤버 함수 : 클래스 네임스페이스만으로 호출 가능
 	static CCore* GetInst()
