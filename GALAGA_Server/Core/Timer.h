@@ -51,6 +51,10 @@ public:
 		return m_fdeltatime_Update;
 
 	}
+
+	LONGLONG GetTime() {
+		return m_tTime.QuadPart;
+	}
 public:
 	bool Init();
 	void Update();

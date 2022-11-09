@@ -1,4 +1,5 @@
 #include "NetworkDevice.h"
+#include "Core/Timer.h"
 
 void CNetworkDevice::SendToNetwork()
 {
@@ -51,7 +52,7 @@ void CNetworkDevice::RecvByNetwork()
 			memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
 			ReadPointer += Message_Sizes[i] - sizeof(int);
 			telegram.Msg = i;
-			//telegram.DispatchTime = CTimer::GetInst()->GetTime();
+			telegram.DispatchTime = CTimer::GetInst()->GetTime();
 
 			m_RecvTelegrams[i].push_back(telegram);
 		}
@@ -60,5 +61,14 @@ void CNetworkDevice::RecvByNetwork()
 
 std::set<Telegram> CNetworkDevice::GetTelegram()
 {
-	return std::set<Telegram>();
+	std::set<Telegram> messageQueue;
+
+	for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
+		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
+			messageQueue.insert(m_RecvTelegrams[i][j]);
+		}
+		m_RecvTelegrams[i].clear();
+	}
+
+	return messageQueue;
 }

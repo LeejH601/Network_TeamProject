@@ -4,8 +4,8 @@
 #include "Game.h"
 
 std::array<int, 7> Message_Sizes = {
-	24,
-	20,
+	16,
+	12,
 	4,
 	8,
 	8,
