@@ -3,7 +3,6 @@
 
 
 #pragma once
-#include <array>
 
 // 해상도 ( 화면 크기 )
 typedef struct _tagResolution
@@ -194,18 +193,10 @@ typedef struct _tagPosition
 
 
 struct Telegram {
-	int Sender = 0;
-	int Receiver = 0;
-	double DispatchTime = 0;
-	void* Extrainfo = 0;
-
-	Telegram() {};
-	Telegram(int sender, int receiver, double dispatchTime = 0.0f, void* extrainfo = nullptr) {
-		Sender = sender;
-		Receiver = receiver;
-		DispatchTime = dispatchTime;
-		Extrainfo = extrainfo;
-	}
+	int Sender;
+	int Receiver;
+	double DispatchTime;
+	void* Extrainfo;
 };
 
 
@@ -217,15 +208,4 @@ enum class MESSAGE_TYPE {
 	Msg_playSound,
 	Msg_changeScene,
 	Msg_clientReady,
-};
-
-
-std::array<int, 7> Message_Sizes = {
-	24,
-	20,
-	4,
-	8,
-	8,
-	8,
-	4
 };
