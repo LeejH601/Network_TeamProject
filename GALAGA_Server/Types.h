@@ -195,8 +195,7 @@ typedef struct _tagPosition
 struct Telegram {
 	int Sender;
 	int Receiver;
-	int Msg;
-	LARGE_INTEGER DispatchTime;
+	double DispatchTime;
 	void* Extrainfo;
 };
 

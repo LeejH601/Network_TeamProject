@@ -14,10 +14,7 @@
 #include    "atlImage.h"
 #include	<strsafe.h>
 #include	< string.h>
-#include	<wchar.h>
-#include	<set>
-#include	<array>
-#include	"..\Common.h"
+#include <wchar.h>
 
 using namespace std;
 
@@ -34,7 +31,6 @@ using namespace std;
 //
 //#pragma  comment(lib, "fmodex_vc.lib")
 
-#define BUFSIZE 4096
 
 
 
