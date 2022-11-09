@@ -12,6 +12,8 @@
 #include    "atlImage.h"
 #include	<strsafe.h>
 #include	<wchar.h>
+#include	<algorithm>
+#include	<set>
 
 using namespace std;
 

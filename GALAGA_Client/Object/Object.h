@@ -4,19 +4,19 @@ class CObject
 {
 public:
 	static int m_iObjN;
-protected:
+public:
 	CObject();
 	CObject(const CObject& obj);
 	virtual ~CObject();					//  소멸자를 가상함수로 설정합니다..
 private:
-	int m_iObjID;
-
 	CImage*		m_img_Back;					//  이미지
 	POSITION	m_img_Size;				//  이미지 ( png )에서 출력할 사이즈 
 	POSITION	m_img_LT;				//  이미지 ( png )에서 출력할 위치 
 
 
 protected:
+	int m_iObjID;
+
 	POSITION	m_tLTPos;				//  화면에 배치될 Left top 기준 위치
 	POSITION	m_tVector;				//  Object 가 움직일 방향
 	_SIZE		m_tSize;				//  obj 의 크기 
@@ -56,6 +56,7 @@ public:
 
 	bool	 GetLife() const;
 	float	 GetHP() const;
+	int		 GetID() const;
 
 public:
 	// 외부 오브젝트 상태 설정 함수
@@ -65,5 +66,5 @@ public:
 
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
-
+	void SetID(const int id);
 };

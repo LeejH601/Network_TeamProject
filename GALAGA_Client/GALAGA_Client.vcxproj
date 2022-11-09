@@ -141,10 +141,11 @@
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="Core\Timer.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Macro.h" />
+    <ClInclude Include="Include\Enum.h" />
+    <ClInclude Include="Include\Game.h" />
+    <ClInclude Include="Include\Macro.h" />
+    <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
-    <ClInclude Include="Types.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\ObjectManager.h" />
     <ClInclude Include="Scene\Scene.h" />

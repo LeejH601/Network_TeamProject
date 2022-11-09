@@ -1,6 +1,9 @@
 #include "Object.h"
+//#include "ObjectManager.h"
 #include "../Scene/SceneManager.h"
+
 int CObject::m_iObjN = 0;
+
 CObject::CObject()
 {
 
@@ -74,6 +77,11 @@ float CObject::GetHP() const
 	return m_fHP;
 }
 
+int CObject::GetID() const
+{
+	return m_iObjID;
+}
+
 void CObject::SetPos(const POSITION& tPos)
 {
 	m_tLTPos = tPos;
@@ -104,6 +112,11 @@ void CObject::SetHP(const float fHP)
 
 }
 
+void CObject::SetID(const int id)
+{
+	m_iObjID = id;
+}
+
 
 
 // init ( 이미지 파일 경로 , 화면에 출력할 오브젝트 위치 , 오브젝트 방향 , 오브젝트 사이즈 , 오브젝트 HP , png 파일에서의 사이즈 , png 파일에서의 위치 ) 
@@ -111,6 +124,8 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 {
 
 	m_iObjID = m_iObjN++;
+	//CObjectManager::GetInst();
+
 	//m_img_Back.Load(imgText);
 	if (m_img_Back == NULL)
 	{
