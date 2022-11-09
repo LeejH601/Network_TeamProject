@@ -2,7 +2,6 @@
 #include "Core.h"
 
 #define SERVERPORT 9000
-#define BUFSIZE 4096
 #define MAXCLIENT 2
 
 DWORD WINAPI ProcessClient(LPVOID arg)
