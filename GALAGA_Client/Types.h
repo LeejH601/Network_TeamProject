@@ -190,22 +190,3 @@ typedef struct _tagPosition
 		return tpos;
 	}
 }POSITION, * PPOSITION, _SIZE, * _PSIZE;
-
-
-struct Telegram {
-	int Sender;
-	int Receiver;
-	double DispatchTime;
-	void* Extrainfo;
-};
-
-
-enum class MESSAGE_TYPE {
-	Msg_objectCreate,
-	Msg_objectMove,
-	Msg_playerHit,
-	Msg_objectChangeState,
-	Msg_playSound,
-	Msg_changeScene,
-	Msg_clientReady,
-};
