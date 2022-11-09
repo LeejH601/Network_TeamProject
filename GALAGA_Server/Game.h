@@ -5,6 +5,7 @@
 //#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
 #include	<Windows.h>
+#include	<array>
 #include	<list>
 #include	<vector>
 #include	<unordered_map>
@@ -31,6 +32,7 @@ using namespace std;
 //
 //#pragma  comment(lib, "fmodex_vc.lib")
 
+#define BUFSIZE 4096
 
 
 
