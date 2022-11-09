@@ -22,6 +22,15 @@
     <Filter Include="01.Core\01-1_Timer">
       <UniqueIdentifier>{b17bd2b4-0624-42eb-b86a-f5ebc0150f4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Scene">
+      <UniqueIdentifier>{40a52f1f-d3b6-42ab-9028-49af62fc542f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Object">
+      <UniqueIdentifier>{9f5c0a34-1aed-41b8-b8a6-7c35612e8b25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Sound">
+      <UniqueIdentifier>{ca41618e-f234-4bc8-94f5-86cbd42cc526}</UniqueIdentifier>
+    </Filter>
     <Filter Include="05.Network">
       <UniqueIdentifier>{657f2704-44dd-44bf-be37-26bcfdbc1961}</UniqueIdentifier>
     </Filter>
@@ -45,6 +54,21 @@
     <ClInclude Include="Network\NetworkDevice.h">
       <Filter>05.Network</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Object.h">
+      <Filter>03.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ObjectManager.h">
+      <Filter>03.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>02.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>02.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundManager.h">
+      <Filter>04.Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
@@ -58,6 +82,21 @@
     </ClCompile>
     <ClCompile Include="Network\NetworkDevice.cpp">
       <Filter>05.Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Object.cpp">
+      <Filter>03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ObjectManager.cpp">
+      <Filter>03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>02.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>02.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundManager.cpp">
+      <Filter>04.Sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
