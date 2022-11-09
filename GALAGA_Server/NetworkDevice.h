@@ -1,21 +1,29 @@
 #pragma once
 #include "Game.h"
 
-class Telegram;
 
-
+//std::array<int, 7> Message_Sizes = {
+//	24,
+//	20,
+//	4,
+//	8,
+//	8,
+//	8,
+//	4
+//};
 
 class CNetworkDevice
 {
 private:
 	SOCKET m_client_sock;
 
-	std::vector<std::vector<Telegram>> m_Telegrams;
+	std::vector<std::vector<Telegram>> m_SendTelegrams;
+	std::vector<std::vector<Telegram>> m_RecvTelegrams;
 
 public:
 	void SendToNetwork();
 	void RecvByNetwork();
 
-	Telegram GetTelegram();
+	std::set<Telegram> GetTelegram();
 };
 
