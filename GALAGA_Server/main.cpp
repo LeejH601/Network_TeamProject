@@ -1,14 +1,31 @@
 #include "..\Common.h"
 #include "Core.h"
+#include "Network/NetworkDevice.h"
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
 
+CRITICAL_SECTION cs;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	
+	CNetworkDevice Network_Device;
+	Network_Device.init((SOCKET)arg);
+
+	while (true)
+	{
+		EnterCriticalSection(&cs);
+		if (Network_Device.RecvByNetwork());
+		LeaveCriticalSection(&cs);
+
+
+		EnterCriticalSection(&cs);
+		if (Network_Device.SendToNetwork());
+		LeaveCriticalSection(&cs);
+	}
+
+	return 0;
 }
 
 bool g_bisPlaying = false;
@@ -21,6 +38,8 @@ int main(int argc, char* argv[])
 	if (argc > 1) {
 		SERVERIP = argv[1];
 	}
+
+	InitializeCriticalSection(&cs);
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -82,6 +101,8 @@ int main(int argc, char* argv[])
 			CCore::GetInst()->Logic();
 
 	}
+
+	DeleteCriticalSection(&cs);
 
 	closesocket(listen_sock);
 

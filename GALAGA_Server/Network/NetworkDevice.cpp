@@ -1,11 +1,28 @@
 #include "NetworkDevice.h"
 #include "../Core/Timer.h"
 
-void CNetworkDevice::SendToNetwork()
+CNetworkDevice::CNetworkDevice() 
 {
+
 }
 
-void CNetworkDevice::RecvByNetwork()
+CNetworkDevice::~CNetworkDevice() 
+{
+	if (m_client_sock)
+		closesocket(m_client_sock);
+}
+
+void CNetworkDevice::init(SOCKET sock)
+{
+	m_client_sock = sock;
+}
+
+bool CNetworkDevice::SendToNetwork()
+{
+	return false;
+}
+
+bool CNetworkDevice::RecvByNetwork()
 {
 	std::array<int, sizeof(MESSAGE_TYPE)> nEvents;
 
@@ -16,7 +33,11 @@ void CNetworkDevice::RecvByNetwork()
 
 	retval = recv(m_client_sock, buf, nEvents.max_size() * sizeof(int), MSG_WAITALL);
 	if (retval == SOCKET_ERROR) {
-		return;
+		return false;
+	}
+
+	if (retval == 0) {
+		return false;
 	}
 
 	memcpy(nEvents.data(), buf, nEvents.max_size());
@@ -49,8 +70,11 @@ void CNetworkDevice::RecvByNetwork()
 
 			memcpy(&telegram.Receiver, dataBuf + ReadPointer, sizeof(int));
 			ReadPointer += sizeof(int);
+
+			telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
 			memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
 			ReadPointer += Message_Sizes[i] - sizeof(int);
+
 			telegram.Msg = i;
 			telegram.DispatchTime = CTimer::GetInst()->GetTime();
 

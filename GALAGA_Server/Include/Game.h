@@ -36,6 +36,6 @@ using namespace std;
 #define BUFSIZE 4096
 
 
-
+extern CRITICAL_SECTION cs;
 
 
