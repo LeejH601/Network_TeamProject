@@ -33,5 +33,7 @@ public:
 	bool RecvByNetwork();
 
 	std::set<Telegram> GetTelegram();
+
+	void printTelegram();
 };
 

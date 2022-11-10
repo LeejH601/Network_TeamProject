@@ -13,6 +13,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	CNetworkDevice Network_Device;
 	Network_Device.init((SOCKET)arg);
 
+	std::cout << "connect client" << std::endl;
+
 	while (true)
 	{
 		EnterCriticalSection(&cs);
@@ -22,6 +24,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		EnterCriticalSection(&cs);
 		if (Network_Device.SendToNetwork());
+		LeaveCriticalSection(&cs);
+
+		EnterCriticalSection(&cs);
+		Network_Device.printTelegram();
 		LeaveCriticalSection(&cs);
 	}
 
@@ -76,7 +82,7 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, 0, 0, NULL);
+		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
 
 		if (hThread == NULL || g_nPlayClient >= MAXCLIENT) { closesocket(client_sock); }
 
