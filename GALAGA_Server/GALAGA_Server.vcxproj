@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -142,20 +142,22 @@
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="NetworkDevice.cpp" />
+    <ClCompile Include="Network\NetworkDevice.cpp" />
+    <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="Core\Timer.h" />
-    <ClInclude Include="Enum.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Macro.h" />
-    <ClInclude Include="NetworkDevice.h" />
+    <ClInclude Include="Include\Enum.h" />
+    <ClInclude Include="Include\Game.h" />
+    <ClInclude Include="Include\Macro.h" />
+    <ClInclude Include="Include\Types.h" />
+    <ClInclude Include="Network\NetworkDevice.h" />
+    <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
-    <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

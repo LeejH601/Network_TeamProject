@@ -1,7 +1,7 @@
 #pragma once
 #include <WinSock2.h>
 #include <ws2tcpip.h>
-#include "Game.h"
+#include "../Include/Game.h"
 
 std::array<int, 7> Message_Sizes = {
 	16,

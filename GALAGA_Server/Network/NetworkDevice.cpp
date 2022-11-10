@@ -1,5 +1,5 @@
 #include "NetworkDevice.h"
-#include "Core/Timer.h"
+#include "../Core/Timer.h"
 
 void CNetworkDevice::SendToNetwork()
 {
