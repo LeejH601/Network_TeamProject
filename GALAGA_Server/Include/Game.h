@@ -1,10 +1,10 @@
 // 전체 헤더파일 관리 목적으로 생성되었습니다.
 
 #pragma once
+#pragma comment(lib, "ws2_32") // ws2_32.lib 링크
 
 //#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
-#include	<Windows.h>
 #include	<list>
 #include	<vector>
 #include	<unordered_map>
@@ -13,10 +13,13 @@
 #include	<tchar.h>
 #include    "atlImage.h"
 #include	<strsafe.h>
-#include	< string.h>
-#include <wchar.h>
-#include <set>
-#include <array>
+#include	<string.h>
+#include	<wchar.h>
+#include	<set>
+#include	<array>
+
+#include <WinSock2.h>
+#include <ws2tcpip.h>
 
 using namespace std;
 
