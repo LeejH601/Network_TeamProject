@@ -1,5 +1,4 @@
 #include "SoundManager.h"
-//#include "../Object/ObjectManager.h"
 
 DEFINITION_SINGLE(CSoundManager);
 
@@ -26,7 +25,7 @@ CSoundManager::~CSoundManager()
 bool CSoundManager::Init()
 {
 	m_iObjID = m_iObjN++;
-	//CObjectManager::GetInst();
+	CObjectManager::GetInst()->RegisterObject(this);
 
 	/*FMOD_System_Create(&soundSystem);
 	FMOD_System_Init(soundSystem, 32, FMOD_INIT_NORMAL, NULL);

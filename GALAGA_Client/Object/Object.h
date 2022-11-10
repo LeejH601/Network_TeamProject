@@ -1,5 +1,6 @@
 #pragma once
 #include "../Include/Game.h"
+
 class CObject
 {
 public:
@@ -67,4 +68,29 @@ public:
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
 	void SetID(const int id);
+public:
+	bool operator<(const CObject& rhs) {
+		return m_iObjN < rhs.GetID();
+	}
+};
+
+class Compare {
+public:
+	bool operator()(const CObject* lhs, const CObject* rhs) const {
+		return lhs->GetID() < rhs->GetID();
+	}
+};
+
+class CObjectManager
+{
+public:
+	// ½Ì±ÛÅæ ¼±¾ð
+	DECLARE_SINGLE(CObjectManager);
+private:
+	std::set<CObject*, Compare> ObjectSet;
+public:
+	bool Init();
+	void RegisterObject(CObject* NewObject);
+	CObject* GetObjectFromID(int id);
+	void RemoveObject(int id);
 };

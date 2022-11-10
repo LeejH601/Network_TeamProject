@@ -48,9 +48,6 @@
     <ClInclude Include="Object\Object.h">
       <Filter>03.Object</Filter>
     </ClInclude>
-    <ClInclude Include="Object\ObjectManager.h">
-      <Filter>03.Object</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Scene.h">
       <Filter>02.Scene</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
       <Filter>05.Network</Filter>
     </ClCompile>
     <ClCompile Include="Object\Object.cpp">
-      <Filter>03.Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\ObjectManager.cpp">
       <Filter>03.Object</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scene.cpp">

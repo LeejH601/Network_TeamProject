@@ -1,5 +1,4 @@
 #include "Object.h"
-//#include "ObjectManager.h"
 #include "../Scene/SceneManager.h"
 
 int CObject::m_iObjN = 0;
@@ -124,10 +123,10 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 {
 
 	m_iObjID = m_iObjN++;
-	//CObjectManager::GetInst();
+	CObjectManager::GetInst()->RegisterObject(this);
 
 	//m_img_Back.Load(imgText);
-	if (m_img_Back == NULL)
+	/*if (m_img_Back == NULL)
 	{
 		m_img_Back = CSceneManager::GetInst()->GetCimage(imgText);
 		if (m_img_Back)
@@ -154,7 +153,7 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 
 
 	m_img_Size = imgSize;
-	m_img_LT = imgLT;
+	m_img_LT = imgLT;*/
 
 
 
@@ -194,4 +193,45 @@ void CObject::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 	}
 
+}
+
+//=================================================================================================
+
+DEFINITION_SINGLE(CObjectManager);
+
+CObjectManager::CObjectManager()
+{
+}
+
+CObjectManager::~CObjectManager()
+{
+}
+
+bool CObjectManager::Init()
+{
+	return true;
+}
+
+void CObjectManager::RegisterObject(CObject* NewObject)
+{
+	ObjectSet.insert(NewObject);
+}
+
+CObject* CObjectManager::GetObjectFromID(int id)
+{
+	CObject dummyObject;
+	dummyObject.SetID(id);
+	auto it = ObjectSet.find(&dummyObject);
+
+	if (it != ObjectSet.end())
+		return *it;
+
+	return nullptr;
+}
+
+void CObjectManager::RemoveObject(int id)
+{
+	CObject dummyObject;
+	dummyObject.SetID(id);
+	ObjectSet.erase(&dummyObject);
 }

@@ -1,7 +1,6 @@
 #include "../Sound/SoundManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
-//#include "../Object/ObjectManager.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -38,7 +37,7 @@ CSceneManager::~CSceneManager()
 bool CSceneManager::Init()
 {
 	m_iObjID = m_iObjN++;
-	/*CObjectManager::GetInst();*/
+	CObjectManager::GetInst()->RegisterObject(this);
 
 	wcscpy_s(m_img_Text[0], L"../Bin/Item_img/Bullets.png");
 

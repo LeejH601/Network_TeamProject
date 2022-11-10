@@ -1,5 +1,6 @@
 #include "Core.h"
 #include "Core/Timer.h"
+#include "Object/Object.h"
 #include "Network/NetworkDevice.h"
 
 DEFINITION_SINGLE(CCore)
@@ -169,6 +170,9 @@ bool CCore::Init(HINSTANCE hInst)
 
 	// 네트워크 디바이스를 초기화합니다.
 	if (!CNetworkDevice::GetInst()->Init())
+		return false;
+
+	if (!CObjectManager::GetInst()->Init())
 		return false;
 
 	// 장면 관리자를 초기화 합니다. 
