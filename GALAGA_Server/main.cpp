@@ -3,10 +3,12 @@
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
+char* SERVERIP = (char*)"127.0.0.1";
+
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	return 0;
+	
 }
 
 bool g_bisPlaying = false;
@@ -15,6 +17,10 @@ int g_nPlayClient = 0;
 int main(int argc, char* argv[])
 {
 	int retval;
+
+	if (argc > 1) {
+		SERVERIP = argv[1];
+	}
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -26,7 +32,9 @@ int main(int argc, char* argv[])
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	//serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
+
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = bind(listen_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("bind()");
@@ -49,39 +57,32 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		if (!g_bisPlaying) {
-			// 게임을 초기화 합니다. 
-			if (!CCore::GetInst()->Init())
-			{
-				CCore::DestroyInst();
-				return 0;
-			}
+		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, 0, 0, NULL);
 
-			HANDLE hThread = CreateThread(NULL, 0, ProcessClient, 0, 0, NULL);
+		if (hThread == NULL || g_nPlayClient >= MAXCLIENT) { closesocket(client_sock); }
 
-			if (hThread == NULL) { closesocket(client_sock); }
-			else {
-				g_nPlayClient++;
-				CloseHandle(hThread);
-			}
-
-			CCore::GetInst()->Logic();
-		}
 		else {
-			HANDLE hThread = CreateThread(NULL, 0, ProcessClient, 0, 0, NULL);
+			g_nPlayClient++;
+			CloseHandle(hThread);
 
-			if (hThread == NULL || g_nPlayClient >= MAXCLIENT) { closesocket(client_sock); }
-			else {
-				g_nPlayClient++;
-				CloseHandle(hThread);
+			if (!g_bisPlaying) {
+				// 게임을 초기화 합니다. 
+				if (!CCore::GetInst()->Init())
+				{
+					CCore::DestroyInst();
+					return 0;
+				}
+
 			}
-
-			// 추가적인 초기화 작업이 진행되어야 함
-
-			CCore::GetInst()->Logic();
+			else {
+				// 추가적인 초기화 코드 필요
+			}
 		}
+		if (g_bisPlaying)
+			CCore::GetInst()->Logic();
+
 	}
-		
+
 	closesocket(listen_sock);
 
 	WSACleanup();
