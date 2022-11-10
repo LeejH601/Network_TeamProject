@@ -15,6 +15,8 @@
 #include	<strsafe.h>
 #include	< string.h>
 #include <wchar.h>
+#include <set>
+#include <array>
 
 using namespace std;
 
@@ -31,6 +33,7 @@ using namespace std;
 //
 //#pragma  comment(lib, "fmodex_vc.lib")
 
+#define BUFSIZE 4096
 
 
 
