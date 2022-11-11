@@ -27,6 +27,15 @@ private:\
 	Type();\
 	~Type();
 
+// 싱글톤을 선언합니다. 
+#define DECLARE_MYSINGLE(MYType)\
+public:\
+	static MYType* GetInst()\
+	{\
+		static MYType m_pInst;\
+		return &m_pInst;\
+	}
+
 // 싱글톤을 외부에서 선언합니다. 
 #define DEFINITION_SINGLE(Type) Type* Type::m_pInst = NULL;
 // 싱글톤을 얻습니다. ( 외부에서 사용 )

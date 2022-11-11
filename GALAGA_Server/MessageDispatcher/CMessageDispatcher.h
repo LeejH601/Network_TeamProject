@@ -2,12 +2,10 @@
 #include "..\Include\Game.h"
 
 class CObject;
-
 class CMessageDispatcher
 {
 public:
-    DECLARE_SINGLE(CMessageDispatcher);
-
+    DECLARE_MYSINGLE(CMessageDispatcher);
 private:
     std::set<Telegram> PriorityQ;
 
@@ -16,7 +14,6 @@ private:
 public:
 
     std::set<Telegram>& GetMessageQueue() { return PriorityQ; };
-
 public:
     void DispatchMessages(double  delay,
         int    sender,

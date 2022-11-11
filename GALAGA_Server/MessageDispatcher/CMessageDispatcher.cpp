@@ -1,8 +1,6 @@
 #include "CMessageDispatcher.h"
 #include "..\Object\Object.h"
 
-DEFINITION_SINGLE(CMessageDispatcher);
-
 void CMessageDispatcher::Discharge(CObject* pReceiver, const Telegram& msg)
 {
 	if (!pReceiver->HandleMessage(msg)) {

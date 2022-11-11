@@ -1,6 +1,7 @@
 #include "..\Common.h"
 #include "Core.h"
 #include "Network/NetworkDevice.h"
+#include "MessageDispatcher/CMessageDispatcher.h"
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
