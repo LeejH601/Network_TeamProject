@@ -15,12 +15,6 @@ public:
 
     std::set<Telegram>& GetMessageQueue() { return PriorityQ; };
 public:
-    void DispatchMessages(double  delay,
-        int    sender,
-        int    receiver,
-        int    msg,
-        void* ExtraInfo);
-
-
+    void DispatchMessages();
 };
 

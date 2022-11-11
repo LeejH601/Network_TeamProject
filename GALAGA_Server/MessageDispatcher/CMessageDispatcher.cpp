@@ -8,7 +8,16 @@ void CMessageDispatcher::Discharge(CObject* pReceiver, const Telegram& msg)
 	}
 }
 
-void CMessageDispatcher::DispatchMessages(double delay, int sender, int receiver, int msg, void* ExtraInfo)
+void CMessageDispatcher::DispatchMessages()
 {
+	while (!PriorityQ.empty())
+	{
+		const Telegram& telegram = *PriorityQ.begin();
+
+		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Receiver);
+		Discharge(pReceiver, telegram);
+
+		PriorityQ.erase(PriorityQ.begin());
+	}
 }
 
