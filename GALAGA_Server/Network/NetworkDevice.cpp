@@ -150,6 +150,13 @@ bool CNetworkDevice::RecvByNetwork()
 	delete[] dataBuf;
 }
 
+void CNetworkDevice::AddMessage(Telegram Message)
+{
+	if (!m_SendTelegrams[Message.Msg].empty())
+		m_SendTelegrams[Message.Msg].push_back(Message);
+}
+
+
 std::set<Telegram> CNetworkDevice::GetTelegram()
 {
 	std::set<Telegram> messageQueue;

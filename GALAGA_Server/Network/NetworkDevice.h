@@ -21,6 +21,7 @@ private:
 	std::vector<std::vector<Telegram>> m_SendTelegrams;
 	std::vector<std::vector<Telegram>> m_RecvTelegrams;
 
+
 public:
 	CNetworkDevice();
 	~CNetworkDevice();
@@ -29,6 +30,8 @@ public:
 
 	bool SendToNetwork();
 	bool RecvByNetwork();
+
+	void AddMessage(Telegram Message);
 
 	std::set<Telegram> GetTelegram();
 
