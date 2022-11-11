@@ -105,7 +105,7 @@ bool CNetworkDevice::RecvByNetwork()
 		return false;
 	}
 
-	memcpy(nEvents.data(), buf, nEvents.max_size());
+	memcpy(nEvents.data(), buf, nEvents.max_size() * sizeof(int));
 
 	long remainData = 0;
 
@@ -118,7 +118,7 @@ bool CNetworkDevice::RecvByNetwork()
 
 	while (remainData > 0)
 	{
-		retval = recv(m_client_sock, buf, BUFSIZE, 0);
+		retval = recv(m_client_sock, buf, BUFSIZE, MSG_WAITALL);
 		if (retval == 0)
 			break;
 
@@ -136,10 +136,12 @@ bool CNetworkDevice::RecvByNetwork()
 			memcpy(&telegram.Receiver, dataBuf + ReadPointer, sizeof(int));
 			ReadPointer += sizeof(int);
 
-			telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
-			memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
-			ReadPointer += Message_Sizes[i] - sizeof(int);
-
+			if (Message_Sizes[i] - sizeof(int))
+			{
+				telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
+				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
+				ReadPointer += Message_Sizes[i] - sizeof(int);
+			}
 			telegram.Msg = i;
 			telegram.DispatchTime = CTimer::GetInst()->GetTime();
 
@@ -177,7 +179,11 @@ void CNetworkDevice::printTelegram()
 	{
 		for (int j = 0; j < m_RecvTelegrams[i].size(); j++)
 		{
-			std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << (char*)m_RecvTelegrams[i][j].Extrainfo << std::endl;
+			if (m_RecvTelegrams[i][j].Extrainfo)
+				std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << (char*)m_RecvTelegrams[i][j].Extrainfo << std::endl;
+			else
+				std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << "nullptr" << std::endl;
 		}
+		m_RecvTelegrams[i].clear();
 	}
 }
