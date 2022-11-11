@@ -31,7 +31,7 @@ public:
 	bool SendToNetwork();
 	bool RecvByNetwork();
 
-	void AddMessage(Telegram Message);
+	void AddMessage(Telegram& Message);
 
 	std::set<Telegram> GetTelegram();
 

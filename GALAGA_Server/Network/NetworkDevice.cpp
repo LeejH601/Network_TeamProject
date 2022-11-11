@@ -150,10 +150,13 @@ bool CNetworkDevice::RecvByNetwork()
 	delete[] dataBuf;
 }
 
-void CNetworkDevice::AddMessage(Telegram Message)
+void CNetworkDevice::AddMessage(Telegram& Message)
 {
+	Telegram messageQueue = Message;
+	messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
+	memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
 	if (!m_SendTelegrams[Message.Msg].empty())
-		m_SendTelegrams[Message.Msg].push_back(Message);
+		m_SendTelegrams[Message.Msg].push_back(messageQueue);
 }
 
 
