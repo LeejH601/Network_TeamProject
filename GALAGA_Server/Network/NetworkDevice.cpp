@@ -163,6 +163,15 @@ void CNetworkDevice::CopyTelegramQueue()
 	}
 }
 
+void CNetworkDevice::AddMessage(Telegram& Message)
+{
+	Telegram messageQueue = Message;
+	messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
+	memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
+	if (!m_SendTelegrams[Message.Msg].empty())
+		m_SendTelegrams[Message.Msg].push_back(messageQueue);
+}
+
 void CNetworkDevice::GetTelegram()
 {
 	std::set<Telegram> MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
