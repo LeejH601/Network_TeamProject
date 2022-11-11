@@ -1,10 +1,11 @@
 #include "NetworkDevice.h"
 #include "../Core/Timer.h"
+#include "..\MessageDispatcher\CMessageDispatcher.h"
 
 CNetworkDevice::CNetworkDevice() 
 {
-	m_SendTelegrams.resize(7);
-	m_RecvTelegrams.resize(7);
+	m_SendTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
+	m_RecvTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
 }
 
 CNetworkDevice::~CNetworkDevice() 
@@ -21,27 +22,27 @@ void CNetworkDevice::init(SOCKET sock)
 
 bool CNetworkDevice::SendToNetwork()
 {
-	// ¹è¿­ ¸Þ¼¼Áö Á¾·ù¸¸Å­
-	int MessageN[7] = { 0 };
+	// ï¿½è¿­ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­
+	int MessageN[(int)MESSAGE_TYPE::END_Enum] = { 0 };
 
-	// ¸Þ¼¼Áö Å¸ÀÔº°·Î °³¼ö¸¦ ¹è¿­¿¡ ÀúÀå
-	for (int i = 0; i < 7; i++) {
+	// ï¿½Þ¼ï¿½ï¿½ï¿½ Å¸ï¿½Ôºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; i++) {
 		if (!m_SendTelegrams[i].empty())
 			MessageN[i] = (int)m_SendTelegrams[i].size();
 	}
 
 	int retval;
-	// intÇü ¹è¿­À» °íÁ¤±æÀÌ ÆÐÅ¶À¸·Î ¼Û½Å(¸Þ¼¼Áö °³¼ö)
+	// intï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ ï¿½Û½ï¿½(ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	retval = send(m_client_sock, (const char*)MessageN, sizeof(int) * (int)(m_SendTelegrams.size()), 0);
 
 	if (retval == 0)
 		return false;
-	//if (retval == SOCKET_ERROR) err_display("send() - Message °³¼ö");
+	//if (retval == SOCKET_ERROR) err_display("send() - Message ï¿½ï¿½ï¿½ï¿½");
 
 	int DataSize = 0;
 
-	// ÃÑ Å©±â - ¸Þ¼¼Áö °³¼ö * ¸Þ¼¼Áö Å©±â <-Á¾·ù¸¸Å­ ¹Ýº¹
-	for (int i = 0; i < 7; i++)
+	// ï¿½ï¿½ Å©ï¿½ï¿½ - ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ * ï¿½Þ¼ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ <-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½Ýºï¿½
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; i++)
 	{
 		DataSize += MessageN[i] * Message_Sizes[i];
 	}
@@ -49,9 +50,9 @@ bool CNetworkDevice::SendToNetwork()
 	if (DataSize == 0)
 		return false;
 	char* Data = new char[DataSize];
-	int AddDataSize = 0; // Ãß°¡ÇÑ µ¥ÀÌÅÍ Å©±â
+	int AddDataSize = 0; // ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
 
-	// TelegramÀ» ÇÏ³ª¾¿ ²¨³»¼­ Àü´Þ
+	// Telegramï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < m_SendTelegrams.size(); i++)
 	{
 		for (int j = 0; j < m_SendTelegrams[i].size(); j++)
@@ -64,8 +65,8 @@ bool CNetworkDevice::SendToNetwork()
 		}
 	}
 
-	// µ¥ÀÌÅÍ¸¦ AddDataSize(ÀúÀåµÈ µ¥ÀÌÅÍ Å©±â)¸¸Å­ Àü´Þ
-	int LeftDataSize = AddDataSize; // ¹Ì¼ö½Å µ¥ÀÌÅÍ Å©±â
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ AddDataSize(ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½)ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½
+	int LeftDataSize = AddDataSize; // ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
 	int BufSize = BUFSIZE;
 	while (LeftDataSize > 0)
 	{
@@ -74,9 +75,9 @@ bool CNetworkDevice::SendToNetwork()
 		else
 			BufSize = BUFSIZE;
 
-		// µ¥ÀÌÅÍ º¸³»±â (°¡º¯ ±æÀÌ) - µ¥ÀÌÅÍ ³»¿ë
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		retval = send(m_client_sock, Data, BufSize, 0);
-		//if (retval == SOCKET_ERROR) err_display("send() - µ¥ÀÌÅÍ ³»¿ë");
+		//if (retval == SOCKET_ERROR) err_display("send() - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 		LeftDataSize -= BufSize;
 
 	}
@@ -87,7 +88,7 @@ bool CNetworkDevice::SendToNetwork()
 
 bool CNetworkDevice::RecvByNetwork()
 {
-	std::array<int, 7> nEvents = { 0 };
+	std::array<int, (int)MESSAGE_TYPE::END_Enum> nEvents = { 0 };
 
 	int retval;
 
@@ -109,7 +110,7 @@ bool CNetworkDevice::RecvByNetwork()
 
 	long remainData = 0;
 
-	for (int i = 0; i < nEvents.max_size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		remainData += nEvents[i] * Message_Sizes[i];
 	}
 
@@ -129,7 +130,7 @@ bool CNetworkDevice::RecvByNetwork()
 	}
 
 	int ReadPointer = 0;
-	for (int i = 0; i < nEvents.max_size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		for (int j = 0; j < nEvents[i]; ++j) {
 			Telegram telegram;
 
@@ -142,6 +143,7 @@ bool CNetworkDevice::RecvByNetwork()
 				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
 				ReadPointer += Message_Sizes[i] - sizeof(int);
 			}
+
 			telegram.Msg = i;
 			telegram.DispatchTime = CTimer::GetInst()->GetTime();
 
@@ -152,18 +154,25 @@ bool CNetworkDevice::RecvByNetwork()
 	delete[] dataBuf;
 }
 
-std::set<Telegram> CNetworkDevice::GetTelegram()
+void CNetworkDevice::CopyTelegramQueue()
 {
-	std::set<Telegram> messageQueue;
+	for (int i = 0; i < 7; ++i) {
+		for (int j = 0; j < m_RecvTelegrams[i].size(); ++i) {
+			m_SendTelegrams[i].push_back(m_RecvTelegrams[i][j]);
+		}
+	}
+}
 
-	for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
+void CNetworkDevice::GetTelegram()
+{
+	std::set<Telegram> MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
+
+	/*for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
-			messageQueue.insert(m_RecvTelegrams[i][j]);
+			MessageQueue.insert(m_RecvTelegrams[i][j]);
 		}
 		m_RecvTelegrams[i].clear();
-	}
-
-	return messageQueue;
+	}*/
 }
 
 void CNetworkDevice::printTelegram()

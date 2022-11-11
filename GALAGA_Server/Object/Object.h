@@ -31,6 +31,7 @@ public:
 	virtual	void LateUpdate(float fDeltaTime);
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
 
+
 public:
 	// 외부 오브젝트 상태 확인 함수
 	POSITION GetPos() const;
@@ -50,6 +51,9 @@ public:
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
 	void SetID(const int id);
+
+	virtual bool HandleMessage(const Telegram& telegram);
+
 public:
 	bool operator<(const CObject& rhs) {
 		return m_iObjN < rhs.GetID();

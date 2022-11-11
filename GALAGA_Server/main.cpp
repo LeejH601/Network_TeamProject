@@ -1,6 +1,7 @@
 #include "..\Common.h"
 #include "Core.h"
 #include "Network/NetworkDevice.h"
+#include "MessageDispatcher/CMessageDispatcher.h"
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
@@ -21,6 +22,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		if (Network_Device.RecvByNetwork());
 		LeaveCriticalSection(&cs);
 
+		EnterCriticalSection(&cs);
+		Network_Device.CopyTelegramQueue();
+		LeaveCriticalSection(&cs);
+
+		EnterCriticalSection(&cs);
+		Network_Device.GetTelegram();
+		LeaveCriticalSection(&cs);
 
 		EnterCriticalSection(&cs);
 		if (Network_Device.SendToNetwork());

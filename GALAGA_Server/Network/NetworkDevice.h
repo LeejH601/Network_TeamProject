@@ -1,6 +1,7 @@
 #pragma once
 #include "../Include/Game.h"
 
+class CMessageDispatcher;
 
 class CNetworkDevice
 {
@@ -30,7 +31,9 @@ public:
 	bool SendToNetwork();
 	bool RecvByNetwork();
 
-	std::set<Telegram> GetTelegram();
+	void CopyTelegramQueue();
+
+	void GetTelegram();
 
 	void printTelegram();
 };
