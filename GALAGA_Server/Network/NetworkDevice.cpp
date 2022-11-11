@@ -1,6 +1,8 @@
 #include "NetworkDevice.h"
 #include "../Core/Timer.h"
-#include "..\MessageDispatcher\CMessageDispatcher.h"
+#include "../MessageDispatcher/CMessageDispatcher.h"
+#include "..\CLocator.h"
+
 
 CNetworkDevice::CNetworkDevice() 
 {
@@ -164,7 +166,8 @@ void CNetworkDevice::CopyTelegramQueue()
 
 void CNetworkDevice::GetTelegram()
 {
-	std::set<Telegram> MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
+	std::set<Telegram> MessageQueue = Locator.GetMessageDispathcer()->GetMessageQueue();
+	//std::set<Telegram> MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
 
 	for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {

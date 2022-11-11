@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CLocator.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CLocator.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Core\Timer.h" />
     <ClInclude Include="Include\Enum.h" />

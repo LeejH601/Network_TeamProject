@@ -1,12 +1,15 @@
 #include "..\Common.h"
 #include "Core.h"
 #include "Network/NetworkDevice.h"
+#include "MessageDispatcher/CMessageDispatcher.h"
+#include "CLocator.h"
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
 
 CRITICAL_SECTION cs;
+CLocator Locator;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -51,6 +54,9 @@ int main(int argc, char* argv[])
 	if (argc > 1) {
 		SERVERIP = argv[1];
 	}
+
+	CMessageDispatcher* MessageDispatcher = new CMessageDispatcher();
+	Locator.SetMessageDispatcher(MessageDispatcher);
 
 	InitializeCriticalSection(&cs);
 

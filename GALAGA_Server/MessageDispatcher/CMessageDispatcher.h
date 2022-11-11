@@ -5,8 +5,6 @@ class CObject;
 
 class CMessageDispatcher
 {
-public:
-    DECLARE_SINGLE(CMessageDispatcher);
 
 private:
     std::set<Telegram> PriorityQ;
