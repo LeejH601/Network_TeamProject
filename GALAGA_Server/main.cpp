@@ -21,6 +21,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		if (Network_Device.RecvByNetwork());
 		LeaveCriticalSection(&cs);
 
+		EnterCriticalSection(&cs);
+		Network_Device.CopyTelegramQueue();
+		LeaveCriticalSection(&cs);
+
+		EnterCriticalSection(&cs);
+		Network_Device.GetTelegram();
+		LeaveCriticalSection(&cs);
 
 		EnterCriticalSection(&cs);
 		if (Network_Device.SendToNetwork());

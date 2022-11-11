@@ -1,10 +1,11 @@
 #include "NetworkDevice.h"
 #include "../Core/Timer.h"
+#include "..\MessageDispatcher\CMessageDispatcher.h"
 
 CNetworkDevice::CNetworkDevice() 
 {
-	m_SendTelegrams.resize(7);
-	m_RecvTelegrams.resize(7);
+	m_SendTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
+	m_RecvTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
 }
 
 CNetworkDevice::~CNetworkDevice() 
@@ -22,10 +23,10 @@ void CNetworkDevice::init(SOCKET sock)
 bool CNetworkDevice::SendToNetwork()
 {
 	// 배열 메세지 종류만큼
-	int MessageN[7] = { 0 };
+	int MessageN[(int)MESSAGE_TYPE::END_Enum] = { 0 };
 
 	// 메세지 타입별로 개수를 배열에 저장
-	for (int i = 0; i < 7; i++) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; i++) {
 		if (!m_SendTelegrams[i].empty())
 			MessageN[i] = (int)m_SendTelegrams[i].size();
 	}
@@ -41,7 +42,7 @@ bool CNetworkDevice::SendToNetwork()
 	int DataSize = 0;
 
 	// 총 크기 - 메세지 개수 * 메세지 크기 <-종류만큼 반복
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; i++)
 	{
 		DataSize += MessageN[i] * Message_Sizes[i];
 	}
@@ -87,7 +88,7 @@ bool CNetworkDevice::SendToNetwork()
 
 bool CNetworkDevice::RecvByNetwork()
 {
-	std::array<int, 7> nEvents = { 0 };
+	std::array<int, (int)MESSAGE_TYPE::END_Enum> nEvents = { 0 };
 
 	int retval;
 
@@ -105,11 +106,11 @@ bool CNetworkDevice::RecvByNetwork()
 		return false;
 	}
 
-	memcpy(nEvents.data(), buf, nEvents.max_size());
+	memcpy(nEvents.data(), buf, nEvents.max_size() * sizeof(int));
 
 	long remainData = 0;
 
-	for (int i = 0; i < nEvents.max_size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		remainData += nEvents[i] * Message_Sizes[i];
 	}
 
@@ -129,16 +130,18 @@ bool CNetworkDevice::RecvByNetwork()
 	}
 
 	int ReadPointer = 0;
-	for (int i = 0; i < nEvents.max_size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		for (int j = 0; j < nEvents[i]; ++j) {
 			Telegram telegram;
 
 			memcpy(&telegram.Receiver, dataBuf + ReadPointer, sizeof(int));
 			ReadPointer += sizeof(int);
 
-			telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
-			memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
-			ReadPointer += Message_Sizes[i] - sizeof(int);
+			if (Message_Sizes[i] - sizeof(int)) {
+				telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
+				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
+				ReadPointer += Message_Sizes[i] - sizeof(int);
+			}
 
 			telegram.Msg = i;
 			telegram.DispatchTime = CTimer::GetInst()->GetTime();
@@ -150,18 +153,25 @@ bool CNetworkDevice::RecvByNetwork()
 	delete[] dataBuf;
 }
 
-std::set<Telegram> CNetworkDevice::GetTelegram()
+void CNetworkDevice::CopyTelegramQueue()
 {
-	std::set<Telegram> messageQueue;
+	for (int i = 0; i < 7; ++i) {
+		for (int j = 0; j < m_RecvTelegrams[i].size(); ++i) {
+			m_SendTelegrams[i].push_back(m_RecvTelegrams[i][j]);
+		}
+	}
+}
+
+void CNetworkDevice::GetTelegram()
+{
+	std::set<Telegram> MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
 
 	for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
-			messageQueue.insert(m_RecvTelegrams[i][j]);
+			MessageQueue.insert(m_RecvTelegrams[i][j]);
 		}
 		m_RecvTelegrams[i].clear();
 	}
-
-	return messageQueue;
 }
 
 void CNetworkDevice::printTelegram()
@@ -177,7 +187,10 @@ void CNetworkDevice::printTelegram()
 	{
 		for (int j = 0; j < m_RecvTelegrams[i].size(); j++)
 		{
-			std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << (char*)m_RecvTelegrams[i][j].Extrainfo << std::endl;
+			if( m_RecvTelegrams[i][j].Extrainfo)
+				std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << (char*)m_RecvTelegrams[i][j].Extrainfo << std::endl;
+			else
+				std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << "nullptr" << std::endl;
 		}
 	}
 }

@@ -145,6 +145,10 @@ bool CObject::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize
 	return IntersectRect(&rcTemp, &mypos, &CollisionPos);
 
 }
+bool CObject::HandleMessage(const Telegram& telegram)
+{
+	return false;
+}
 //=================================================================================================
 
 DEFINITION_SINGLE(CObjectManager);

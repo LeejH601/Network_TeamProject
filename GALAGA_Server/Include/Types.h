@@ -197,7 +197,7 @@ struct Telegram {
 	int Receiver;
 	int Msg;
 	LONGLONG DispatchTime;
-	void* Extrainfo;
+	void* Extrainfo = nullptr;
 };
 
 
@@ -231,4 +231,5 @@ enum class MESSAGE_TYPE {
 	Msg_playSound,
 	Msg_changeScene,
 	Msg_clientReady,
+	END_Enum,
 };
