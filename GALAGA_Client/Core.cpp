@@ -39,6 +39,8 @@ void CCore::Logic()
 	Collision(fDeltaTime);		// * 충돌 처리
 	Render(fDeltaTime);			// * 출력
 
+	CNetworkDevice::GetInst()->SendToNetwork();
+	CNetworkDevice::GetInst()->RecvByNetwork();
 }
 
 void CCore::Input(float fDeltaTime)

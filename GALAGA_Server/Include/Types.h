@@ -197,7 +197,7 @@ struct Telegram {
 	int Receiver;
 	int Msg;
 	LONGLONG DispatchTime;
-	void* Extrainfo;
+	void* Extrainfo = nullptr;
 };
 
 

@@ -1,34 +1,115 @@
 #include "../Core/Timer.h"
 #include "NetworkDevice.h"
 
+char* SERVERIP = (char*)"127.0.0.1";
+#define SERVERPORT 9000
+
+// 소켓 함수 오류 출력 후 종료
+void err_quit(const char* msg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(char*)&lpMsgBuf, 0, NULL);
+	MessageBoxA(NULL, (const char*)lpMsgBuf, msg, MB_ICONERROR);
+	LocalFree(lpMsgBuf);
+	exit(1);
+}
+
+// 소켓 함수 오류 출력
+void err_display(const char* msg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(char*)&lpMsgBuf, 0, NULL);
+	printf("[%s] %s\n", msg, (char*)lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
+
+// 소켓 함수 오류 출력
+void err_display(int errcode)
+{
+	LPVOID lpMsgBuf;
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, errcode,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(char*)&lpMsgBuf, 0, NULL);
+	printf("[오류] %s\n", (char*)lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
+
 DEFINITION_SINGLE(CNetworkDevice);
 
 CNetworkDevice::CNetworkDevice()
 {
+	m_SendTelegrams.resize(7);
+	m_RecvTelegrams.resize(7);
 }
 
 CNetworkDevice::~CNetworkDevice()
 {
+	// 소켓 닫기
+	closesocket(m_sock);
+
+	// 윈속 종료
+	WSACleanup();
 }
 
 bool CNetworkDevice::Init()
 {
-	// 네트워크 소켓 초기화
+	int retval = 0;
+
+	// 윈속 초기화
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+		return 1;
+
+	// 소켓 생성
+	m_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (m_sock == INVALID_SOCKET) err_quit("socket()");
+
+	// connect()
+	struct sockaddr_in serveraddr;
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
+
+	serveraddr.sin_port = htons(SERVERPORT);
+	retval = connect(m_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+	Telegram testTelegram = Telegram{ 4, 0, (int)MESSAGE_TYPE::Msg_clientReady, 0, nullptr };
+	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
+	testTelegram.Receiver = 4;
+	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
+	testTelegram.Receiver = 5;
+	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
+	testTelegram.Receiver = 6;
+	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
+
 	return true;
 }
 
-void init(SOCKET sock)
+void CNetworkDevice::init(SOCKET sock)
 {
 }
 
 bool CNetworkDevice::SendToNetwork()
 {
 	// 배열 메세지 종류만큼
-	int MessageN[sizeof(MESSAGE_TYPE)];
+	int MessageN[7] = { 0 };
 
 	// 메세지 타입별로 개수를 배열에 저장
-	for (int i = 0; i < sizeof(MESSAGE_TYPE); i++)
-		MessageN[i] = (int)m_SendTelegrams[i].size();
+	for (int i = 0; i < 7; i++) {
+		if (!m_SendTelegrams[i].empty())
+			MessageN[i] = (int)m_SendTelegrams[i].size();
+	}
 
 	int retval;
 	// int형 배열을 고정길이 패킷으로 송신(메세지 개수)
@@ -41,11 +122,13 @@ bool CNetworkDevice::SendToNetwork()
 	int DataSize = 0;
 
 	// 총 크기 - 메세지 개수 * 메세지 크기 <-종류만큼 반복
-	for (int i = 0; i < sizeof(MESSAGE_TYPE); i++)
+	for (int i = 0; i < 7; i++)
 	{
 		DataSize += MessageN[i] * Message_Sizes[i];
 	}
 
+	if (DataSize == 0)
+		return false;
 	char* Data = new char[DataSize];
 	int AddDataSize = 0; // 추가한 데이터 크기
 
@@ -56,10 +139,10 @@ bool CNetworkDevice::SendToNetwork()
 		{
 			memcpy(Data + AddDataSize, &m_SendTelegrams[i][j].Receiver, sizeof(int));
 			AddDataSize += sizeof(int);
-			memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, MessageN[i]);
-			AddDataSize += MessageN[i];
-
+			/*memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
+			AddDataSize += Message_Sizes[i] - sizeof(int);*/
 		}
+		m_SendTelegrams[i].clear();
 	}
 
 	// 데이터를 AddDataSize(저장된 데이터 크기)만큼 전달
@@ -85,14 +168,16 @@ bool CNetworkDevice::SendToNetwork()
 
 bool CNetworkDevice::RecvByNetwork()
 {
-	std::array<int, sizeof(MESSAGE_TYPE)> nEvents;
+	std::array<int, 7> nEvents = { 0 };
 
 	int retval;
 
 	char buf[BUFSIZE + 1];
+	ZeroMemory(buf, sizeof(buf));
 
 
-	retval = recv(m_sock, buf, nEvents.max_size() * sizeof(int), MSG_WAITALL);
+	retval = recv(m_sock, buf, 28, MSG_WAITALL);
+	//retval = recv(m_client_sock, buf, nEvents.max_size() * sizeof(int), MSG_WAITALL);
 	if (retval == SOCKET_ERROR) {
 		return false;
 	}
@@ -114,7 +199,7 @@ bool CNetworkDevice::RecvByNetwork()
 
 	while (remainData > 0)
 	{
-		retval = recv(m_sock, buf, BUFSIZE, MSG_WAITALL);
+		retval = recv(m_sock, buf, BUFSIZE, 0);
 		if (retval == 0)
 			break;
 
@@ -142,6 +227,8 @@ bool CNetworkDevice::RecvByNetwork()
 			m_RecvTelegrams[i].push_back(telegram);
 		}
 	}
+
+	delete[] dataBuf;
 }
 
 std::set<Telegram> CNetworkDevice::GetTelegram()
