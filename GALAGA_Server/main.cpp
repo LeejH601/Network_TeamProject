@@ -5,7 +5,7 @@
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
-char* SERVERIP = (char*)"127.0.0.1";
+char* SERVERIP = (char*)"25.25.189.86";
 
 CRITICAL_SECTION cs;
 
@@ -22,9 +22,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		if (Network_Device.RecvByNetwork());
 		LeaveCriticalSection(&cs);
 
-		EnterCriticalSection(&cs);
+	/*	EnterCriticalSection(&cs);
 		Network_Device.CopyTelegramQueue();
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&cs);*/
 
 		EnterCriticalSection(&cs);
 		Network_Device.GetTelegram();

@@ -6,6 +6,21 @@ CNetworkDevice::CNetworkDevice()
 {
 	m_SendTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
 	m_RecvTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
+
+	Telegram tel;
+	tel.Msg = 0;
+	tel.Receiver = 2;
+	tel.Extrainfo = new char[12];
+	memcpy(tel.Extrainfo, "123456789101", 12);
+
+	Telegram tel2;
+	tel2.Msg = 0;
+	tel2.Receiver = 2;
+	tel2.Extrainfo = new char[12];
+	memcpy(tel2.Extrainfo, "213456789101", 12);
+
+	m_SendTelegrams[0].push_back(tel);
+	m_SendTelegrams[0].push_back(tel2);
 }
 
 CNetworkDevice::~CNetworkDevice() 
@@ -63,6 +78,7 @@ bool CNetworkDevice::SendToNetwork()
 			AddDataSize += Message_Sizes[i] - sizeof(int);
 
 		}
+		m_SendTelegrams[i].clear();
 	}
 
 	// �����͸� AddDataSize(����� ������ ũ��)��ŭ ����
@@ -119,7 +135,7 @@ bool CNetworkDevice::RecvByNetwork()
 
 	while (remainData > 0)
 	{
-		retval = recv(m_client_sock, buf, BUFSIZE, MSG_WAITALL);
+		retval = recv(m_client_sock, buf, BUFSIZE, 0);
 		if (retval == 0)
 			break;
 
@@ -156,8 +172,8 @@ bool CNetworkDevice::RecvByNetwork()
 
 void CNetworkDevice::CopyTelegramQueue()
 {
-	for (int i = 0; i < 7; ++i) {
-		for (int j = 0; j < m_RecvTelegrams[i].size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
+		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
 			m_SendTelegrams[i].push_back(m_RecvTelegrams[i][j]);
 		}
 	}
