@@ -37,6 +37,9 @@
     <Filter Include="05.Network">
       <UniqueIdentifier>{e498dbc8-435c-47da-a641-12b1fc619da4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Object\03-2 Monster">
+      <UniqueIdentifier>{03a942b6-50ce-4b6b-bcad-51a6bda9c31a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -72,6 +75,9 @@
     <ClInclude Include="MessageDispatcher\CMessageDispatcher.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Monster.h">
+      <Filter>03.Object\03-2 Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -97,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Monster.cpp">
+      <Filter>03.Object\03-2 Monster</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

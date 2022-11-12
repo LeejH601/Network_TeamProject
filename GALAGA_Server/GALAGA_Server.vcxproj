@@ -144,6 +144,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
+    <ClCompile Include="Object\Monster.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="MessageDispatcher\CMessageDispatcher.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
+    <ClInclude Include="Object\Monster.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
