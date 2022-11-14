@@ -69,9 +69,6 @@
     <ClInclude Include="Object\Object.h">
       <Filter>03.Object</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Player.h">
-      <Filter>03.Object</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -93,9 +90,6 @@
       <Filter>05.Network</Filter>
     </ClCompile>
     <ClCompile Include="Object\Object.cpp">
-      <Filter>03.Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Player.cpp">
       <Filter>03.Object</Filter>
     </ClCompile>
   </ItemGroup>

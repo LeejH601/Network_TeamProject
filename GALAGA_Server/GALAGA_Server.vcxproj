@@ -144,7 +144,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
     <ClCompile Include="Object\Object.cpp" />
-    <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
   </ItemGroup>
@@ -157,7 +156,6 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
     <ClInclude Include="Object\Object.h" />
-    <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
   </ItemGroup>
