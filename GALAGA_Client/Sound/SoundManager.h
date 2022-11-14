@@ -20,6 +20,6 @@ public:
 	bool playSound_Effect();
 	bool playSound_Effect_Explode();
 
-
+	virtual bool HandleMessage(const Telegram& telegram);
 };
 

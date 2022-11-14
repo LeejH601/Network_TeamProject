@@ -7,13 +7,9 @@ private:
 	~CScene();
 private:
 	friend class CSceneManager;
-
-private:
-	class CItemList* m_ItemList;
-
-
 private:
 	list<class CMonster*>* m_MonsterList; // 출현할 몬스터 정보
+	list<class CItem*> m_ItemList;
 	class CBulletList* Monster_BulletList;
 
 	class CTractor* m_Tractor = nullptr;
@@ -63,8 +59,7 @@ public:
 public:
 	// list에 들어갈 몬스터를 추가합니다. 
 	void AddObject(class CMonster* pMonster);
-
-
+	void AddItem(ITEM_TYPE type_Item, POSITION pos);
 public:
 	void	Input(float fDeltaTime, class CScene* NextScene);
 	int		Update(float fDeltaTime);
@@ -95,7 +90,5 @@ public:
 
 	}
 	void UpdateMaxDistance(double distance, CScene* NextScene);
-
-
 };
 

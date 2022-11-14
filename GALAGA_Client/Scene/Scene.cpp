@@ -1,4 +1,5 @@
 #include "../Include/Game.h"
+#include "../Object/Item.h"
 #include "Scene.h"
 
 // 주석 - 클래스가 존재하지 않을때
@@ -221,6 +222,14 @@ void CScene::AddObject(CMonster* pMonster)
 {
 }
 
+void CScene::AddItem(ITEM_TYPE type_Item, POSITION pos)
+{
+	CItem* pItem = new CItem;
+	pItem->Init(type_Item, pos);
+
+	m_ItemList.push_back(pItem);
+}
+
 void CScene::Input(float fDeltaTime, CScene* NextScene)
 {
 	/*if (m_Player)
@@ -440,6 +449,7 @@ int CScene::LateUpdate(float fDeltaTime)
 
 	}
 
+	// Item Garbage Collect
 	if (m_ItemList)
 		m_ItemList->Update(fDeltaTime);*/
 

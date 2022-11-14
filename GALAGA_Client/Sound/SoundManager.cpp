@@ -205,3 +205,8 @@ bool CSoundManager::playSound_Effect_Explode()
 
 	return true;
 }
+
+bool CSoundManager::HandleMessage(const Telegram& telegram)
+{
+	return false;
+}

@@ -28,12 +28,6 @@ private:
 
 	CImage images[31];
 	WCHAR m_img_Text[20][50];
-
-
-private:
-
-	list<class CMonster*> m_MonsterList; // 출현할 몬스터 정보
-
 private:
 	class CPlayer* m_Player;
 
@@ -48,25 +42,7 @@ public:
 	void Collision(float fDeltaTime);
 
 	CPlayer* GetPlayer();
-
-	list<CMonster*>* GetMonsterList() {
-		return &m_MonsterList;
-	}
-
-	// 몬스터 정보 List 를 전부 삭제합니다. 
-	void DeleteAllMonster()
-	{
-		m_MonsterList.clear();
-	}
-
-	void DeleteMonster(CMonster* it)
-	{
-		m_MonsterList.remove(it);
-	}
-
 public:
-
-
 	CImage* GetCimage(const WCHAR* imgText)
 	{
 		for (int i = 0; i < 19; i++)
@@ -81,5 +57,6 @@ public:
 		return nullptr;
 	}
 
+	virtual bool HandleMessage(const Telegram& telegram);
 };
 
