@@ -72,6 +72,12 @@
     <ClInclude Include="Object\Item.h">
       <Filter>03.Object</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Bullet.h">
+      <Filter>03.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Player.h">
+      <Filter>03.Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
@@ -99,6 +105,12 @@
       <Filter>04.Sound</Filter>
     </ClCompile>
     <ClCompile Include="Object\Item.cpp">
+      <Filter>03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Bullet.cpp">
+      <Filter>03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Player.cpp">
       <Filter>03.Object</Filter>
     </ClCompile>
   </ItemGroup>

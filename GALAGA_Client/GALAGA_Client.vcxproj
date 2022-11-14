@@ -147,7 +147,9 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
     <ClInclude Include="Object\Item.h" />
+    <ClInclude Include="Object\Bullet.h" />
     <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Sound\SoundManager.h" />
@@ -158,7 +160,9 @@
     <ClCompile Include="GALAGA_Client.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
     <ClCompile Include="Object\Item.cpp" />
+    <ClCompile Include="Object\Bullet.cpp" />
     <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Sound\SoundManager.cpp" />
