@@ -69,6 +69,9 @@
     <ClInclude Include="Include\Types.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Item.h">
+      <Filter>03.Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="Sound\SoundManager.cpp">
       <Filter>04.Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Item.cpp">
+      <Filter>03.Object</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

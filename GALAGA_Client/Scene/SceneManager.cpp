@@ -355,58 +355,89 @@ CPlayer* CSceneManager::GetPlayer()
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
 {
-	if (telegram.Msg != (int)MESSAGE_TYPE::Msg_changeScene)
-		return false;
-
-	switch ((int)(&telegram.Extrainfo))
+	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))
 	{
-	case (int)SCENE_TYPE::ST_BEGIN:
-		m_Scene_Begin->SetEnable(true);
-		m_Scene_Stage1->SetEnable(false);
-		m_Scene_stage2->SetEnable(false);
-		m_Scene_stage3->SetEnable(false);
-		m_Scene_StageClear->SetEnable(false);
-		m_Scene_End->SetEnable(false);
+	case MESSAGE_TYPE::Msg_objectCreate:
+	{
+		char* tmp = (char*)telegram.Extrainfo;
+		ITEM_TYPE* it_type = new ITEM_TYPE;
+		memcpy(it_type, tmp, sizeof(ITEM_TYPE));
+
+		POSITION* pos = new POSITION;
+		memcpy(pos, (void*)(tmp[sizeof(int)]), sizeof(POSITION));
+
+		if (m_Scene_Begin->GetEnable())
+			return false;
+
+		else if (m_Scene_Stage1->GetEnable())
+			m_Scene_Stage1->AddItem(*it_type, *pos);
+
+		else if (m_Scene_stage2->GetEnable())
+			m_Scene_stage2->AddItem(*it_type, *pos);
+
+		else if (m_Scene_stage3->GetEnable())
+			m_Scene_stage3->AddItem(*it_type, *pos);
+
+		delete pos;
+		delete it_type;
+	}
 		break;
-	case (int)SCENE_TYPE::ST_STAGE1:
-		m_Scene_Begin->SetEnable(false);
-		m_Scene_Stage1->SetEnable(true);
-		m_Scene_stage2->SetEnable(false);
-		m_Scene_stage3->SetEnable(false);
-		m_Scene_StageClear->SetEnable(false);
-		m_Scene_End->SetEnable(false);
+	case MESSAGE_TYPE::Msg_changeScene:
+		switch ((int)(&telegram.Extrainfo))
+		{
+		case (int)SCENE_TYPE::ST_BEGIN:
+			m_Scene_Begin->SetEnable(true);
+			m_Scene_Stage1->SetEnable(false);
+			m_Scene_stage2->SetEnable(false);
+			m_Scene_stage3->SetEnable(false);
+			m_Scene_StageClear->SetEnable(false);
+			m_Scene_End->SetEnable(false);
+			return true;
+		case (int)SCENE_TYPE::ST_STAGE1:
+			m_Scene_Begin->SetEnable(false);
+			m_Scene_Stage1->SetEnable(true);
+			m_Scene_stage2->SetEnable(false);
+			m_Scene_stage3->SetEnable(false);
+			m_Scene_StageClear->SetEnable(false);
+			m_Scene_End->SetEnable(false);
+			return true;
+		case (int)SCENE_TYPE::ST_STAGE2:
+			m_Scene_Begin->SetEnable(false);
+			m_Scene_Stage1->SetEnable(false);
+			m_Scene_stage2->SetEnable(true);
+			m_Scene_stage3->SetEnable(false);
+			m_Scene_StageClear->SetEnable(false);
+			m_Scene_End->SetEnable(false);
+			return true;
+		case (int)SCENE_TYPE::ST_STAGE3:
+			m_Scene_Begin->SetEnable(false);
+			m_Scene_Stage1->SetEnable(false);
+			m_Scene_stage2->SetEnable(false);
+			m_Scene_stage3->SetEnable(true);
+			m_Scene_StageClear->SetEnable(false);
+			m_Scene_End->SetEnable(false);
+			return true;
+		case (int)SCENE_TYPE::ST_CLEAR:
+			m_Scene_Begin->SetEnable(false);
+			m_Scene_Stage1->SetEnable(false);
+			m_Scene_stage2->SetEnable(false);
+			m_Scene_stage3->SetEnable(false);
+			m_Scene_StageClear->SetEnable(true);
+			m_Scene_End->SetEnable(false);
+			return true;
+		case (int)SCENE_TYPE::ST_END:
+			m_Scene_Begin->SetEnable(false);
+			m_Scene_Stage1->SetEnable(false);
+			m_Scene_stage2->SetEnable(false);
+			m_Scene_stage3->SetEnable(false);
+			m_Scene_StageClear->SetEnable(false);
+			m_Scene_End->SetEnable(true);
+			return true;
+		}
 		break;
-	case (int)SCENE_TYPE::ST_STAGE2:
-		m_Scene_Begin->SetEnable(false);
-		m_Scene_Stage1->SetEnable(false);
-		m_Scene_stage2->SetEnable(true);
-		m_Scene_stage3->SetEnable(false);
-		m_Scene_StageClear->SetEnable(false);
-		m_Scene_End->SetEnable(false);
-		break;
-	case (int)SCENE_TYPE::ST_STAGE3:
-		m_Scene_Begin->SetEnable(false);
-		m_Scene_Stage1->SetEnable(false);
-		m_Scene_stage2->SetEnable(false);
-		m_Scene_stage3->SetEnable(true);
-		m_Scene_StageClear->SetEnable(false);
-		m_Scene_End->SetEnable(false);
-		break;
-	case (int)SCENE_TYPE::ST_CLEAR:
-		m_Scene_Begin->SetEnable(false);
-		m_Scene_Stage1->SetEnable(false);
-		m_Scene_stage2->SetEnable(false);
-		m_Scene_stage3->SetEnable(false);
-		m_Scene_StageClear->SetEnable(true);
-		m_Scene_End->SetEnable(false);
-		break;
-	case (int)SCENE_TYPE::ST_END:
-		m_Scene_Begin->SetEnable(false);
-		m_Scene_Stage1->SetEnable(false);
-		m_Scene_stage2->SetEnable(false);
-		m_Scene_stage3->SetEnable(false);
-		m_Scene_StageClear->SetEnable(false);
-		m_Scene_End->SetEnable(true);
+	default:
 		break;
 	}
+
+	return false;
 }

@@ -16,7 +16,6 @@ CObject::CObject(const CObject& obj)
 
 CObject::~CObject()
 {
-
 	//m_img_Back.Destroy();
 
 	if (m_imgText != nullptr) {
@@ -194,6 +193,10 @@ void CObject::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 	}
 
 }
+bool CObject::HandleMessage(const Telegram& telegram)
+{
+	return true;
+}
 
 //=================================================================================================
 
@@ -227,6 +230,11 @@ CObject* CObjectManager::GetObjectFromID(int id)
 		return *it;
 
 	return nullptr;
+}
+
+void CObjectManager::RemoveObject(CObject* pObject)
+{
+	ObjectSet.erase(pObject);
 }
 
 void CObjectManager::RemoveObject(int id)

@@ -49,3 +49,13 @@ enum class SCENE_TYPE
 	ST_CLEAR,
 	ST_END,
 };
+
+enum class OBJECT_STATE {
+	DONDESTORY,
+	IDLE,
+	DESTORY,
+	ERASE
+};
+
+enum class SOUND_TYPE {
+};

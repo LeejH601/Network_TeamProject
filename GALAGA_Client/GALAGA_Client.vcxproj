@@ -146,6 +146,7 @@
     <ClInclude Include="Include\Macro.h" />
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
+    <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="GALAGA_Client.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
+    <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
