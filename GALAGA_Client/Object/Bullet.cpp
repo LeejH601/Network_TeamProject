@@ -15,7 +15,7 @@ bool CBullet::HandleMessage(const Telegram& msg)
 		int ObjectType;
 		POSITION Position;
 		memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
-		memcpy(&Position, (int*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
+		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
 		return true;
 	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState
 		int ObjectState;
