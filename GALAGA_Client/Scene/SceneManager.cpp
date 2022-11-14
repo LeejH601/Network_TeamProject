@@ -352,3 +352,61 @@ CPlayer* CSceneManager::GetPlayer()
 {
 	return m_Player;
 }
+
+bool CSceneManager::HandleMessage(const Telegram& telegram)
+{
+	if (telegram.Msg != (int)MESSAGE_TYPE::Msg_changeScene)
+		return false;
+
+	switch ((int)(&telegram.Extrainfo))
+	{
+	case (int)SCENE_TYPE::ST_BEGIN:
+		m_Scene_Begin->SetEnable(true);
+		m_Scene_Stage1->SetEnable(false);
+		m_Scene_stage2->SetEnable(false);
+		m_Scene_stage3->SetEnable(false);
+		m_Scene_StageClear->SetEnable(false);
+		m_Scene_End->SetEnable(false);
+		break;
+	case (int)SCENE_TYPE::ST_STAGE1:
+		m_Scene_Begin->SetEnable(false);
+		m_Scene_Stage1->SetEnable(true);
+		m_Scene_stage2->SetEnable(false);
+		m_Scene_stage3->SetEnable(false);
+		m_Scene_StageClear->SetEnable(false);
+		m_Scene_End->SetEnable(false);
+		break;
+	case (int)SCENE_TYPE::ST_STAGE2:
+		m_Scene_Begin->SetEnable(false);
+		m_Scene_Stage1->SetEnable(false);
+		m_Scene_stage2->SetEnable(true);
+		m_Scene_stage3->SetEnable(false);
+		m_Scene_StageClear->SetEnable(false);
+		m_Scene_End->SetEnable(false);
+		break;
+	case (int)SCENE_TYPE::ST_STAGE3:
+		m_Scene_Begin->SetEnable(false);
+		m_Scene_Stage1->SetEnable(false);
+		m_Scene_stage2->SetEnable(false);
+		m_Scene_stage3->SetEnable(true);
+		m_Scene_StageClear->SetEnable(false);
+		m_Scene_End->SetEnable(false);
+		break;
+	case (int)SCENE_TYPE::ST_CLEAR:
+		m_Scene_Begin->SetEnable(false);
+		m_Scene_Stage1->SetEnable(false);
+		m_Scene_stage2->SetEnable(false);
+		m_Scene_stage3->SetEnable(false);
+		m_Scene_StageClear->SetEnable(true);
+		m_Scene_End->SetEnable(false);
+		break;
+	case (int)SCENE_TYPE::ST_END:
+		m_Scene_Begin->SetEnable(false);
+		m_Scene_Stage1->SetEnable(false);
+		m_Scene_stage2->SetEnable(false);
+		m_Scene_stage3->SetEnable(false);
+		m_Scene_StageClear->SetEnable(false);
+		m_Scene_End->SetEnable(true);
+		break;
+	}
+}

@@ -39,3 +39,13 @@ enum class PLAYER_TYPE
 	PT_MONSTER
 
 };
+
+enum class SCENE_TYPE
+{
+	ST_BEGIN,
+	ST_STAGE1,
+	ST_STAGE2,
+	ST_STAGE3,
+	ST_CLEAR,
+	ST_END,
+};

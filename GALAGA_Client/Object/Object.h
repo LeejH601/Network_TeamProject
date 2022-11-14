@@ -68,6 +68,8 @@ public:
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
 	void SetID(const int id);
+
+	virtual bool HandleMessage(const Telegram& telegram);
 public:
 	bool operator<(const CObject& rhs) {
 		return m_iObjN < rhs.GetID();

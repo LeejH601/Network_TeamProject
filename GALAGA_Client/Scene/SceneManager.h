@@ -65,8 +65,6 @@ public:
 	}
 
 public:
-
-
 	CImage* GetCimage(const WCHAR* imgText)
 	{
 		for (int i = 0; i < 19; i++)
@@ -81,5 +79,6 @@ public:
 		return nullptr;
 	}
 
+	virtual bool HandleMessage(const Telegram& telegram);
 };
 
