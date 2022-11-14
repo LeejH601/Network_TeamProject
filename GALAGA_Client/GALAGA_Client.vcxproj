@@ -145,6 +145,7 @@
     <ClInclude Include="Include\Game.h" />
     <ClInclude Include="Include\Macro.h" />
     <ClInclude Include="Include\Types.h" />
+    <ClInclude Include="MessageDispatcher\CMessageDispatcher.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Bullet.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="GALAGA_Client.cpp" />
+    <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Bullet.cpp" />

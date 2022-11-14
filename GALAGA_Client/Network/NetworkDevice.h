@@ -24,5 +24,5 @@ public:
 	void init(SOCKET sock);
 	bool SendToNetwork();
 	bool RecvByNetwork();
-	std::set<Telegram> GetTelegram();
+	void GetTelegram();
 };

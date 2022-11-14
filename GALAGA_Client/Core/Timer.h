@@ -52,7 +52,9 @@ public:
 
 	}
 	LONGLONG GetTime() {
-		return m_tTime.QuadPart;
+		LARGE_INTEGER tTime;
+		QueryPerformanceCounter(&tTime);
+		return tTime.QuadPart;
 	}
 public:
 	bool Init();

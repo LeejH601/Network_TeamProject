@@ -1,5 +1,6 @@
 #include "../Core/Timer.h"
 #include "NetworkDevice.h"
+#include "../MessageDispatcher/CMessageDispatcher.h"
 
 char* SERVERIP = (char*)"127.0.0.1";
 #define SERVERPORT 9000
@@ -168,7 +169,7 @@ bool CNetworkDevice::SendToNetwork()
 
 bool CNetworkDevice::RecvByNetwork()
 {
-	std::array<int, 7> nEvents = { 0 };
+	std::array<int, (int)MESSAGE_TYPE::END_Enum> nEvents = { 0 };
 
 	int retval;
 
@@ -186,11 +187,11 @@ bool CNetworkDevice::RecvByNetwork()
 		return false;
 	}
 
-	memcpy(nEvents.data(), buf, nEvents.max_size());
+	memcpy(nEvents.data(), buf, nEvents.max_size() * sizeof(int));
 
 	long remainData = 0;
 
-	for (int i = 0; i < nEvents.max_size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		remainData += nEvents[i] * Message_Sizes[i];
 	}
 
@@ -210,16 +211,19 @@ bool CNetworkDevice::RecvByNetwork()
 	}
 
 	int ReadPointer = 0;
-	for (int i = 0; i < nEvents.max_size(); ++i) {
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		for (int j = 0; j < nEvents[i]; ++j) {
 			Telegram telegram;
 
 			memcpy(&telegram.Receiver, dataBuf + ReadPointer, sizeof(int));
 			ReadPointer += sizeof(int);
 
-			telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
-			memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
-			ReadPointer += Message_Sizes[i] - sizeof(int);
+			if (Message_Sizes[i] - sizeof(int))
+			{
+				telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
+				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
+				ReadPointer += Message_Sizes[i] - sizeof(int);
+			}
 
 			telegram.Msg = i;
 			telegram.DispatchTime = CTimer::GetInst()->GetTime();
@@ -228,19 +232,19 @@ bool CNetworkDevice::RecvByNetwork()
 		}
 	}
 
+	GetTelegram();
+
 	delete[] dataBuf;
 }
 
-std::set<Telegram> CNetworkDevice::GetTelegram()
+void CNetworkDevice::GetTelegram()
 {
-	std::set<Telegram> messageQueue;
+	std::set<Telegram>* MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
 
 	for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
-			messageQueue.insert(m_RecvTelegrams[i][j]);
+			MessageQueue->insert(m_RecvTelegrams[i][j]);
 		}
 		m_RecvTelegrams[i].clear();
 	}
-
-	return messageQueue;
 }

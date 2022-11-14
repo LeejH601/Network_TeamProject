@@ -230,4 +230,5 @@ enum class MESSAGE_TYPE {
 	Msg_playSound,
 	Msg_changeScene,
 	Msg_clientReady,
+	END_Enum
 };

@@ -190,14 +190,14 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 
 void CNetworkDevice::GetTelegram()
 {
-	std::set<Telegram> MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
+	std::set<Telegram>* MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
 
-	/*for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
+	for (int i = 0; i < m_RecvTelegrams.size(); ++i) {
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
-			MessageQueue.insert(m_RecvTelegrams[i][j]);
+			MessageQueue->insert(m_RecvTelegrams[i][j]);
 		}
 		m_RecvTelegrams[i].clear();
-	}*/
+	}
 }
 
 void CNetworkDevice::printTelegram()

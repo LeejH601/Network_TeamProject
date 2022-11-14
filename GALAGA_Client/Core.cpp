@@ -2,6 +2,7 @@
 #include "Core/Timer.h"
 #include "Object/Object.h"
 #include "Network/NetworkDevice.h"
+#include "MessageDispatcher/CMessageDispatcher.h"
 
 DEFINITION_SINGLE(CCore)
 bool CCore::m_bLoop = true;
@@ -41,6 +42,8 @@ void CCore::Logic()
 
 	CNetworkDevice::GetInst()->SendToNetwork();
 	CNetworkDevice::GetInst()->RecvByNetwork();
+
+	CMessageDispatcher::GetInst()->DispatchMessages();
 }
 
 void CCore::Input(float fDeltaTime)

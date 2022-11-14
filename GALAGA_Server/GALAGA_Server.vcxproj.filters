@@ -69,9 +69,6 @@
     <ClInclude Include="Object\Object.h">
       <Filter>03.Object</Filter>
     </ClInclude>
-    <ClInclude Include="MessageDispatcher\CMessageDispatcher.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Object\Monster.h">
       <Filter>03.Object\03-2 Monster</Filter>
     </ClInclude>
@@ -83,6 +80,9 @@
     </ClInclude>
     <ClInclude Include="Object\Tractor.h">
       <Filter>03.Object\03-2 Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageDispatcher\CMessageDispatcher.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +107,6 @@
     <ClCompile Include="Object\Object.cpp">
       <Filter>03.Object</Filter>
     </ClCompile>
-    <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Monster.cpp">
       <Filter>03.Object\03-2 Monster</Filter>
     </ClCompile>
@@ -118,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="Object\Boss.cpp">
       <Filter>03.Object\03-2 Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
