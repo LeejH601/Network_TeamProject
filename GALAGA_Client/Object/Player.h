@@ -3,7 +3,8 @@
 
 class CPlayer : public CObject
 {
-
+public:
+	CPlayer();
 	virtual bool HandleMessage(const Telegram& msg);
 
 
