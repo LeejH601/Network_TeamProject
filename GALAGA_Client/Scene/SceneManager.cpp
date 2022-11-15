@@ -36,6 +36,7 @@ CSceneManager::~CSceneManager()
 
 bool CSceneManager::Init()
 {
+
 	m_iObjID = m_iObjN++;
 	CObjectManager::GetInst()->RegisterObject(this);
 

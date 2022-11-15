@@ -183,6 +183,11 @@ CObject* CObjectManager::GetObjectFromID(int id)
 	return nullptr;
 }
 
+void CObjectManager::RemoveObject(CObject* pObject)
+{
+	ObjectSet.erase(pObject);
+}
+
 void CObjectManager::RemoveObject(int id)
 {
 	CObject dummyObject;

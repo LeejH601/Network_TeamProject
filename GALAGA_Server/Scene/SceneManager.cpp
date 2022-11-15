@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include "../Network/NetworkDevice.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -21,7 +22,8 @@ CSceneManager::~CSceneManager()
 
 	SAFE_DELETE(m_Scene_StageClear);
 
-	SAFE_DELETE(m_Player);
+	SAFE_DELETE(m_Player1);
+	SAFE_DELETE(m_Player2);
 }
 
 bool CSceneManager::Init()
@@ -173,7 +175,35 @@ void CSceneManager::Collision(float fDeltaTime)
 		m_Scene_End->Collision(fDeltaTime);
 }
 
-CPlayer* CSceneManager::GetPlayer()
+CPlayer* CSceneManager::GetPlayer1()
 {
-	return m_Player;
+	return m_Player1;
+}
+
+CPlayer* CSceneManager::GetPlayer2()
+{
+	return m_Player2;
+}
+
+
+bool CSceneManager::HandleMessage(const Telegram& telegram)
+{
+	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))
+	{
+	case MESSAGE_TYPE::Msg_clientReady:
+	{
+		Telegram tel_Checked;
+		tel_Checked.Receiver = 0;
+		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
+		tel_Checked.Extrainfo = new int;
+		SCENE_TYPE st_Begin = SCENE_TYPE::ST_BEGIN;
+		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
+		delete tel_Checked.Extrainfo;
+	}
+		break;
+	default:
+		break;
+	}
+
+	return false;
 }

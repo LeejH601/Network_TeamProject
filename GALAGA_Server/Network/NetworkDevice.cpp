@@ -7,7 +7,7 @@ CNetworkDevice::CNetworkDevice()
 	m_SendTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
 	m_RecvTelegrams.resize((int)MESSAGE_TYPE::END_Enum);
 
-	Telegram tel;
+	/*Telegram tel;
 	tel.Msg = 0;
 	tel.Receiver = 2;
 	tel.Extrainfo = new char[12];
@@ -20,7 +20,7 @@ CNetworkDevice::CNetworkDevice()
 	memcpy(tel2.Extrainfo, "213456789101", 12);
 
 	m_SendTelegrams[0].push_back(tel);
-	m_SendTelegrams[0].push_back(tel2);
+	m_SendTelegrams[0].push_back(tel2);*/
 }
 
 CNetworkDevice::~CNetworkDevice() 

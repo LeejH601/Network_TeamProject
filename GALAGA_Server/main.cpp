@@ -106,6 +106,7 @@ int main(int argc, char* argv[])
 					return 0;
 				}
 
+				g_bisPlaying = true;
 			}
 			else {
 				// 추가적인 초기화 코드 필요
