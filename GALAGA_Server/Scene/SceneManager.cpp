@@ -22,8 +22,7 @@ CSceneManager::~CSceneManager()
 
 	SAFE_DELETE(m_Scene_StageClear);
 
-	SAFE_DELETE(m_Player1);
-	SAFE_DELETE(m_Player2);
+	SAFE_DELETE(m_Player);
 }
 
 bool CSceneManager::Init()
@@ -175,16 +174,10 @@ void CSceneManager::Collision(float fDeltaTime)
 		m_Scene_End->Collision(fDeltaTime);
 }
 
-CPlayer* CSceneManager::GetPlayer1()
+CPlayer* CSceneManager::GetPlayer()
 {
-	return m_Player1;
+	return m_Player;
 }
-
-CPlayer* CSceneManager::GetPlayer2()
-{
-	return m_Player2;
-}
-
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
 {

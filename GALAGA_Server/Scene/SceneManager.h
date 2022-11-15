@@ -29,8 +29,7 @@ private:
 	list<class CMonster*> m_MonsterList; // 출현할 몬스터 정보
 
 private:
-	class CPlayer* m_Player1;
-	class CPlayer* m_Player2;
+	class CPlayer* m_Player;
 
 public:
 	bool Init();
@@ -40,8 +39,7 @@ public:
 
 	void Collision(float fDeltaTime);
 
-	CPlayer* GetPlayer1();
-	CPlayer* GetPlayer2();
+	CPlayer* GetPlayer();
 
 	list<CMonster*>* GetMonsterList() {
 		return &m_MonsterList;
