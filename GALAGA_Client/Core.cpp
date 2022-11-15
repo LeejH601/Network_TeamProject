@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "Core/Timer.h"
 #include "Object/Object.h"
+#include "Scene/SceneManager.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
 
@@ -43,7 +44,7 @@ void CCore::Logic()
 	CNetworkDevice::GetInst()->SendToNetwork();
 	CNetworkDevice::GetInst()->RecvByNetwork();
 
-	CMessageDispatcher::GetInst()->DispatchMessages();
+	/*CMessageDispatcher::GetInst()->DispatchMessages();*/
 }
 
 void CCore::Input(float fDeltaTime)
@@ -181,12 +182,15 @@ bool CCore::Init(HINSTANCE hInst)
 		return false;
 
 	// 장면 관리자를 초기화 합니다. 
-	/*if (!CSceneManager::GetInst()->Init())
-		return false;*/
+	if (!CSceneManager::GetInst()->Init())
+		return false;
 
 	// 사운드 매니저를 초기화 합니다.
 	/*if (!CSoundManager::GetInst()->Init())
 		return false;*/
+
+	Telegram testTelegram = Telegram{ 0, 0, (int)MESSAGE_TYPE::Msg_clientReady, CTimer::GetInst()->GetTime(), nullptr };
+	CNetworkDevice::GetInst()->AddMessage(testTelegram);
 
 	return true;
 }

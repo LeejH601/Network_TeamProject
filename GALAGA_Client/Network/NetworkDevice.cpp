@@ -85,15 +85,6 @@ bool CNetworkDevice::Init()
 	retval = connect(m_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
-	Telegram testTelegram = Telegram{ 4, 0, (int)MESSAGE_TYPE::Msg_clientReady, 0, nullptr };
-	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
-	testTelegram.Receiver = 4;
-	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
-	testTelegram.Receiver = 5;
-	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
-	testTelegram.Receiver = 6;
-	m_SendTelegrams[(int)MESSAGE_TYPE::Msg_clientReady].push_back(testTelegram);
-
 	return true;
 }
 
@@ -140,8 +131,12 @@ bool CNetworkDevice::SendToNetwork()
 		{
 			memcpy(Data + AddDataSize, &m_SendTelegrams[i][j].Receiver, sizeof(int));
 			AddDataSize += sizeof(int);
-			/*memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
-			AddDataSize += Message_Sizes[i] - sizeof(int);*/
+			if (m_SendTelegrams[i][j].Extrainfo)
+			{
+				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
+				AddDataSize += Message_Sizes[i] - sizeof(int);
+				delete m_SendTelegrams[i][j].Extrainfo;
+			}
 		}
 		m_SendTelegrams[i].clear();
 	}
@@ -235,6 +230,18 @@ bool CNetworkDevice::RecvByNetwork()
 	GetTelegram();
 
 	delete[] dataBuf;
+}
+
+void CNetworkDevice::AddMessage(Telegram& Message)
+{
+	Telegram messageQueue = Message;
+	if (messageQueue.Extrainfo)
+	{
+		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
+		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
+	}
+
+	m_SendTelegrams[Message.Msg].push_back(messageQueue);
 }
 
 void CNetworkDevice::GetTelegram()

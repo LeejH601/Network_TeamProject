@@ -117,7 +117,6 @@ bool CSceneManager::Init()
 	m_Scene_stage2->Init(L"./Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
 	m_Scene_stage3->Init(L"./Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
 	m_Scene_StageClear->Init(L"./Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
-
 	m_Scene_End->Init(L"./Scene_Back_img/End1.png", nullptr, 0, false, 0);
 
 

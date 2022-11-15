@@ -74,9 +74,12 @@ bool CNetworkDevice::SendToNetwork()
 		{
 			memcpy(Data + AddDataSize, &m_SendTelegrams[i][j].Receiver, sizeof(int));
 			AddDataSize += sizeof(int);
-			memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
-			AddDataSize += Message_Sizes[i] - sizeof(int);
-
+			if (m_SendTelegrams[i][j].Extrainfo)
+			{
+				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
+				AddDataSize += Message_Sizes[i] - sizeof(int);
+				delete m_SendTelegrams[i][j].Extrainfo;
+			}
 		}
 		m_SendTelegrams[i].clear();
 	}
@@ -182,10 +185,13 @@ void CNetworkDevice::CopyTelegramQueue()
 void CNetworkDevice::AddMessage(Telegram& Message)
 {
 	Telegram messageQueue = Message;
-	messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
-	memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
-	if (!m_SendTelegrams[Message.Msg].empty())
-		m_SendTelegrams[Message.Msg].push_back(messageQueue);
+	if (messageQueue.Extrainfo)
+	{
+		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
+		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
+	}
+	
+	m_SendTelegrams[Message.Msg].push_back(messageQueue);
 }
 
 void CNetworkDevice::GetTelegram()
@@ -196,7 +202,7 @@ void CNetworkDevice::GetTelegram()
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
 			MessageQueue->insert(m_RecvTelegrams[i][j]);
 		}
-		m_RecvTelegrams[i].clear();
+		//m_RecvTelegrams[i].clear();
 	}
 }
 
