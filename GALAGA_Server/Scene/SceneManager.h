@@ -39,8 +39,6 @@ public:
 
 	void Collision(float fDeltaTime);
 
-	virtual bool HandleMessage(const Telegram& telegram);
-
 	CPlayer* GetPlayer();
 
 	list<CMonster*>* GetMonsterList() {
