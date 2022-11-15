@@ -84,6 +84,9 @@
     <ClInclude Include="MessageDispatcher\CMessageDispatcher.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Locator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -117,6 +120,9 @@
       <Filter>03.Object\03-2 Monster</Filter>
     </ClCompile>
     <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Locator.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

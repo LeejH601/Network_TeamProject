@@ -177,3 +177,21 @@ CPlayer* CSceneManager::GetPlayer()
 {
 	return m_Player;
 }
+
+bool CSceneManager::HandleMessage(const Telegram& telegram)
+{
+	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))
+	{
+	case MESSAGE_TYPE::Msg_clientReady:
+	{
+		if (m_Scene_Begin->GetEnable()) {
+			
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}

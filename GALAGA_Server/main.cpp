@@ -2,41 +2,57 @@
 #include "Core.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
+#include "Locator.h"
 
 #define SERVERPORT 9000
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
 
 CRITICAL_SECTION cs;
+std::vector<CRITICAL_SECTION> client_cs;
+CRITICAL_SECTION main_loop_cs;
+
+CLocator Locator;
+
+struct ThreadArgument {
+	SOCKET sock;
+	CRITICAL_SECTION* pcs;
+};
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
+	ThreadArgument Arg;
+	memcpy(&Arg, arg, sizeof(ThreadArgument));
+
+	CRITICAL_SECTION* pCs = Arg.pcs;
 	CNetworkDevice Network_Device;
-	Network_Device.init((SOCKET)arg);
+	Network_Device.init((SOCKET)Arg.sock);
+	Locator.SetNetworkDevice(GetCurrentThread(), &Network_Device);
+	auto test = Locator.GetNetworkDevice(GetCurrentThread());
 
 	std::cout << "connect client" << std::endl;
 
 	while (true)
 	{
-		EnterCriticalSection(&cs);
+		EnterCriticalSection(pCs);
 		if (Network_Device.RecvByNetwork());
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(pCs);
 
 		EnterCriticalSection(&cs);
 		Network_Device.CopyTelegramQueue();
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(pCs);
 
-		EnterCriticalSection(&cs);
+		EnterCriticalSection(pCs);
 		Network_Device.GetTelegram();
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(pCs);
 
-		EnterCriticalSection(&cs);
+		EnterCriticalSection(pCs);
 		if (Network_Device.SendToNetwork());
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(pCs);
 
-		EnterCriticalSection(&cs);
+		EnterCriticalSection(pCs);
 		Network_Device.printTelegram();
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(pCs);
 	}
 
 	return 0;
@@ -48,12 +64,19 @@ int g_nPlayClient = 0;
 int main(int argc, char* argv[])
 {
 	int retval;
+	client_cs.push_back(CRITICAL_SECTION());
+	client_cs.push_back(CRITICAL_SECTION());
 
 	if (argc > 1) {
 		SERVERIP = argv[1];
 	}
 
 	InitializeCriticalSection(&cs);
+	for (CRITICAL_SECTION& _cs : client_cs) {
+		InitializeCriticalSection(&_cs);
+	}
+	InitializeCriticalSection(&main_loop_cs);
+
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -81,6 +104,7 @@ int main(int argc, char* argv[])
 	int len;
 	char buf[BUFSIZE + 1];
 
+
 	while (true)
 	{
 		addrlen = sizeof(clientaddr);
@@ -90,7 +114,11 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
+		ThreadArgument arg;
+		arg.sock = client_sock;
+		arg.pcs = &client_cs[g_nPlayClient];
+
+		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, &arg, 0, NULL);
 
 		if (hThread == NULL || g_nPlayClient >= MAXCLIENT) { closesocket(client_sock); }
 
@@ -117,6 +145,11 @@ int main(int argc, char* argv[])
 	}
 
 	DeleteCriticalSection(&cs);
+
+	for (CRITICAL_SECTION& _cs : client_cs) {
+		DeleteCriticalSection(&_cs);
+	}
+	DeleteCriticalSection(&main_loop_cs);
 
 	closesocket(listen_sock);
 
