@@ -57,19 +57,17 @@ public:
 	bool Init(const WCHAR* imgBackText, class CPlayer* player, long long  MaxDistance, bool enable, int stageNum);
 
 public:
-	// list에 들어갈 몬스터를 추가합니다. 
+	// list에 들어갈 몬스터 추가
 	void AddObject(class CMonster* pMonster);
 	void AddItem(ITEM_TYPE type_Item, POSITION pos);
+
 public:
 	void	Input(float fDeltaTime, class CScene* NextScene);
 	int		Update(float fDeltaTime);
 	int		LateUpdate(float fDeltaTime);
 	void	Collision(float fDeltaTime);
 	void	Render(HDC mainhDC, HDC hDC, float fDeltaTime);
-
-
-
-
+ 
 public:
 	// Cscene 화면의 활성화 여부를 반환합니다.  
 	bool GetEnable()

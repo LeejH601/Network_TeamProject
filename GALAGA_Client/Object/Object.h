@@ -29,7 +29,7 @@ private:
 	WCHAR*		m_imgText;
 
 
-private:
+protected:
 	OBJECT_TYPE m_MyType;			// 종족 구분 enum class
 
 public:

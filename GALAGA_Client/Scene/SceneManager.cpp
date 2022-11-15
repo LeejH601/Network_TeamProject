@@ -1,6 +1,7 @@
 #include "../Sound/SoundManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "../Object/Player.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -29,9 +30,6 @@ CSceneManager::~CSceneManager()
 	SAFE_DELETE(m_Scene_StageClear);
 
 	SAFE_DELETE(m_Player);
-
-
-
 }
 
 bool CSceneManager::Init()
@@ -62,10 +60,6 @@ bool CSceneManager::Init()
 	wcscpy_s(m_img_Text[17], L"../Bin/Protoss_img/mothership.png");;
 	wcscpy_s(m_img_Text[18], L"../Bin/Zerg_img/Guardian.png");;
 
-
-
-
-
 	m_Scene_Begin = new CScene;
 	m_Scene_End = new CScene;
 	m_Scene_Stage1 = new CScene;
@@ -76,15 +70,13 @@ bool CSceneManager::Init()
 	m_Scene_End1 = new CScene;
 	m_Scene_End2 = new CScene;
 	m_Scene_End3 = new CScene;
-
 	{
-		// ¾ÆÀÌÅÛ 
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		images[0].Load(L"../Bin/Item_img/Bullets.png");
 		images[1].Load(L"../Bin/Item_img/icon_ATKSPDUP.png");
 		images[2].Load(TEXT("../Bin/Item_img/icon_HPUP.png"));
 		images[3].Load(TEXT("../Bin/Item_img/invincibility (2).png"));
 		images[4].Load(TEXT("../Bin/Item_img/icon_PowUp.png"));
-
 
 		// protoss
 		images[5].Load(L"../Bin/Terran_img/Wraith.png");
@@ -101,39 +93,23 @@ bool CSceneManager::Init()
 		images[16].Load(L"../Bin/Protoss_img/carrier.png");
 		images[17].Load(L"../Bin/Protoss_img/mothership.png");
 		images[18].Load(L"../Bin/Zerg_img/Guardian.png");
-
-
-
-
 	}
 
-	// Player ÆÄÀÏ Á¸ÀçX
-	//m_Player = new CPlayer;
+	m_Player = new CPlayer;
 	//m_Player->Init();
 
-
-	// °¢ Scene ¿¡ ÇØ´çÇÏ´Â png ÀÌ¹ÌÁöµéÀ» ·ÎµåÇÕ´Ï´Ù...
-	m_Scene_Begin->Init(L"./Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
-	m_Scene_Stage1->Init(L"./Scene_Back_img/Stage1_Back.png", m_Player, 8000, false, 1);
-	m_Scene_stage2->Init(L"./Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
-	m_Scene_stage3->Init(L"./Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
-	m_Scene_StageClear->Init(L"./Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
-	m_Scene_End->Init(L"./Scene_Back_img/End1.png", nullptr, 0, false, 0);
-
-
-
-
-	//m_Scene_End->Init(m_Player,false);
-	//m_Scene_stage3->Init(m_Player,false);
-
+	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
+	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", m_Player, 8000, false, 1);
+	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
+	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
+	m_Scene_StageClear->Init(L"./Image/Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
+	m_Scene_End->Init(L"./Image/Scene_Back_img/End1.png", nullptr, 0, false, 0);
 
 	return true;
 }
 
 void CSceneManager::Input(float fDeltaTime)
 {
-
-	// Scene  ÀÇ enable ÀÌ true ÀÎ °Í¸¸ ±¸µ¿ÇÕ´Ï´Ù...
 	if (m_Scene_Begin->GetEnable())
 		m_Scene_Begin->Input(fDeltaTime, m_Scene_Stage1);
 
@@ -149,8 +125,7 @@ void CSceneManager::Input(float fDeltaTime)
 	else if (m_Scene_End->GetEnable())
 		m_Scene_End->Input(fDeltaTime, nullptr);
 
-	// Player ÆÄÀÏ Á¸ÀçX
-	// ½ÃÀÛ È­¸é - > stage 1 Àå¸é ÀüÈ¯
+	//ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 	//if (m_Player->GetMyType() != OBJECT_TYPE::OT_NONE)
 	//{
 	//	if (GetAsyncKeyState(VK_SPACE))
@@ -160,46 +135,32 @@ void CSceneManager::Input(float fDeltaTime)
 	//			m_Scene_Begin->SetEnable(false);
 	//			m_Scene_Stage1->SetEnable(true);
 	//			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 1);
-
 	//		}
 	//		else if (m_Scene_End->GetEnable() == true)
 	//		{
 	//			m_Scene_End->SetEnable(false);
 	//			CCore::GetInst()->SetEnd();
-
-
 	//		}
-
 	//	}
-
 	//}
-
 	//if (m_Player->GetMyType() == OBJECT_TYPE::OT_NONE)
 	//{
 	//	if (GetAsyncKeyState('1') & 0x8000)
 	//	{
 	//		m_Player->SetType(1);
 	//		m_Player->Init();
-
-
 	//	}
 	//	if (GetAsyncKeyState('2') & 0x8000)
 	//	{
 	//		m_Player->SetType(2);
 	//		m_Player->Init();
-
 	//	}
 	//	if (GetAsyncKeyState('3') & 0x8000)
 	//	{
 	//		m_Player->SetType(3);
 	//		m_Player->Init();
-
 	//	}
-
-
 	//}
-
-
 }
 
 void CSceneManager::Update(float fDeltaTime)
@@ -209,16 +170,14 @@ void CSceneManager::Update(float fDeltaTime)
 
 	else if (m_Scene_Stage1->GetEnable())
 	{
-		// ÇØ´ç ¾ÀÀÌ Á¾·áµÊ == 1 
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (m_Scene_Stage1->Update(fDeltaTime) == 1)
 		{
 			m_Scene_Stage1->SetEnable(false);
-			// ´ÙÀ½¾ÀÀÌ ÁøÇàµÇµµ·Ï ÇÕ´Ï´Ù...
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
 			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
 			NextStageNum = 2;
-
 		}
 
 	}
@@ -230,7 +189,6 @@ void CSceneManager::Update(float fDeltaTime)
 			m_StageClearCount = 0;
 			switch (NextStageNum)
 			{
-
 			case 2:
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_stage2->SetEnable(true);
@@ -245,46 +203,38 @@ void CSceneManager::Update(float fDeltaTime)
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_End->SetEnable(true);
 				CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 0);
-
-
 			default:
 				break;
 			}
 		}
 
 	}
-
 	else if (m_Scene_stage2->GetEnable())
 	{
 		if (m_Scene_stage2->Update(fDeltaTime) == 1)
 		{
 			m_Scene_stage2->SetEnable(false);
-			// ´ÙÀ½¾ÀÀÌ ÁøÇàµÇµµ·Ï ÇÕ´Ï´Ù...
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
 			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
 			NextStageNum = 3;
-
-
 		}
 	}
-
 	else if (m_Scene_stage3->GetEnable())
 	{
 		if (m_Scene_stage3->Update(fDeltaTime) == 1)
 		{
 			m_Scene_stage3->SetEnable(false);
-			// ´ÙÀ½¾ÀÀÌ ÁøÇàµÇµµ·Ï ÇÕ´Ï´Ù...
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
 			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
 			NextStageNum = 0;
-
 		}
 	}
 
 	else if (m_Scene_End->GetEnable())
 		m_Scene_End->Update(fDeltaTime);
+
 }
 
 void CSceneManager::LateUpdate(float fDeltaTime)
@@ -342,10 +292,6 @@ void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 
 	else if (m_Scene_End->GetEnable())
 		m_Scene_End->Render(mainhDC, hDC, fDeltaTime);
-
-
-
-
 }
 
 CPlayer* CSceneManager::GetPlayer()

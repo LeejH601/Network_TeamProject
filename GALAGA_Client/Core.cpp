@@ -4,7 +4,7 @@
 #include "Scene/SceneManager.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
-
+#include "Scene/SceneManager.h"
 DEFINITION_SINGLE(CCore)
 bool CCore::m_bLoop = true;
 
@@ -78,7 +78,7 @@ void CCore::Collision(float fDeltaTime)
 void CCore::Render(float fDeltaTime)
 {
 	// Render를 처리합니다.
-	//CSceneManager::GetInst()->Render(m_hDC, m_hMemDC, fDeltaTime);
+	CSceneManager::GetInst()->Render(m_hDC, m_hMemDC, fDeltaTime);
 
 }
 // Window 창 관련 함수들입니다. ***
