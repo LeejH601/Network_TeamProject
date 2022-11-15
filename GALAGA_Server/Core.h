@@ -8,7 +8,16 @@ class CCore
 
 private:
 	static bool		m_bLoop;
-
+	HANDLE m_hPlayer1;
+	HANDLE m_hPlayer2;
+public:
+	void SetPlayerHandle(HANDLE handle, int nPlayer)
+	{
+		if (nPlayer)
+			m_hPlayer1 = handle;
+		else
+			m_hPlayer2 = handle;
+	}
 private:
 	RESOLUTION	m_tRS;
 

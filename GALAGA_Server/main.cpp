@@ -19,6 +19,21 @@ struct ThreadArgument {
 	CRITICAL_SECTION* pcs;
 };
 
+DWORD WINAPI ProcessGameLoop(LPVOID arg)
+{
+	HANDLE hThread = arg;
+
+	// 게임을 초기화 합니다. 
+	if (!CCore::GetInst()->Init())
+	{
+		CCore::DestroyInst();
+		return 0;
+	}
+	CCore::GetInst()->SetPlayerHandle(hThread, 0);
+
+	CCore::GetInst()->Run();
+}
+
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
 	ThreadArgument Arg;
@@ -124,21 +139,18 @@ int main(int argc, char* argv[])
 
 		else {
 			g_nPlayClient++;
-			CloseHandle(hThread);
 
 			if (!g_bisPlaying) {
-				// 게임을 초기화 합니다. 
-				if (!CCore::GetInst()->Init())
-				{
-					CCore::DestroyInst();
-					return 0;
-				}
-
+				HANDLE hGameThread = CreateThread(NULL, 0, ProcessGameLoop, &hThread, 0, NULL);
 				g_bisPlaying = true;
+				CloseHandle(hGameThread);
 			}
 			else {
 				// 추가적인 초기화 코드 필요
+				CCore::GetInst()->SetPlayerHandle(hThread, 1);
 			}
+
+			CloseHandle(hThread);
 		}
 		if (g_bisPlaying)
 			CCore::GetInst()->Logic();
