@@ -21,5 +21,7 @@ void CLocator::SetNetworkPtrWithHandle(HANDLE handle, CNetworkDevice* device)
 
 CNetworkDevice* CLocator::GetNetworkDevice(HANDLE handle)
 {
-	return NetworkDevice_list.find(std::pair<HANDLE, CNetworkDevice*>(handle, nullptr))->second;
+	CNetworkDevice* p = NetworkDevice_list.find(std::pair<HANDLE, CNetworkDevice*>(handle, nullptr))->second;
+	
+	return p;
 }

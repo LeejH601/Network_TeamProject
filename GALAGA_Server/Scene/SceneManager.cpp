@@ -1,6 +1,8 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include "../Core.h"
 #include "../Network/NetworkDevice.h"
+#include "../Locator.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -189,9 +191,12 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		tel_Checked.Receiver = 0;
 		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 		tel_Checked.Extrainfo = new int;
+		
 		SCENE_TYPE st_Begin = SCENE_TYPE::ST_BEGIN;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
-		delete tel_Checked.Extrainfo;
+
+		CNetworkDevice* p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		p->AddMessage(tel_Checked);
 	}
 		break;
 	default:

@@ -29,7 +29,6 @@ DWORD WINAPI ProcessGameLoop(LPVOID arg)
 		CCore::DestroyInst();
 		return 0;
 	}
-	CCore::GetInst()->SetPlayerHandle(hThread, 0);
 
 	CCore::GetInst()->Run();
 }
@@ -44,18 +43,24 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	Network_Device.init((SOCKET)Arg.sock);
 	Locator.SetNetworkDevice(GetCurrentThread(), &Network_Device);
 	auto test = Locator.GetNetworkDevice(GetCurrentThread());
+	CCore::GetInst()->SetPlayerHandle(GetCurrentThread(), 0);
 
+	int iTimeout = 1000;
+	setsockopt(Arg.sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
+	DWORD optval = 1;
+	setsockopt(Arg.sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 	std::cout << "connect client" << std::endl;
 
 	while (true)
 	{
+		std::cout << "??????????" << std::endl;
 		EnterCriticalSection(pCs);
 		if (Network_Device.RecvByNetwork());
 		LeaveCriticalSection(pCs);
 
-		EnterCriticalSection(&cs);
+		/*EnterCriticalSection(pCs);
 		Network_Device.CopyTelegramQueue();
-		LeaveCriticalSection(pCs);
+		LeaveCriticalSection(pCs);*/
 
 		EnterCriticalSection(pCs);
 		Network_Device.GetTelegram();

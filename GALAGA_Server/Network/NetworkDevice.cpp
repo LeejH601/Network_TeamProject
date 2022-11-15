@@ -115,7 +115,7 @@ bool CNetworkDevice::RecvByNetwork()
 	ZeroMemory(buf, sizeof(buf));
 
 
-	retval = recv(m_client_sock, buf, 28, MSG_WAITALL);
+	retval = recv(m_client_sock, buf, 28, 0);
 	//retval = recv(m_client_sock, buf, nEvents.max_size() * sizeof(int), MSG_WAITALL);
 	if (retval == SOCKET_ERROR) {
 		return false;
