@@ -1,6 +1,7 @@
 #include "../Sound/SoundManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "../Object/Player.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -29,9 +30,6 @@ CSceneManager::~CSceneManager()
 	SAFE_DELETE(m_Scene_StageClear);
 
 	SAFE_DELETE(m_Player);
-
-
-
 }
 
 bool CSceneManager::Init()
@@ -61,10 +59,6 @@ bool CSceneManager::Init()
 	wcscpy_s(m_img_Text[17], L"../Bin/Protoss_img/mothership.png");;
 	wcscpy_s(m_img_Text[18], L"../Bin/Zerg_img/Guardian.png");;
 
-
-
-
-
 	m_Scene_Begin = new CScene;
 	m_Scene_End = new CScene;
 	m_Scene_Stage1 = new CScene;
@@ -75,7 +69,6 @@ bool CSceneManager::Init()
 	m_Scene_End1 = new CScene;
 	m_Scene_End2 = new CScene;
 	m_Scene_End3 = new CScene;
-
 	{
 		// 아이템 
 		images[0].Load(L"../Bin/Item_img/Bullets.png");
@@ -83,7 +76,6 @@ bool CSceneManager::Init()
 		images[2].Load(TEXT("../Bin/Item_img/icon_HPUP.png"));
 		images[3].Load(TEXT("../Bin/Item_img/invincibility (2).png"));
 		images[4].Load(TEXT("../Bin/Item_img/icon_PowUp.png"));
-
 
 		// protoss
 		images[5].Load(L"../Bin/Terran_img/Wraith.png");
@@ -100,31 +92,19 @@ bool CSceneManager::Init()
 		images[16].Load(L"../Bin/Protoss_img/carrier.png");
 		images[17].Load(L"../Bin/Protoss_img/mothership.png");
 		images[18].Load(L"../Bin/Zerg_img/Guardian.png");
-
-
-
-
 	}
 
-	// Player 파일 존재X
-	//m_Player = new CPlayer;
+	m_Player = new CPlayer;
 	//m_Player->Init();
 
-
 	// 각 Scene 에 해당하는 png 이미지들을 로드합니다...
-	m_Scene_Begin->Init(L"./Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
-	m_Scene_Stage1->Init(L"./Scene_Back_img/Stage1_Back.png", m_Player, 8000, false, 1);
-	m_Scene_stage2->Init(L"./Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
-	m_Scene_stage3->Init(L"./Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
-	m_Scene_StageClear->Init(L"./Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
+	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
+	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", m_Player, 8000, false, 1);
+	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
+	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
+	m_Scene_StageClear->Init(L"./Image/Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
 
-	m_Scene_End->Init(L"./Scene_Back_img/End1.png", nullptr, 0, false, 0);
-
-
-
-
-	//m_Scene_End->Init(m_Player,false);
-	//m_Scene_stage3->Init(m_Player,false);
+	m_Scene_End->Init(L"./Image/Scene_Back_img/End1.png", nullptr, 0, false, 0);
 
 
 	return true;
@@ -132,8 +112,6 @@ bool CSceneManager::Init()
 
 void CSceneManager::Input(float fDeltaTime)
 {
-
-	// Scene  의 enable 이 true 인 것만 구동합니다...
 	if (m_Scene_Begin->GetEnable())
 		m_Scene_Begin->Input(fDeltaTime, m_Scene_Stage1);
 
@@ -149,8 +127,7 @@ void CSceneManager::Input(float fDeltaTime)
 	else if (m_Scene_End->GetEnable())
 		m_Scene_End->Input(fDeltaTime, nullptr);
 
-	// Player 파일 존재X
-	// 시작 화면 - > stage 1 장면 전환
+	//장면 전환
 	//if (m_Player->GetMyType() != OBJECT_TYPE::OT_NONE)
 	//{
 	//	if (GetAsyncKeyState(VK_SPACE))
@@ -160,46 +137,32 @@ void CSceneManager::Input(float fDeltaTime)
 	//			m_Scene_Begin->SetEnable(false);
 	//			m_Scene_Stage1->SetEnable(true);
 	//			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 1);
-
 	//		}
 	//		else if (m_Scene_End->GetEnable() == true)
 	//		{
 	//			m_Scene_End->SetEnable(false);
 	//			CCore::GetInst()->SetEnd();
-
-
 	//		}
-
 	//	}
-
 	//}
-
 	//if (m_Player->GetMyType() == OBJECT_TYPE::OT_NONE)
 	//{
 	//	if (GetAsyncKeyState('1') & 0x8000)
 	//	{
 	//		m_Player->SetType(1);
 	//		m_Player->Init();
-
-
 	//	}
 	//	if (GetAsyncKeyState('2') & 0x8000)
 	//	{
 	//		m_Player->SetType(2);
 	//		m_Player->Init();
-
 	//	}
 	//	if (GetAsyncKeyState('3') & 0x8000)
 	//	{
 	//		m_Player->SetType(3);
 	//		m_Player->Init();
-
 	//	}
-
-
 	//}
-
-
 }
 
 void CSceneManager::Update(float fDeltaTime)
@@ -209,16 +172,14 @@ void CSceneManager::Update(float fDeltaTime)
 
 	else if (m_Scene_Stage1->GetEnable())
 	{
-		// 해당 씬이 종료됨 == 1 
+		// 씬 종료
 		if (m_Scene_Stage1->Update(fDeltaTime) == 1)
 		{
 			m_Scene_Stage1->SetEnable(false);
-			// 다음씬이 진행되도록 합니다...
+			// 다음 씬 전환
 			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
 			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
 			NextStageNum = 2;
-
 		}
 
 	}
@@ -230,7 +191,6 @@ void CSceneManager::Update(float fDeltaTime)
 			m_StageClearCount = 0;
 			switch (NextStageNum)
 			{
-
 			case 2:
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_stage2->SetEnable(true);
@@ -245,46 +205,38 @@ void CSceneManager::Update(float fDeltaTime)
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_End->SetEnable(true);
 				CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 0);
-
-
 			default:
 				break;
 			}
 		}
 
 	}
-
 	else if (m_Scene_stage2->GetEnable())
 	{
 		if (m_Scene_stage2->Update(fDeltaTime) == 1)
 		{
 			m_Scene_stage2->SetEnable(false);
-			// 다음씬이 진행되도록 합니다...
+			// 다음 씬 진행
 			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
 			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
 			NextStageNum = 3;
-
-
 		}
 	}
-
 	else if (m_Scene_stage3->GetEnable())
 	{
 		if (m_Scene_stage3->Update(fDeltaTime) == 1)
 		{
 			m_Scene_stage3->SetEnable(false);
-			// 다음씬이 진행되도록 합니다...
+			// 다음 씬 진행
 			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
 			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
 			NextStageNum = 0;
-
 		}
 	}
 
 	else if (m_Scene_End->GetEnable())
 		m_Scene_End->Update(fDeltaTime);
+
 }
 
 void CSceneManager::LateUpdate(float fDeltaTime)
@@ -342,10 +294,6 @@ void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 
 	else if (m_Scene_End->GetEnable())
 		m_Scene_End->Render(mainhDC, hDC, fDeltaTime);
-
-
-
-
 }
 
 CPlayer* CSceneManager::GetPlayer()

@@ -3,7 +3,7 @@
 #include "Object/Object.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
-
+#include "Scene/SceneManager.h"
 DEFINITION_SINGLE(CCore)
 bool CCore::m_bLoop = true;
 
@@ -77,7 +77,7 @@ void CCore::Collision(float fDeltaTime)
 void CCore::Render(float fDeltaTime)
 {
 	// Render를 처리합니다.
-	//CSceneManager::GetInst()->Render(m_hDC, m_hMemDC, fDeltaTime);
+	CSceneManager::GetInst()->Render(m_hDC, m_hMemDC, fDeltaTime);
 
 }
 // Window 창 관련 함수들입니다. ***
@@ -181,8 +181,8 @@ bool CCore::Init(HINSTANCE hInst)
 		return false;
 
 	// 장면 관리자를 초기화 합니다. 
-	/*if (!CSceneManager::GetInst()->Init())
-		return false;*/
+	if (!CSceneManager::GetInst()->Init())
+		return false;
 
 	// 사운드 매니저를 초기화 합니다.
 	/*if (!CSoundManager::GetInst()->Init())
