@@ -78,5 +78,6 @@ public:
 	bool Init();
 	void RegisterObject(CObject* NewObject);
 	CObject* GetObjectFromID(int id);
+	void RemoveObject(CObject* pObject);
 	void RemoveObject(int id);
 };

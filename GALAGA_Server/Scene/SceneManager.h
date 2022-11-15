@@ -57,5 +57,7 @@ public:
 	{
 		m_MonsterList.remove(it);
 	}
+
+	virtual bool HandleMessage(const Telegram& telegram);
 };
 

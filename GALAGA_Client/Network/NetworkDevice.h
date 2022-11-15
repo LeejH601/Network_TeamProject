@@ -22,6 +22,7 @@ private:
 public:
 	bool Init();
 	void init(SOCKET sock);
+	void AddMessage(Telegram& Message);
 	bool SendToNetwork();
 	bool RecvByNetwork();
 	void GetTelegram();

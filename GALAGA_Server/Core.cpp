@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "Core/Timer.h"
 #include "Scene/SceneManager.h"
+#include "MessageDispatcher/CMessageDispatcher.h"
 //#include "Sound/SoundManager.h"
 
 DEFINITION_SINGLE(CCore)
@@ -28,11 +29,11 @@ void CCore::Logic()
 	float fDeltaTime = GET_SINGLE(CTimer)->GetDeltaTime();
 	// fDeltaTime_update = GET_SINGLE(CTimer)->GetTimer_Update();
 
-
 	Update(fDeltaTime);			// * 업데이트
 	LateUpdate(fDeltaTime);		// * 업데이트 후처리 
 	Collision(fDeltaTime);		// * 충돌 처리
 
+	CMessageDispatcher::GetInst()->DispatchMessages();
 
 }
 
@@ -71,8 +72,9 @@ bool CCore::Init()
 	if (!CTimer::GetInst()->Init())
 		return false;
 
-
 	// 장면 관리자를 초기화 합니다. 
+	if (!CSceneManager::GetInst()->Init())
+		return false;
 
 	// 사운드 매니저를 초기화 합니다.
 

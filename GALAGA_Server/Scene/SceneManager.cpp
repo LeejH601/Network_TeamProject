@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include "../Network/NetworkDevice.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -40,7 +41,7 @@ bool CSceneManager::Init()
 	m_Scene_End2 = new CScene;
 	m_Scene_End3 = new CScene;
 
-	// Player ÆÄÀÏ Á¸ÀçX
+	// Player ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½X
 	//m_Player = new CPlayer;
 	//m_Player->Init();
 
@@ -59,11 +60,11 @@ void CSceneManager::Update(float fDeltaTime)
 
 	else if (m_Scene_Stage1->GetEnable())
 	{
-		// ÇØ´ç ¾ÀÀÌ Á¾·áµÊ == 1 
+		// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ == 1 
 		if (m_Scene_Stage1->Update(fDeltaTime) == 1)
 		{
 			m_Scene_Stage1->SetEnable(false);
-			// ´ÙÀ½¾ÀÀÌ ÁøÇàµÇµµ·Ï ÇÕ´Ï´Ù...
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½...
 			m_Scene_StageClear->SetEnable(true);
 			//m_Scene_stage2->SetEnable(true);
 			//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
@@ -109,7 +110,7 @@ void CSceneManager::Update(float fDeltaTime)
 		if (m_Scene_stage2->Update(fDeltaTime) == 1)
 		{
 			m_Scene_stage2->SetEnable(false);
-			// ´ÙÀ½¾ÀÀÌ ÁøÇàµÇµµ·Ï ÇÕ´Ï´Ù...
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½...
 			m_Scene_StageClear->SetEnable(true);
 			//m_Scene_stage2->SetEnable(true);
 			//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
@@ -124,7 +125,7 @@ void CSceneManager::Update(float fDeltaTime)
 		if (m_Scene_stage3->Update(fDeltaTime) == 1)
 		{
 			m_Scene_stage3->SetEnable(false);
-			// ´ÙÀ½¾ÀÀÌ ÁøÇàµÇµµ·Ï ÇÕ´Ï´Ù...
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½...
 			m_Scene_StageClear->SetEnable(true);
 			//m_Scene_stage2->SetEnable(true);
 			//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
@@ -184,9 +185,13 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	{
 	case MESSAGE_TYPE::Msg_clientReady:
 	{
-		if (m_Scene_Begin->GetEnable()) {
-			
-		}
+		Telegram tel_Checked;
+		tel_Checked.Receiver = 0;
+		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
+		tel_Checked.Extrainfo = new int;
+		SCENE_TYPE st_Begin = SCENE_TYPE::ST_BEGIN;
+		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
+		delete tel_Checked.Extrainfo;
 	}
 		break;
 	default:
