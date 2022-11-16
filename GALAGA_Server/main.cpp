@@ -41,9 +41,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	CRITICAL_SECTION* pCs = Arg.pcs;
 	CNetworkDevice Network_Device;
 	Network_Device.init((SOCKET)Arg.sock);
-	Locator.SetNetworkDevice(GetCurrentThread(), &Network_Device);
-	auto test = Locator.GetNetworkDevice(GetCurrentThread());
-	CCore::GetInst()->SetPlayerHandle(GetCurrentThread(), 0);
+	Locator.SetNetworkDevice(GetCurrentThreadId(), &Network_Device);
+	auto test = Locator.GetNetworkDevice(GetCurrentThreadId());
+	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), 0);
 
 	int iTimeout = 1000;
 	setsockopt(Arg.sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
@@ -152,14 +152,11 @@ int main(int argc, char* argv[])
 			}
 			else {
 				// 추가적인 초기화 코드 필요
-				CCore::GetInst()->SetPlayerHandle(hThread, 1);
+				//CCore::GetInst()->SetPlayerHandle(hThread, 1);
 			}
 
 			CloseHandle(hThread);
 		}
-		if (g_bisPlaying)
-			CCore::GetInst()->Logic();
-
 	}
 
 	DeleteCriticalSection(&cs);
