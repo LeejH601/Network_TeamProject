@@ -44,7 +44,7 @@ void CCore::Logic()
 	CNetworkDevice::GetInst()->SendToNetwork();
 	CNetworkDevice::GetInst()->RecvByNetwork();
 
-	/*CMessageDispatcher::GetInst()->DispatchMessages();*/
+	CMessageDispatcher::GetInst()->DispatchMessages();
 }
 
 void CCore::Input(float fDeltaTime)

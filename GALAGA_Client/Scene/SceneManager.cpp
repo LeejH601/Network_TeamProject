@@ -98,7 +98,7 @@ bool CSceneManager::Init()
 	m_Player = new CPlayer;
 	//m_Player->Init();
 
-	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
+	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, false, 0);
 	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", m_Player, 8000, false, 1);
 	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
 	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
@@ -275,6 +275,7 @@ void CSceneManager::Collision(float fDeltaTime)
 
 void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 {
+
 	if (m_Scene_Begin->GetEnable())
 		m_Scene_Begin->Render(mainhDC, hDC, fDeltaTime);
 
@@ -329,7 +330,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	}
 		break;
 	case MESSAGE_TYPE::Msg_changeScene:
-		switch ((int)(&telegram.Extrainfo))
+		switch (*((int*)telegram.Extrainfo))
 		{
 		case (int)SCENE_TYPE::ST_BEGIN:
 			m_Scene_Begin->SetEnable(true);
@@ -379,8 +380,8 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_StageClear->SetEnable(false);
 			m_Scene_End->SetEnable(true);
 			return true;
-		}
 		break;
+	}
 	default:
 		break;
 	}
