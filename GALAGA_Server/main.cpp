@@ -23,7 +23,7 @@ DWORD WINAPI ProcessGameLoop(LPVOID arg)
 {
 	HANDLE hThread = arg;
 
-	// °ÔÀÓÀ» ÃÊ±âÈ­ ÇÕ´Ï´Ù. 
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Õ´Ï´ï¿½. 
 	if (!CCore::GetInst()->Init())
 	{
 		CCore::DestroyInst();
@@ -32,6 +32,9 @@ DWORD WINAPI ProcessGameLoop(LPVOID arg)
 
 	CCore::GetInst()->Run();
 }
+
+bool g_bisPlaying = false;
+int g_nPlayClient = 0;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -43,7 +46,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	Network_Device.init((SOCKET)Arg.sock);
 	Locator.SetNetworkDevice(GetCurrentThreadId(), &Network_Device);
 	auto test = Locator.GetNetworkDevice(GetCurrentThreadId());
-	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), 0);
+	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient - 1);
 
 	int iTimeout = 1000;
 	setsockopt(Arg.sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
@@ -78,8 +81,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	return 0;
 }
 
-bool g_bisPlaying = false;
-int g_nPlayClient = 0;
+
 
 int main(int argc, char* argv[])
 {
@@ -151,7 +153,7 @@ int main(int argc, char* argv[])
 				CloseHandle(hGameThread);
 			}
 			else {
-				// Ãß°¡ÀûÀÎ ÃÊ±âÈ­ ÄÚµå ÇÊ¿ä
+				// ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Úµï¿½ ï¿½Ê¿ï¿½
 				//CCore::GetInst()->SetPlayerHandle(hThread, 1);
 			}
 
