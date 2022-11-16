@@ -9,8 +9,8 @@ class CCore
 private:
 	static bool		m_bLoop;
 public:
-	DWORD m_hPlayer1;
-	DWORD m_hPlayer2;
+	DWORD m_hPlayer1 = 0;
+	DWORD m_hPlayer2 = 0;
 
 	void SetPlayerHandle(DWORD threadID, int nPlayer)
 	{

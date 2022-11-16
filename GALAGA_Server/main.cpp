@@ -43,14 +43,21 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	memcpy(&Arg, arg, sizeof(ThreadArgument));*/
 
 	CRITICAL_SECTION tCs;
+	InitializeCriticalSection(&tCs);
+
 	client_cs.insert(CS_PAIR(GetCurrentThreadId(), tCs));
 
 	CNetworkDevice Network_Device;
 
-	Network_Device.init((SOCKET)arg);
+	SOCKET Arg;
+	memcpy(&Arg, arg, sizeof(ThreadArgument));
+
+	Network_Device.init((SOCKET)Arg);
 	Locator.SetNetworkDevice(GetCurrentThreadId(), &Network_Device);
 	auto test = Locator.GetNetworkDevice(GetCurrentThreadId());
-	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient - 1);
+
+
+	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient++);
 
 	int iTimeout = 1000;
 	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
@@ -143,8 +150,6 @@ int main(int argc, char* argv[])
 		if (hThread == NULL || g_nPlayClient >= MAXCLIENT) { closesocket(client_sock); }
 
 		else {
-			g_nPlayClient++;
-
 			if (!g_bisPlaying) {
 				HANDLE hGameThread = CreateThread(NULL, 0, ProcessGameLoop, &hThread, 0, NULL);
 				g_bisPlaying = true;
@@ -153,9 +158,8 @@ int main(int argc, char* argv[])
 			else {
 				// �߰����� �ʱ�ȭ �ڵ� �ʿ�
 				//CCore::GetInst()->SetPlayerHandle(hThread, 1);
-				HANDLE hGameThread = CreateThread(NULL, 0, ProcessGameLoop, &hThread, 0, NULL);
-				CloseHandle(hGameThread);
 			}
+			ResumeThread(hThread);
 
 			CloseHandle(hThread);
 		}
