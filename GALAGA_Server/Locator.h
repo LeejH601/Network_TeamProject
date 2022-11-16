@@ -2,7 +2,7 @@
 #include "Include/Game.h"
 #include "Network/NetworkDevice.h"
 
-typedef std::pair<HANDLE, CNetworkDevice*> NET_pair;
+typedef std::pair<DWORD, CNetworkDevice*> NET_pair;
 
 class comp {
 public:
@@ -13,15 +13,15 @@ public:
 
 class CLocator
 {
-	std::set<std::pair<HANDLE, CNetworkDevice*>, comp> NetworkDevice_list;
+	std::set< NET_pair, comp> NetworkDevice_list;
 
 public:
 	CLocator();
 	~CLocator();
 
-	void SetNetworkDevice(HANDLE handle, CNetworkDevice* device);
-	void SetNetworkPtrWithHandle(HANDLE handle, CNetworkDevice* device);
-	CNetworkDevice* GetNetworkDevice(HANDLE handle);
+	void SetNetworkDevice(DWORD threadID, CNetworkDevice* device);
+	void SetNetworkPtrWithHandle(DWORD threadID, CNetworkDevice* device);
+	CNetworkDevice* GetNetworkDevice(DWORD threadID);
 };
 
 extern CLocator Locator;

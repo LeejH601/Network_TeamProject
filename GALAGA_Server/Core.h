@@ -9,15 +9,15 @@ class CCore
 private:
 	static bool		m_bLoop;
 public:
-	HANDLE m_hPlayer1;
-	HANDLE m_hPlayer2;
+	DWORD m_hPlayer1;
+	DWORD m_hPlayer2;
 
-	void SetPlayerHandle(HANDLE handle, int nPlayer)
+	void SetPlayerHandle(DWORD threadID, int nPlayer)
 	{
 		if (!nPlayer)
-			m_hPlayer1 = handle;
+			m_hPlayer1 = threadID;
 		else
-			m_hPlayer2 = handle;
+			m_hPlayer2 = threadID;
 	}
 private:
 	RESOLUTION	m_tRS;
