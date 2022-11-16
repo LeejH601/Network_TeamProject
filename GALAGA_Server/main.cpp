@@ -8,8 +8,9 @@
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
 
+
 CRITICAL_SECTION cs;
-std::vector<CRITICAL_SECTION> client_cs;
+std::set<CS_PAIR, cs_comp> client_cs;
 CRITICAL_SECTION main_loop_cs;
 
 CLocator Locator;
@@ -38,44 +39,47 @@ int g_nPlayClient = 0;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	ThreadArgument Arg;
-	memcpy(&Arg, arg, sizeof(ThreadArgument));
+	/*ThreadArgument Arg;
+	memcpy(&Arg, arg, sizeof(ThreadArgument));*/
 
-	CRITICAL_SECTION* pCs = Arg.pcs;
+	CRITICAL_SECTION tCs;
+	client_cs.insert(CS_PAIR(GetCurrentThreadId(), tCs));
+
 	CNetworkDevice Network_Device;
-	Network_Device.init((SOCKET)Arg.sock);
+
+	Network_Device.init((SOCKET)arg);
 	Locator.SetNetworkDevice(GetCurrentThreadId(), &Network_Device);
 	auto test = Locator.GetNetworkDevice(GetCurrentThreadId());
 	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient - 1);
 
 	int iTimeout = 1000;
-	setsockopt(Arg.sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
+	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
 	DWORD optval = 1;
-	setsockopt(Arg.sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
+	setsockopt((SOCKET)arg, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 	std::cout << "connect client" << std::endl;
 
 	while (true)
 	{
 		std::cout << "??????????" << std::endl;
-		EnterCriticalSection(pCs);
+		EnterCriticalSection(&tCs);
 		if (Network_Device.RecvByNetwork());
-		LeaveCriticalSection(pCs);
+		LeaveCriticalSection(&tCs);
 
 		/*EnterCriticalSection(pCs);
 		Network_Device.CopyTelegramQueue();
 		LeaveCriticalSection(pCs);*/
 
-		EnterCriticalSection(pCs);
+		EnterCriticalSection(&tCs);
 		Network_Device.GetTelegram();
-		LeaveCriticalSection(pCs);
+		LeaveCriticalSection(&tCs);
 
-		EnterCriticalSection(pCs);
+		EnterCriticalSection(&tCs);
 		if (Network_Device.SendToNetwork());
-		LeaveCriticalSection(pCs);
+		LeaveCriticalSection(&tCs);
 
-		EnterCriticalSection(pCs);
+		EnterCriticalSection(&tCs);
 		Network_Device.printTelegram();
-		LeaveCriticalSection(pCs);
+		LeaveCriticalSection(&tCs);
 	}
 
 	return 0;
@@ -86,17 +90,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 int main(int argc, char* argv[])
 {
 	int retval;
-	client_cs.push_back(CRITICAL_SECTION());
-	client_cs.push_back(CRITICAL_SECTION());
 
 	if (argc > 1) {
 		SERVERIP = argv[1];
 	}
 
 	InitializeCriticalSection(&cs);
-	for (CRITICAL_SECTION& _cs : client_cs) {
-		InitializeCriticalSection(&_cs);
-	}
 	InitializeCriticalSection(&main_loop_cs);
 
 
@@ -136,11 +135,10 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		ThreadArgument arg;
-		arg.sock = client_sock;
-		arg.pcs = &client_cs[g_nPlayClient];
+		//ThreadArgument arg;
+		//arg.sock = client_sock;
 
-		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, &arg, 0, NULL);
+		HANDLE hThread = CreateThread(NULL, 0, ProcessClient, &client_sock, 0, NULL);
 
 		if (hThread == NULL || g_nPlayClient >= MAXCLIENT) { closesocket(client_sock); }
 
@@ -155,6 +153,8 @@ int main(int argc, char* argv[])
 			else {
 				// �߰����� �ʱ�ȭ �ڵ� �ʿ�
 				//CCore::GetInst()->SetPlayerHandle(hThread, 1);
+				HANDLE hGameThread = CreateThread(NULL, 0, ProcessGameLoop, &hThread, 0, NULL);
+				CloseHandle(hGameThread);
 			}
 
 			CloseHandle(hThread);
@@ -163,9 +163,10 @@ int main(int argc, char* argv[])
 
 	DeleteCriticalSection(&cs);
 
-	for (CRITICAL_SECTION& _cs : client_cs) {
-		DeleteCriticalSection(&_cs);
+	for (CS_PAIR _cs : client_cs) {
+		DeleteCriticalSection(&_cs.second);
 	}
+
 	DeleteCriticalSection(&main_loop_cs);
 
 	closesocket(listen_sock);
