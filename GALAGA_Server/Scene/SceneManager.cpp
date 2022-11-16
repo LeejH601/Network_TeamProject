@@ -195,7 +195,12 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		SCENE_TYPE st_Begin = SCENE_TYPE::ST_BEGIN;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 
-		CNetworkDevice* p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		CNetworkDevice* p;
+		if (!CCore::GetInst()->m_hPlayer2)
+			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		else
+			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+
 		p->AddMessage(tel_Checked);
 	}
 		break;
