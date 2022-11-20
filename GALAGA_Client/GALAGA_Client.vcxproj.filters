@@ -81,6 +81,9 @@
     <ClInclude Include="MessageDispatcher\CMessageDispatcher.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object\BulletList.h">
+      <Filter>03.Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
@@ -118,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\BulletList.cpp">
+      <Filter>03.Object</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
