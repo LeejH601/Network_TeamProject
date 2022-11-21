@@ -9,6 +9,6 @@ class CBullet : public CObject
 	bool	GetEnable();
 	void	SetEnableFalse();
 
-private:
+protected:
 	bool	m_bEnable = false;
 };

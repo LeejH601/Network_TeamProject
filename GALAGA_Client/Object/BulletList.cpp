@@ -97,4 +97,5 @@ bool CBulletList::EraseAll()
 		SAFE_DELETE(p);
 	m_listBulletList.clear();
 
+	return true;
 }
