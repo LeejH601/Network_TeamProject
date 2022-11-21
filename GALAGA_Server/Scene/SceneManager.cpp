@@ -50,10 +50,10 @@ bool CSceneManager::Init()
 	m_Player2 = new CPlayer;
 
 	// Init Scene
-	m_Scene_Begin->Init(nullptr, nullptr, 0, false, 0);
-	m_Scene_Stage1->Init(m_Player1, m_Player2, 3000, true, 1);
-	m_Scene_stage2->Init(m_Player1, m_Player2, 3000, false, 2);
-	m_Scene_stage3->Init(m_Player1, m_Player2, 3000, false, 3);
+	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
+	m_Scene_Stage1->Init(m_Player1, m_Player2, 8000, false, 1);
+	m_Scene_stage2->Init(m_Player1, m_Player2, 8000, false, 2);
+	m_Scene_stage3->Init(m_Player1, m_Player2, 8000, false, 3);
 	m_Scene_StageClear->Init(nullptr, nullptr, 0, false, 0);
 	m_Scene_End->Init(nullptr, nullptr, 0, false, 0);
 
@@ -247,6 +247,9 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 		p->AddMessage(tel_Checked);
 		LeaveCriticalSection(&cs);
+
+		m_Scene_Begin->SetEnable(false);
+		m_Scene_Stage1->SetEnable(true);
 	}
 	return true;
 	default:

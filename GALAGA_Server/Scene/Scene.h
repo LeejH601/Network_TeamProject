@@ -1,5 +1,6 @@
 #pragma once
 
+class CItem;
 class CScene
 {
 private:
@@ -9,8 +10,7 @@ private:
 	friend class CSceneManager;
 
 private:
-	class CItemList* m_ItemList;
-
+	std::list<CItem*> m_ItemList;
 
 private:
 	list<class CMonster*>* m_MonsterList; // 출현할 몬스터 정보
@@ -36,6 +36,7 @@ private:
 
 	int m_StageNum = 0;
 	int TractorCount_Render = 0;
+	float fItemSpawn = 500.0f;
 public:
 	// 배경 이미지 ,플레이어 , 몬스터 설정 
 	bool Init(class CPlayer* player1, class CPlayer* player2, long long  MaxDistance, bool enable, int stageNum);

@@ -14,9 +14,6 @@ CItem::~CItem()
 
 bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 {
-	m_iObjID = m_iObjN++;
-	CObjectManager::GetInst()->RegisterObject(this);
-
 	m_bEnable = true;
 
 	if (itemType == ITEM_TYPE::IT_RANDOM)
@@ -34,25 +31,25 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 		{
 		case 1:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_ATKSPDUP.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_ATKSPDUP.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_STEAMPACK;
 		}
 		break;
 		case 2:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_HPUP.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_HPUP.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_HPUP;
 		}
 		break;
 		case 3:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_INVINCIBILITY.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_INVINCIBILITY.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_INVINVIBILITY;
 		}
 		break;
 		case 4:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_PowUp.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_PowUp.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_POWERUP;
 		}
 		break;
@@ -72,25 +69,25 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 		{
 		case ITEM_TYPE::IT_STEAMPACK:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_ATKSPDUP.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_ATKSPDUP.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_STEAMPACK;
 		}
 		break;
 		case ITEM_TYPE::IT_HPUP:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_HPUP.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_HPUP.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_HPUP;
 		}
 		break;
 		case ITEM_TYPE::IT_INVINVIBILITY:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_INVINCIBILITY.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_INVINCIBILITY.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_INVINVIBILITY;
 		}
 		break;
 		case ITEM_TYPE::IT_POWERUP:
 		{
-			CObject::Init(TEXT("../Bin/Item_img/icon_PowUp.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
+			CObject::Init(TEXT("./Image/Item_img/icon_PowUp.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
 			m_myType = ITEM_TYPE::IT_POWERUP;
 		}
 		break;

@@ -27,7 +27,6 @@ private:
 	int NextStageNum = 0;
 private:
 	list<class CMonster*> m_MonsterList; // 출현할 몬스터 정보
-
 private:
 	class CPlayer* m_Player1;
 	class CPlayer* m_Player2;

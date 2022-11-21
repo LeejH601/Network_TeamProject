@@ -1,5 +1,6 @@
 #include "../Include/Game.h"
 #include "../Object/Player.h"
+#include "../Object/Item.h"
 #include "Scene.h"
 
 // 주석 - 클래스가 존재하지 않을때
@@ -15,7 +16,14 @@ CScene::~CScene()
 	//Monster_BulletList->EraseAll();
 	//delete Monster_BulletList;
 
-	//m_ItemList->EraseAll();
+	for (std::list<CItem*>::iterator p = m_ItemList.begin();
+		p!=m_ItemList.end(); ++p)
+	{
+		CObjectManager::GetInst()->RemoveObject((*p)->GetID());
+		delete (*p);
+	}
+
+	m_ItemList.clear();
 	//delete m_ItemList;
 
 	//if (m_boss)
@@ -70,32 +78,28 @@ void CScene::AddObject(CMonster* pMonster)
 
 int CScene::Update(float fDeltaTime)
 {
-	//// 아이템이 플레이어의 이동거리에 따라서 생성됩니다... ( 랜덤한 아이템 생성 )
-	//static int iCOunt = 0;
-	//iCOunt += 1;
+	// 아이템이 플레이어의 이동거리에 따라서 생성됩니다... ( 랜덤한 아이템 생성 )
+	fItemSpawn -= (fDeltaTime * 300.0f);
 
-	//if (iCOunt % 5000 == 0)
-	//{
-	//	if (m_ItemList)
-	//	{
+	if (fItemSpawn < FLT_EPSILON)
+	{
+		CItem* pItem = new CItem;
+		pItem->Init(ITEM_TYPE::IT_RANDOM, { 1.f + rand() % 600, 30 });
+		m_ItemList.push_back(pItem);
 
-	//		if (m_Player)
-	//			m_ItemList->PushBack(ITEM_TYPE::IT_RANDOM);
-
-	//	}
-	//	iCOunt = 0;
-
-	//}
-
+		fItemSpawn = 500.0f;
+	}
 
 	if (m_StageNum)
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);
+
 		if (m_Distance >= m_MaxDistance)
 		{
 			m_bEndScene = true;
 		}
 	}
+
 	else
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);

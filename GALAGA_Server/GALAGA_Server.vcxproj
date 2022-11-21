@@ -148,6 +148,7 @@
     <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
     <ClCompile Include="Object\Boss.cpp" />
+    <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Monster.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Object\Player.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="MessageDispatcher\CMessageDispatcher.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
     <ClInclude Include="Object\Boss.h" />
+    <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Monster.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\Player.h" />

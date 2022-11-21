@@ -257,8 +257,9 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 
 	}
 
-	//if (m_ItemList)
-	//	m_ItemList->RenderAll(mainhDC, hDC, fDeltaTime);
+	for (auto i = m_ItemList.begin();
+		i != m_ItemList.end(); ++i)
+		(*i)->Render(mainhDC, hDC, fDeltaTime);
 
 	// MemDc 에 있는 화면을 main HDC 에 출력합니다... < 최종 출력 >
 	BitBlt(mainhDC, 0, 0, 600, 750, hDC, 0, 0, SRCCOPY);
