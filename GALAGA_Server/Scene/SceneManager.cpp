@@ -3,6 +3,7 @@
 #include "../Core.h"
 #include "../Network/NetworkDevice.h"
 #include "../Locator.h"
+#include "../Object/Player.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -24,7 +25,8 @@ CSceneManager::~CSceneManager()
 
 	SAFE_DELETE(m_Scene_StageClear);
 
-	SAFE_DELETE(m_Player);
+	SAFE_DELETE(m_Player1);
+	SAFE_DELETE(m_Player2);
 }
 
 bool CSceneManager::Init()
@@ -44,36 +46,59 @@ bool CSceneManager::Init()
 	m_Scene_End3 = new CScene;
 
 	// Player ���� ����X
-	//m_Player = new CPlayer;
-	//m_Player->Init();
+	m_Player1 = new CPlayer;
+	m_Player2 = new CPlayer;
 
-
-	//m_Scene_End->Init(m_Player,false);
-	//m_Scene_stage3->Init(m_Player,false);
-
+	// Init Scene
+	m_Scene_Begin->Init(nullptr, nullptr, 0, false, 0);
+	m_Scene_Stage1->Init(m_Player1, m_Player2, 3000, true, 1);
+	m_Scene_stage2->Init(m_Player1, m_Player2, 3000, false, 2);
+	m_Scene_stage3->Init(m_Player1, m_Player2, 3000, false, 3);
+	m_Scene_StageClear->Init(nullptr, nullptr, 0, false, 0);
+	m_Scene_End->Init(nullptr, nullptr, 0, false, 0);
 
 	return true;
 }
 
 void CSceneManager::Update(float fDeltaTime)
 {
+
 	if (m_Scene_Begin->GetEnable())
 		m_Scene_Begin->Update(fDeltaTime);
 
 	else if (m_Scene_Stage1->GetEnable())
 	{
-		// �ش� ���� ����� == 1 
-		if (m_Scene_Stage1->Update(fDeltaTime) == 1)
+
+		if (m_Scene_Stage1->Update(fDeltaTime))
 		{
 			m_Scene_Stage1->SetEnable(false);
-			// �������� ����ǵ��� �մϴ�...
-			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
-			//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
+			m_Scene_stage2->SetEnable(true);
+			SendMsgChangeScene(SCENE_TYPE::ST_STAGE2);
 			NextStageNum = 2;
 
 		}
 
+	}
+	else if (m_Scene_stage2->GetEnable())
+	{
+		if (m_Scene_stage2->Update(fDeltaTime) == 1)
+		{
+			m_Scene_stage2->SetEnable(false);
+			m_Scene_stage3->SetEnable(true);
+			SendMsgChangeScene(SCENE_TYPE::ST_STAGE3);
+			NextStageNum = 3;
+		}
+	}
+
+	else if (m_Scene_stage3->GetEnable())
+	{
+		if (m_Scene_stage3->Update(fDeltaTime) == 1)
+		{
+			m_Scene_stage3->SetEnable(false);
+			m_Scene_StageClear->SetEnable(true);
+			SendMsgChangeScene(SCENE_TYPE::ST_CLEAR);
+			NextStageNum = 0;
+		}
 	}
 	else if (m_Scene_StageClear->GetEnable())
 	{
@@ -105,35 +130,6 @@ void CSceneManager::Update(float fDeltaTime)
 			}
 		}
 
-	}
-
-	else if (m_Scene_stage2->GetEnable())
-	{
-		if (m_Scene_stage2->Update(fDeltaTime) == 1)
-		{
-			m_Scene_stage2->SetEnable(false);
-			// �������� ����ǵ��� �մϴ�...
-			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
-			//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
-			NextStageNum = 3;
-
-
-		}
-	}
-
-	else if (m_Scene_stage3->GetEnable())
-	{
-		if (m_Scene_stage3->Update(fDeltaTime) == 1)
-		{
-			m_Scene_stage3->SetEnable(false);
-			// �������� ����ǵ��� �մϴ�...
-			m_Scene_StageClear->SetEnable(true);
-			//m_Scene_stage2->SetEnable(true);
-			//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
-			NextStageNum = 0;
-
-		}
 	}
 
 	else if (m_Scene_End->GetEnable())
@@ -176,9 +172,46 @@ void CSceneManager::Collision(float fDeltaTime)
 		m_Scene_End->Collision(fDeltaTime);
 }
 
-CPlayer* CSceneManager::GetPlayer()
+CPlayer* CSceneManager::GetPlayer1()
 {
-	return m_Player;
+	return m_Player1;
+}
+
+CPlayer* CSceneManager::GetPlayer2()
+{
+	return m_Player2;
+}
+
+
+void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
+{
+	Telegram tel_ChangeScene;
+	tel_ChangeScene.Receiver = 0;
+	tel_ChangeScene.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
+	tel_ChangeScene.Extrainfo = new int;
+
+	memcpy(tel_ChangeScene.Extrainfo, &nType, sizeof(SCENE_TYPE));
+
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+		EnterCriticalSection(&cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		p->AddMessage(tel_ChangeScene);
+		LeaveCriticalSection(&cs);
+	}
+	
+	if (CCore::GetInst()->m_hPlayer2)
+	{
+		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
+		EnterCriticalSection(&cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+		p->AddMessage(tel_ChangeScene);
+		LeaveCriticalSection(&cs);
+	}
+
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
@@ -192,7 +225,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 		tel_Checked.Extrainfo = new int;
 		
-		SCENE_TYPE st_Begin = SCENE_TYPE::ST_BEGIN;
+		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 
 		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
@@ -200,14 +233,22 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 		CNetworkDevice* p;
 		if (!CCore::GetInst()->m_hPlayer2)
+		{
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+
+			int ObjId = m_Player1->Init();
+		}
 		else
+		{
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+
+			int ObjId = m_Player2->Init();
+		}
 
 		p->AddMessage(tel_Checked);
 		LeaveCriticalSection(&cs);
 	}
-		break;
+	return true;
 	default:
 		break;
 	}

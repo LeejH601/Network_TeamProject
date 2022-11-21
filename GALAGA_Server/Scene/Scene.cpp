@@ -1,4 +1,5 @@
 #include "../Include/Game.h"
+#include "../Object/Player.h"
 #include "Scene.h"
 
 // 주석 - 클래스가 존재하지 않을때
@@ -30,30 +31,26 @@ CScene::~CScene()
 
 }
 
-bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistance, bool enable, int stageNum)
+bool CScene::Init(class CPlayer* player1, class CPlayer* player2, long long MaxDistance, bool enable, int stageNum)
 {
-	//m_StageNum = stageNum;
+	m_StageNum = stageNum;
 
+
+	// Create ItemList
 	//if (player != nullptr)
 	//{
 	//	m_ItemList = new CItemList;
 	//	m_ItemList->Init();
-
 	//}
 
-	//// Load Fail -> 무한루프 
-	//if (S_OK != rst) {
-	//	while (true);
-	//}
+	m_Player1 = player1;
+	m_Player2 = player2;
 
-	////if(m_Player)
-	////m_Player = new Cm_Player(*m_Player);
-	//m_Player = player;
+	m_MaxDistance = MaxDistance;
+	m_bEnable = enable;
+	m_bEndScene = false;
 
-	//m_MaxDistance = MaxDistance;
-	//m_bEnable = enable;
-	//m_bEndScene = false;
-
+	// Get MonsterList and init Monster Bullet List
 	//if (player != nullptr)
 	//{
 	//	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
@@ -91,7 +88,22 @@ int CScene::Update(float fDeltaTime)
 	//}
 
 
-
+	if (m_StageNum)
+	{
+		UpdateMaxDistance(fDeltaTime * 300.0f);
+		if (m_Distance >= m_MaxDistance)
+		{
+			m_bEndScene = true;
+		}
+	}
+	else
+	{
+		UpdateMaxDistance(fDeltaTime * 300.0f);
+		if (m_Distance >= m_MaxDistance)
+		{
+			m_bEndScene = true;
+		}
+	}
 	//if (m_Player)
 	//{
 
@@ -238,6 +250,8 @@ int CScene::Update(float fDeltaTime)
 	//if (m_bEndScene)
 	//	return 1;
 
+	if (m_bEndScene)
+		return 1;
 	return 0;
 }
 
@@ -380,7 +394,7 @@ void CScene::Collision(float fDeltaTime)
 	//}
 }
 
-void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
+void CScene::UpdateMaxDistance(double distance)
 {
 	m_Distance += distance;
 	//if (m_Distance >= m_MaxDistance)
@@ -392,10 +406,7 @@ void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
 	//	//// 다음 스테이지를 출력하게 합니다...
 	//	//NextScene->SetEnable(true);
 	//	//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 2);
-
 	//}
-
-
 }
 
 

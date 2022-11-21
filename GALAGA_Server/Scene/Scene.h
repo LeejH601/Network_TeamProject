@@ -18,8 +18,9 @@ private:
 
 	class CTractor* m_Tractor = nullptr;
 	class Boss* m_boss = nullptr;
-	class CPlayer* m_Player;		 // 플레이어 정보 
 
+	class CPlayer* m_Player1;		 // 플레이어1 정보 
+	class CPlayer* m_Player2;		 // 플레이어2 정보 
 private:
 	bool				  m_bEnable;	 // 화면 활성화 체크 변수 
 
@@ -37,7 +38,7 @@ private:
 	int TractorCount_Render = 0;
 public:
 	// 배경 이미지 ,플레이어 , 몬스터 설정 
-	bool Init(const WCHAR* imgBackText, class CPlayer* player, long long  MaxDistance, bool enable, int stageNum);
+	bool Init(class CPlayer* player1, class CPlayer* player2, long long  MaxDistance, bool enable, int stageNum);
 
 public:
 	// list에 들어갈 몬스터를 추가합니다. 
@@ -71,7 +72,7 @@ public:
 		return m_MaxDistance;
 
 	}
-	void UpdateMaxDistance(double distance, CScene* NextScene);
+	void UpdateMaxDistance(double distance);
 
 
 };
