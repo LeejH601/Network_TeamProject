@@ -183,11 +183,11 @@ void CScene::AddObject(CMonster* pMonster)
 {
 }
 
-void CScene::AddItem(ITEM_TYPE type_Item, POSITION pos)
+void CScene::AddItem(int id, ITEM_TYPE type_Item, POSITION pos)
 {
 	CItem* pItem = new CItem;
 	pItem->Init(type_Item, pos);
-
+	pItem->RegisterObject(id);
 	m_ItemList.push_back(pItem);
 }
 

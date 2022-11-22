@@ -121,8 +121,8 @@ void CObject::SetID(const int id)
 bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE Size, float HP, POSITION imgSize, POSITION imgLT, PLAYER_TYPE obType)
 {
 
-	m_iObjID = m_iObjN++;
-	CObjectManager::GetInst()->RegisterObject(this);
+	/*m_iObjID = m_iObjN++;
+	CObjectManager::GetInst()->RegisterObject(this);*/
 
 	if (m_img_Back == NULL)
 	{
@@ -191,6 +191,11 @@ void CObject::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 	}
 
+}
+void CObject::RegisterObject(const int id)
+{
+	SetID(id);
+	CObjectManager::GetInst()->RegisterObject(this);
 }
 bool CObject::HandleMessage(const Telegram& telegram)
 {

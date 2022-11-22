@@ -306,6 +306,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	{
 	case MESSAGE_TYPE::Msg_objectCreate:
 	{
+		int id = telegram.Sender;
 		char* tmp = (char*)telegram.Extrainfo;
 		ITEM_TYPE* it_type = new ITEM_TYPE;
 		memcpy(it_type, tmp, sizeof(ITEM_TYPE));
@@ -317,13 +318,13 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			return false;
 
 		else if (m_Scene_Stage1->GetEnable())
-			m_Scene_Stage1->AddItem(*it_type, *pos);
+			m_Scene_Stage1->AddItem(telegram.Sender, *it_type, *pos);
 
 		else if (m_Scene_stage2->GetEnable())
-			m_Scene_stage2->AddItem(*it_type, *pos);
+			m_Scene_stage2->AddItem(telegram.Sender, *it_type, *pos);
 
 		else if (m_Scene_stage3->GetEnable())
-			m_Scene_stage3->AddItem(*it_type, *pos);
+			m_Scene_stage3->AddItem(telegram.Sender, *it_type, *pos);
 
 		delete pos;
 		delete it_type;

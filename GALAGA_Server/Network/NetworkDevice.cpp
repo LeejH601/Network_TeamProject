@@ -80,8 +80,8 @@ bool CNetworkDevice::SendToNetwork()
 			AddDataSize += sizeof(int);
 			if (m_SendTelegrams[i][j].Extrainfo)
 			{
-				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
-				AddDataSize += Message_Sizes[i] - sizeof(int);
+				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int)));
+				AddDataSize += Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int));
 				delete m_SendTelegrams[i][j].Extrainfo;
 			}
 		}
@@ -165,10 +165,10 @@ bool CNetworkDevice::RecvByNetwork()
 			memcpy(&telegram.Receiver, dataBuf + ReadPointer, sizeof(int));
 			ReadPointer += sizeof(int);
 
-			if (Message_Sizes[i] - sizeof(int))
+			if (Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)))
 			{
 				telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
-				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
+				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
 				ReadPointer += Message_Sizes[i] - sizeof(int);
 			}
 

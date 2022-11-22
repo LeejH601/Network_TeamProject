@@ -1,11 +1,11 @@
-#include "../Core/Timer.h"
+ï»¿#include "../Core/Timer.h"
 #include "NetworkDevice.h"
 #include "../MessageDispatcher/CMessageDispatcher.h"
 
 char* SERVERIP = (char*)"127.0.0.1";
 #define SERVERPORT 9000
 
-// ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â ÈÄ Á¾·á
+// ì†Œì¼“ í•¨ìˆ˜ ì˜¤ë¥˜ ì¶œë ¥ í›„ ì¢…ë£Œ
 void err_quit(const char* msg)
 {
 	LPVOID lpMsgBuf;
@@ -19,7 +19,7 @@ void err_quit(const char* msg)
 	exit(1);
 }
 
-// ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â
+// ì†Œì¼“ í•¨ìˆ˜ ì˜¤ë¥˜ ì¶œë ¥
 void err_display(const char* msg)
 {
 	LPVOID lpMsgBuf;
@@ -32,7 +32,7 @@ void err_display(const char* msg)
 	LocalFree(lpMsgBuf);
 }
 
-// ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â
+// ì†Œì¼“ í•¨ìˆ˜ ì˜¤ë¥˜ ì¶œë ¥
 void err_display(int errcode)
 {
 	LPVOID lpMsgBuf;
@@ -41,7 +41,7 @@ void err_display(int errcode)
 		NULL, errcode,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(char*)&lpMsgBuf, 0, NULL);
-	printf("[¿À·ù] %s\n", (char*)lpMsgBuf);
+	printf("[ì˜¤ë¥˜] %s\n", (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
 
@@ -55,10 +55,10 @@ CNetworkDevice::CNetworkDevice()
 
 CNetworkDevice::~CNetworkDevice()
 {
-	// ¼ÒÄÏ ´İ±â
+	// ì†Œì¼“ ë‹«ê¸°
 	closesocket(m_sock);
 
-	// À©¼Ó Á¾·á
+	// ìœˆì† ì¢…ë£Œ
 	WSACleanup();
 }
 
@@ -66,12 +66,12 @@ bool CNetworkDevice::Init()
 {
 	int retval = 0;
 
-	// À©¼Ó ÃÊ±âÈ­
+	// ìœˆì† ì´ˆê¸°í™”
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// ¼ÒÄÏ »ı¼º
+	// ì†Œì¼“ ìƒì„±
 	m_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (m_sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -94,27 +94,27 @@ void CNetworkDevice::init(SOCKET sock)
 
 bool CNetworkDevice::SendToNetwork()
 {
-	// ¹è¿­ ¸Ş¼¼Áö Á¾·ù¸¸Å­
-	int MessageN[7] = { 0 };
+	// ï¿½è¿­ ï¿½Ş¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­
+	int MessageN[(int)MESSAGE_TYPE::END_Enum] = { 0 };
 
-	// ¸Ş¼¼Áö Å¸ÀÔº°·Î °³¼ö¸¦ ¹è¿­¿¡ ÀúÀå
-	for (int i = 0; i < 7; i++) {
+	// ï¿½Ş¼ï¿½ï¿½ï¿½ Å¸ï¿½Ôºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; i++) {
 		if (!m_SendTelegrams[i].empty())
 			MessageN[i] = (int)m_SendTelegrams[i].size();
 	}
 
 	int retval;
-	// intÇü ¹è¿­À» °íÁ¤±æÀÌ ÆĞÅ¶À¸·Î ¼Û½Å(¸Ş¼¼Áö °³¼ö)
+	// intï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ ï¿½Û½ï¿½(ï¿½Ş¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	retval = send(m_sock, (const char*)MessageN, sizeof(int) * (int)(m_SendTelegrams.size()), 0);
 
 	if (retval == 0)
 		return false;
-	//if (retval == SOCKET_ERROR) err_display("send() - Message °³¼ö");
+	//if (retval == SOCKET_ERROR) err_display("send() - Message ï¿½ï¿½ï¿½ï¿½");
 
 	int DataSize = 0;
 
-	// ÃÑ Å©±â - ¸Ş¼¼Áö °³¼ö * ¸Ş¼¼Áö Å©±â <-Á¾·ù¸¸Å­ ¹İº¹
-	for (int i = 0; i < 7; i++)
+	// ï¿½ï¿½ Å©ï¿½ï¿½ - ï¿½Ş¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ * ï¿½Ş¼ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ <-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½İºï¿½
+	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; i++)
 	{
 		DataSize += MessageN[i] * Message_Sizes[i];
 	}
@@ -122,9 +122,9 @@ bool CNetworkDevice::SendToNetwork()
 	if (DataSize == 0)
 		return false;
 	char* Data = new char[DataSize];
-	int AddDataSize = 0; // Ãß°¡ÇÑ µ¥ÀÌÅÍ Å©±â
+	int AddDataSize = 0; // ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
 
-	// TelegramÀ» ÇÏ³ª¾¿ ²¨³»¼­ Àü´Ş
+	// Telegramï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < m_SendTelegrams.size(); i++)
 	{
 		for (int j = 0; j < m_SendTelegrams[i].size(); j++)
@@ -137,16 +137,16 @@ bool CNetworkDevice::SendToNetwork()
 			AddDataSize += sizeof(int);
 			if (m_SendTelegrams[i][j].Extrainfo)
 			{
-				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - sizeof(int));
-				AddDataSize += Message_Sizes[i] - sizeof(int);
+				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int)));
+				AddDataSize += Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int));
 				delete m_SendTelegrams[i][j].Extrainfo;
 			}
 		}
 		m_SendTelegrams[i].clear();
 	}
 
-	// µ¥ÀÌÅÍ¸¦ AddDataSize(ÀúÀåµÈ µ¥ÀÌÅÍ Å©±â)¸¸Å­ Àü´Ş
-	int LeftDataSize = AddDataSize; // ¹Ì¼ö½Å µ¥ÀÌÅÍ Å©±â
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ AddDataSize(ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½)ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½
+	int LeftDataSize = AddDataSize; // ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
 	int BufSize = BUFSIZE;
 	while (LeftDataSize > 0)
 	{
@@ -155,9 +155,9 @@ bool CNetworkDevice::SendToNetwork()
 		else
 			BufSize = BUFSIZE;
 
-		// µ¥ÀÌÅÍ º¸³»±â (°¡º¯ ±æÀÌ) - µ¥ÀÌÅÍ ³»¿ë
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		retval = send(m_sock, Data, BufSize, 0);
-		//if (retval == SOCKET_ERROR) err_display("send() - µ¥ÀÌÅÍ ³»¿ë");
+		//if (retval == SOCKET_ERROR) err_display("send() - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 		LeftDataSize -= BufSize;
 
 	}
@@ -225,7 +225,7 @@ bool CNetworkDevice::RecvByNetwork()
 			if (Message_Sizes[i] - sizeof(int))
 			{
 				telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
-				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - sizeof(int));
+				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
 				ReadPointer += Message_Sizes[i] - sizeof(int);
 			}
 

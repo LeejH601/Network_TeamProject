@@ -49,6 +49,8 @@ bool CSceneManager::Init()
 	// Player ���� ����X
 	m_Player1 = new CPlayer;
 	m_Player2 = new CPlayer;
+	m_Player1->Init();
+	m_Player2->Init();
 
 	// Init Scene
 	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
@@ -221,14 +223,10 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		if (!CCore::GetInst()->m_hPlayer2)
 		{
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-
-			int ObjId = m_Player1->Init();
 		}
 		else
 		{
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
-			int ObjId = m_Player2->Init();
 		}
 
 		p->AddMessage(tel_Checked);

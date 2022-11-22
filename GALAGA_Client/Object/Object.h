@@ -69,6 +69,7 @@ public:
 	void SetHP(const float fHP);
 	void SetID(const int id);
 
+	void RegisterObject(const int id);
 	virtual bool HandleMessage(const Telegram& telegram);
 public:
 	bool operator<(const CObject& rhs) {
