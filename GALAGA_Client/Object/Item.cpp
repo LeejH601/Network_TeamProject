@@ -12,11 +12,11 @@ CItem::~CItem()
 {
 }
 
-bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
+bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 {
 	m_bEnable = true;
 
-	if (itemType == ITEM_TYPE::IT_RANDOM)
+	if (itemType == OBJECT_TYPE::IT_RANDOM)
 	{
 		int SetItem = 1 + rand() % 4;
 
@@ -32,25 +32,25 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 		case 1:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_ATKSPDUP.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_STEAMPACK;
+			m_myType = OBJECT_TYPE::IT_STEAMPACK;
 		}
 		break;
 		case 2:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_HPUP.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_HPUP;
+			m_myType = OBJECT_TYPE::IT_HPUP;
 		}
 		break;
 		case 3:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_INVINCIBILITY.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_INVINVIBILITY;
+			m_myType = OBJECT_TYPE::IT_INVINVIBILITY;
 		}
 		break;
 		case 4:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_PowUp.png"), LT, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_POWERUP;
+			m_myType = OBJECT_TYPE::IT_POWERUP;
 		}
 		break;
 		default:
@@ -67,28 +67,28 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 
 		switch (itemType)
 		{
-		case ITEM_TYPE::IT_STEAMPACK:
+		case OBJECT_TYPE::IT_STEAMPACK:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_ATKSPDUP.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_STEAMPACK;
+			m_myType = OBJECT_TYPE::IT_STEAMPACK;
 		}
 		break;
-		case ITEM_TYPE::IT_HPUP:
+		case OBJECT_TYPE::IT_HPUP:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_HPUP.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_HPUP;
+			m_myType = OBJECT_TYPE::IT_HPUP;
 		}
 		break;
-		case ITEM_TYPE::IT_INVINVIBILITY:
+		case OBJECT_TYPE::IT_INVINVIBILITY:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_INVINCIBILITY.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_INVINVIBILITY;
+			m_myType = OBJECT_TYPE::IT_INVINVIBILITY;
 		}
 		break;
-		case ITEM_TYPE::IT_POWERUP:
+		case OBJECT_TYPE::IT_POWERUP:
 		{
 			CObject::Init(TEXT("./Image/Item_img/icon_PowUp.png"), LTpos, vector, Size, 100.0f, imgSIze, imgLT, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_POWERUP;
+			m_myType = OBJECT_TYPE::IT_POWERUP;
 		}
 		break;
 		default:

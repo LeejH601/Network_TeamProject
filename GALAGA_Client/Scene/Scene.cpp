@@ -179,16 +179,15 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistan
 	return true;
 }
 
-void CScene::AddObject(CMonster* pMonster)
+void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 {
-}
-
-void CScene::AddItem(int id, ITEM_TYPE type_Item, POSITION pos)
-{
-	CItem* pItem = new CItem;
-	pItem->Init(type_Item, pos);
-	pItem->RegisterObject(id);
-	m_ItemList.push_back(pItem);
+	if ((int)obj_Type < 10000)
+	{
+		CItem* pItem = new CItem;
+		pItem->Init(obj_Type, pos);
+		pItem->RegisterObject(id);
+		m_ItemList.push_back(pItem);
+	}
 }
 
 void CScene::Input(float fDeltaTime, CScene* NextScene)

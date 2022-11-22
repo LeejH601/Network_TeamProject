@@ -4,7 +4,7 @@
 // enum class 를 관리하기 위해서 생성되었습니다...
 
 //  종족을 구분하기 위해서 생성되었습니다....
-enum class OBJECT_TYPE
+enum class TRIBE_TYPE
 {
 	OT_NONE,
 	OT_TERRAN,
@@ -22,15 +22,29 @@ enum class BULLET_ATTACK
 
 };
 
-// 아이템 타입 입니다.... 
-enum class ITEM_TYPE
+enum class OBJECT_TYPE
 {
-	IT_RANDOM,
+	IT_RANDOM = 0,
 	IT_STEAMPACK,
 	IT_HPUP,
 	IT_INVINVIBILITY,
-	IT_POWERUP
-
+	IT_POWERUP,
+	OBJ_Wraith = 10001,
+	OBJ_Valkyrie,
+	OBJ_Battlecruiser,
+	OBJ_Dropship,
+	OBJ_Vessel,
+	OBJ_Mutalisk = 20001,
+	OBJ_Devourer,
+	OBJ_Queen,
+	OBJ_Scourge,
+	OBJ_Scout = 30001,
+	OBJ_Corsair,
+	OBJ_Carrier,
+	OBJ_Arbiter,
+	OBJ_BOSS_ONE,
+	OBJ_BOSS_TWO,
+	OBJ_BOSS_THREE
 };
 
 enum class PLAYER_TYPE

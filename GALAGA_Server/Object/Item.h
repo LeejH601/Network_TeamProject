@@ -16,7 +16,7 @@ public:
 
 
 private:
-	ITEM_TYPE m_myType;
+	OBJECT_TYPE m_myType;
 	bool m_bEnable;
 
 public:
@@ -30,7 +30,7 @@ public:
 		m_bEnable = false;
 
 	}
-	ITEM_TYPE GetType()
+	OBJECT_TYPE GetType()
 	{
 		return m_myType;
 
@@ -42,14 +42,12 @@ public:
 	// CObject 를 상속하는 모든 클래스는 이 구동함수를 갖고있으며 가상함수(virtual)로 설정한다.
 
 	// 생성할 아이템 타입 / 아이템의 생성 위치 지정 / RANDOM 설정 시 아이템 자동 설정 
-	virtual bool Init(ITEM_TYPE itemType, POSITION LTpos);
+	virtual bool Init(OBJECT_TYPE itemType, POSITION LTpos);
 
 	virtual	void Input(float fDeltaTime);
 	virtual	void Update(float fDeltaTime);
 	virtual	void LateUpdate(float fDeltaTime);
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
-
-	void SendMsgCreateItem(ITEM_TYPE nType, POSITION pos);
 };
 
 

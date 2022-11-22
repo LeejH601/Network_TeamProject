@@ -13,11 +13,11 @@ CItem::~CItem()
 {
 }
 
-bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
+bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 {
 	m_bEnable = true;
 
-	if (itemType == ITEM_TYPE::IT_RANDOM)
+	if (itemType == OBJECT_TYPE::IT_RANDOM)
 	{
 		int SetItem = 1 + rand() % 4;
 
@@ -31,25 +31,25 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 		case 1:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_STEAMPACK;
+			m_myType = OBJECT_TYPE::IT_STEAMPACK;
 		}
 		break;
 		case 2:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_HPUP;
+			m_myType = OBJECT_TYPE::IT_HPUP;
 		}
 		break;
 		case 3:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_INVINVIBILITY;
+			m_myType = OBJECT_TYPE::IT_INVINVIBILITY;
 		}
 		break;
 		case 4:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_POWERUP;
+			m_myType = OBJECT_TYPE::IT_POWERUP;
 		}
 		break;
 		default:
@@ -66,28 +66,28 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 
 		switch (itemType)
 		{
-		case ITEM_TYPE::IT_STEAMPACK:
+		case OBJECT_TYPE::IT_STEAMPACK:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_STEAMPACK;
+			m_myType = OBJECT_TYPE::IT_STEAMPACK;
 		}
 		break;
-		case ITEM_TYPE::IT_HPUP:
+		case OBJECT_TYPE::IT_HPUP:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_HPUP;
+			m_myType = OBJECT_TYPE::IT_HPUP;
 		}
 		break;
-		case ITEM_TYPE::IT_INVINVIBILITY:
+		case OBJECT_TYPE::IT_INVINVIBILITY:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_INVINVIBILITY;
+			m_myType = OBJECT_TYPE::IT_INVINVIBILITY;
 		}
 		break;
-		case ITEM_TYPE::IT_POWERUP:
+		case OBJECT_TYPE::IT_POWERUP:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = ITEM_TYPE::IT_POWERUP;
+			m_myType = OBJECT_TYPE::IT_POWERUP;
 		}
 		break;
 		default:
@@ -95,7 +95,7 @@ bool CItem::Init(ITEM_TYPE itemType, POSITION LTpos)
 		}
 	}
 	
-	SendMsgCreateItem(m_myType, LTpos);
+	CObject::SendMsgCreateObject(m_myType, LTpos);
 	return true;
 }
 
@@ -105,11 +105,12 @@ void CItem::Input(float fDeltaTime)
 
 void CItem::Update(float fDeltaTime)
 {
-	std::cout << m_iObjID << "- Update()" << std::endl;
-	/*CObject::m_tLTPos.y += fDeltaTime * 50;
+	CObject::m_tLTPos.y += fDeltaTime * 50;
 
 	if (CObject::m_tLTPos.y > 750)
-		m_bEnable = false;*/
+		m_bEnable = false;
+	
+	CObject::SendMsgMoveObject();
 }
 
 void CItem::LateUpdate(float fDeltaTime)
@@ -121,20 +122,4 @@ bool CItem::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)
 
 	return CObject::Collision(fDeltaTime, ObjectLT, ObjectSize);
 
-}
-
-void CItem::SendMsgCreateItem(ITEM_TYPE nType, POSITION pos)
-{
-	Telegram tel_CreateItem;
-	tel_CreateItem.Sender = m_iObjID;
-	tel_CreateItem.Receiver = 0;
-	tel_CreateItem.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	tel_CreateItem.DispatchTime = CTimer::GetInst()->GetTime();
-	char* extraInfo = new char[12];
-	
-	memcpy(&extraInfo[0], &nType, sizeof(ITEM_TYPE));
-	memcpy(&extraInfo[4], &pos, sizeof(POSITION));
-	tel_CreateItem.Extrainfo = extraInfo;
-
-	CObject::SendMessageToClient(tel_CreateItem);
 }

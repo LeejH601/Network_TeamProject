@@ -176,7 +176,7 @@ void CSceneManager::Update(float fDeltaTime)
 			m_Scene_Stage1->SetEnable(false);
 			// ���� �� ��ȯ
 			m_Scene_StageClear->SetEnable(true);
-			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
+			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
 			NextStageNum = 2;
 		}
 
@@ -192,17 +192,17 @@ void CSceneManager::Update(float fDeltaTime)
 			case 2:
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_stage2->SetEnable(true);
-				CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 2);
+				CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 2);
 				break;
 			case 3:
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_stage3->SetEnable(true);
-				CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 3);
+				CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 3);
 				break;
 			case 0:
 				m_Scene_StageClear->SetEnable(false);
 				m_Scene_End->SetEnable(true);
-				CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 0);
+				CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 0);
 			default:
 				break;
 			}
@@ -216,7 +216,7 @@ void CSceneManager::Update(float fDeltaTime)
 			m_Scene_stage2->SetEnable(false);
 			// ���� �� ����
 			m_Scene_StageClear->SetEnable(true);
-			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
+			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
 			NextStageNum = 3;
 		}
 	}
@@ -227,7 +227,7 @@ void CSceneManager::Update(float fDeltaTime)
 			m_Scene_stage3->SetEnable(false);
 			// ���� �� ����
 			m_Scene_StageClear->SetEnable(true);
-			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 4);
+			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
 			NextStageNum = 0;
 		}
 	}
@@ -308,23 +308,23 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	{
 		int id = telegram.Sender;
 		char* tmp = (char*)telegram.Extrainfo;
-		ITEM_TYPE* it_type = new ITEM_TYPE;
-		memcpy(it_type, tmp, sizeof(ITEM_TYPE));
+		OBJECT_TYPE* it_type = new OBJECT_TYPE;
+		memcpy(it_type, tmp, sizeof(OBJECT_TYPE));
 
 		POSITION* pos = new POSITION;
-		memcpy(pos, (void*)(&tmp[sizeof(ITEM_TYPE)]), sizeof(POSITION));
+		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
 
 		if (m_Scene_Begin->GetEnable())
 			return false;
 
 		else if (m_Scene_Stage1->GetEnable())
-			m_Scene_Stage1->AddItem(telegram.Sender, *it_type, *pos);
+			m_Scene_Stage1->AddObject(telegram.Sender, *it_type, *pos);
 
 		else if (m_Scene_stage2->GetEnable())
-			m_Scene_stage2->AddItem(telegram.Sender, *it_type, *pos);
+			m_Scene_stage2->AddObject(telegram.Sender, *it_type, *pos);
 
 		else if (m_Scene_stage3->GetEnable())
-			m_Scene_stage3->AddItem(telegram.Sender, *it_type, *pos);
+			m_Scene_stage3->AddObject(telegram.Sender, *it_type, *pos);
 
 		delete pos;
 		delete it_type;

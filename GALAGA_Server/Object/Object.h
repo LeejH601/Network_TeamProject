@@ -19,7 +19,7 @@ protected:
 	bool		m_bLife;				//  obj 의 생사여부
 	float		m_fHP;					//  Object 의 HP 
 private:
-	OBJECT_TYPE m_MyType;			// 종족 구분 enum class
+	TRIBE_TYPE m_MyType;			// 종족 구분 enum class
 
 public:
 	// 기본 구동 함수
@@ -53,8 +53,9 @@ public:
 	void SetID(const int id);
 
 	void SendMessageToClient(Telegram& msg);
+	void SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos);
+	void SendMsgMoveObject();
 	virtual bool HandleMessage(const Telegram& telegram);
-
 public:
 	bool operator<(const CObject& rhs) {
 		return m_iObjN < rhs.GetID();

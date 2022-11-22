@@ -75,7 +75,7 @@ bool CSoundManager::Init()
 }
 
 // 종족과 해당스테이지를 인자로 받고 해당하는 사운드  출력
-bool CSoundManager::playSound(OBJECT_TYPE obType, int stageNum = 0)
+bool CSoundManager::playSound(TRIBE_TYPE obType, int stageNum = 0)
 {
 	//switch (obType)
 	//{

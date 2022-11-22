@@ -84,7 +84,7 @@ int CScene::Update(float fDeltaTime)
 	if (fItemSpawn < FLT_EPSILON)
 	{
 		CItem* pItem = new CItem;
-		pItem->Init(ITEM_TYPE::IT_RANDOM, { 1.f + rand() % 600, 30 });
+		pItem->Init(OBJECT_TYPE::IT_RANDOM, { 1.f + rand() % 600, 30 });
 		m_ItemList.push_back(pItem);
 
 		fItemSpawn = 500.0f;

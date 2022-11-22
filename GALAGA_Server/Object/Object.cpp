@@ -1,6 +1,7 @@
 #include "Object.h"
 #include "../Scene/SceneManager.h"
 #include "../Core.h"
+#include "../Core/Timer.h"
 #include "../Locator.h"
 #include "../Network/NetworkDevice.h"
 
@@ -170,6 +171,36 @@ void CObject::SendMessageToClient(Telegram& msg)
 		p->AddMessage(msg);
 		LeaveCriticalSection(&cs);
 	}
+}
+
+void CObject::SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos)
+{
+	Telegram tel_CreateObject;
+	tel_CreateObject.Sender = m_iObjID;
+	tel_CreateObject.Receiver = 0;
+	tel_CreateObject.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+	tel_CreateObject.DispatchTime = CTimer::GetInst()->GetTime();
+	char* extraInfo = new char[12];
+
+	memcpy(&extraInfo[0], &nType, sizeof(OBJECT_TYPE));
+	memcpy(&extraInfo[4], &pos, sizeof(POSITION));
+	tel_CreateObject.Extrainfo = extraInfo;
+
+	CObject::SendMessageToClient(tel_CreateObject);
+}
+
+void CObject::SendMsgMoveObject()
+{
+	Telegram tel_MoveObject;
+	tel_MoveObject.Sender = m_iObjID;
+	tel_MoveObject.Receiver = m_iObjID;
+	tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
+	tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
+
+	char* extraInfo = new char[8];
+	memcpy(&extraInfo[0], &m_tLTPos, sizeof(POSITION));
+	tel_MoveObject.Extrainfo = extraInfo;
+	//CObject::SendMessageToClient(tel_MoveObject);
 }
 
 bool CObject::HandleMessage(const Telegram& telegram)

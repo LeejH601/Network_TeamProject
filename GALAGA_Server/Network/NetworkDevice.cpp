@@ -82,7 +82,7 @@ bool CNetworkDevice::SendToNetwork()
 			{
 				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int)));
 				AddDataSize += Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int));
-				delete m_SendTelegrams[i][j].Extrainfo;
+				delete[] m_SendTelegrams[i][j].Extrainfo;
 			}
 		}
 		m_SendTelegrams[i].clear();
@@ -194,13 +194,13 @@ void CNetworkDevice::CopyTelegramQueue()
 void CNetworkDevice::AddMessage(Telegram& Message)
 {
 	Telegram messageQueue = Message;
-	if (messageQueue.Extrainfo)
+	if (Message.Extrainfo)
 	{
-		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
-		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
+		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))];
+		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
 	}
-	
-	m_SendTelegrams[Message.Msg].push_back(messageQueue);
+
+	m_SendTelegrams[messageQueue.Msg].push_back(messageQueue);
 }
 
 void CNetworkDevice::GetTelegram()

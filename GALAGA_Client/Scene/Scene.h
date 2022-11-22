@@ -58,8 +58,7 @@ public:
 
 public:
 	// list에 들어갈 몬스터 추가
-	void AddObject(class CMonster* pMonster);
-	void AddItem(int id, ITEM_TYPE type_Item, POSITION pos);
+	void AddObject(int id, OBJECT_TYPE type_Item, POSITION pos);
 
 public:
 	void	Input(float fDeltaTime, class CScene* NextScene);
