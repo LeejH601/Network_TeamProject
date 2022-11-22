@@ -81,7 +81,7 @@ bool CNetworkDevice::SendToNetwork()
 			if (m_SendTelegrams[i][j].Extrainfo)
 			{
 				memcpy(Data + AddDataSize, m_SendTelegrams[i][j].Extrainfo, Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int)));
-				AddDataSize += Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int));
+				AddDataSize += (Message_Sizes[i] - (sizeof(int) + sizeof(LONGLONG) + sizeof(int)));
 				delete[] m_SendTelegrams[i][j].Extrainfo;
 			}
 		}
@@ -167,9 +167,9 @@ bool CNetworkDevice::RecvByNetwork()
 
 			if (Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)))
 			{
-				telegram.Extrainfo = new char[Message_Sizes[i] - sizeof(int)];
+				telegram.Extrainfo = new char[Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))];
 				memcpy(telegram.Extrainfo, dataBuf + ReadPointer, Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
-				ReadPointer += Message_Sizes[i] - sizeof(int);
+				ReadPointer += Message_Sizes[i] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG));
 			}
 
 			telegram.Msg = i;
@@ -193,7 +193,27 @@ void CNetworkDevice::CopyTelegramQueue()
 
 void CNetworkDevice::AddMessage(Telegram& Message)
 {
-	Telegram messageQueue = Message;
+	Telegram messageQueue;
+	messageQueue.Sender = Message.Sender;
+	messageQueue.Receiver = Message.Receiver;
+	messageQueue.DispatchTime = Message.DispatchTime;
+	messageQueue.Msg = Message.Msg;
+
+	bool bReturn = false;
+	if (messageQueue.Msg == 1)
+	{
+		if ((m_SendTelegrams[messageQueue.Msg]).size() > 0)
+		{
+			for (const Telegram& tel: m_SendTelegrams[messageQueue.Msg])
+			{
+				if (tel.Receiver == messageQueue.Receiver)
+					bReturn = true;
+			}
+		}
+	}
+	if (bReturn)
+		return;
+
 	if (Message.Extrainfo)
 	{
 		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))];

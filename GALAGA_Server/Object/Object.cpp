@@ -154,22 +154,22 @@ void CObject::SendMessageToClient(Telegram& msg)
 {
 	if (CCore::GetInst()->m_hPlayer1)
 	{
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-		EnterCriticalSection(&cs);
+		auto c_cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+		EnterCriticalSection(&c_cs);
 		CNetworkDevice* p;
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
 		p->AddMessage(msg);
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&c_cs);
 	}
 
 	if (CCore::GetInst()->m_hPlayer2)
 	{
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
-		EnterCriticalSection(&cs);
+		auto c_cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
+		EnterCriticalSection(&c_cs);
 		CNetworkDevice* p;
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
 		p->AddMessage(msg);
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&c_cs);
 	}
 }
 
@@ -187,6 +187,8 @@ void CObject::SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos)
 	tel_CreateObject.Extrainfo = extraInfo;
 
 	CObject::SendMessageToClient(tel_CreateObject);
+
+	delete[] tel_CreateObject.Extrainfo;
 }
 
 void CObject::SendMsgMoveObject()
@@ -200,7 +202,9 @@ void CObject::SendMsgMoveObject()
 	char* extraInfo = new char[8];
 	memcpy(&extraInfo[0], &m_tLTPos, sizeof(POSITION));
 	tel_MoveObject.Extrainfo = extraInfo;
-	//CObject::SendMessageToClient(tel_MoveObject);
+	CObject::SendMessageToClient(tel_MoveObject);
+
+	delete[] tel_MoveObject.Extrainfo;
 }
 
 bool CObject::HandleMessage(const Telegram& telegram)

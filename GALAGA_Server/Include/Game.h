@@ -47,6 +47,5 @@ public:
 	}
 };
 
-extern CRITICAL_SECTION cs;
 extern std::set<CS_PAIR, cs_comp> client_cs;
 

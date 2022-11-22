@@ -8,8 +8,6 @@
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
 
-
-CRITICAL_SECTION cs;
 std::set<CS_PAIR, cs_comp> client_cs;
 CRITICAL_SECTION main_loop_cs;
 
@@ -102,7 +100,6 @@ int main(int argc, char* argv[])
 		SERVERIP = argv[1];
 	}
 
-	InitializeCriticalSection(&cs);
 	InitializeCriticalSection(&main_loop_cs);
 
 
@@ -164,8 +161,6 @@ int main(int argc, char* argv[])
 			CloseHandle(hThread);
 		}
 	}
-
-	DeleteCriticalSection(&cs);
 
 	for (CS_PAIR _cs : client_cs) {
 		DeleteCriticalSection(&_cs.second);

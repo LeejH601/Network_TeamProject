@@ -115,7 +115,10 @@ int CScene::Update(float fDeltaTime)
 	{
 		for (std::list<CItem*>::iterator lBegin = m_ItemList.begin();
 			lBegin != m_ItemList.end(); ++lBegin)
-			(*lBegin)->Update(fDeltaTime * 300.0f);
+		{
+			if ((*lBegin))
+				(*lBegin)->Update(fDeltaTime * 300.0f);
+		}
 	}
 	//if (m_Player)
 	//{

@@ -105,34 +105,6 @@ void CSceneManager::Update(float fDeltaTime)
 	}
 	else if (m_Scene_StageClear->GetEnable())
 	{
-		m_StageClearCount += 1;
-		if (m_StageClearCount == 3000)
-		{
-			m_StageClearCount = 0;
-			switch (NextStageNum)
-			{
-
-			case 2:
-				m_Scene_StageClear->SetEnable(false);
-				m_Scene_stage2->SetEnable(true);
-				//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 2);
-				break;
-			case 3:
-				m_Scene_StageClear->SetEnable(false);
-				m_Scene_stage3->SetEnable(true);
-				//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 3);
-				break;
-			case 0:
-				m_Scene_StageClear->SetEnable(false);
-				m_Scene_End->SetEnable(true);
-				//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 0);
-
-
-			default:
-				break;
-			}
-		}
-
 	}
 
 	else if (m_Scene_End->GetEnable())
@@ -216,8 +188,8 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-        EnterCriticalSection(&cs);
+		auto c_cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+        EnterCriticalSection(&c_cs);
 
 		CNetworkDevice* p;
 		if (!CCore::GetInst()->m_hPlayer2)
@@ -230,7 +202,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		}
 
 		p->AddMessage(tel_Checked);
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&c_cs);
 
 		m_Scene_Begin->SetEnable(false);
 		m_Scene_Stage1->SetEnable(true);
