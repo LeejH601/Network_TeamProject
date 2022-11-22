@@ -52,6 +52,7 @@ public:
 	void SetHP(const float fHP);
 	void SetID(const int id);
 
+	void SendMessageToClient(Telegram& msg);
 	virtual bool HandleMessage(const Telegram& telegram);
 
 public:

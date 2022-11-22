@@ -1,5 +1,8 @@
 #include "Object.h"
 #include "../Scene/SceneManager.h"
+#include "../Core.h"
+#include "../Locator.h"
+#include "../Network/NetworkDevice.h"
 
 int CObject::m_iObjN = 0;
 
@@ -145,6 +148,30 @@ bool CObject::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize
 	return IntersectRect(&rcTemp, &mypos, &CollisionPos);
 
 }
+
+void CObject::SendMessageToClient(Telegram& msg)
+{
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+		EnterCriticalSection(&cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		p->AddMessage(msg);
+		LeaveCriticalSection(&cs);
+	}
+
+	if (CCore::GetInst()->m_hPlayer2)
+	{
+		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
+		EnterCriticalSection(&cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+		p->AddMessage(msg);
+		LeaveCriticalSection(&cs);
+	}
+}
+
 bool CObject::HandleMessage(const Telegram& telegram)
 {
 	return false;

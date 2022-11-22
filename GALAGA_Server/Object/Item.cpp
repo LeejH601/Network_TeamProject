@@ -1,7 +1,5 @@
 #include "Item.h"
-#include "../Core.h"
-#include "../Locator.h"
-#include "../Network/NetworkDevice.h"
+#include "../Core/Timer.h"
 
 CItem::CItem()
 {
@@ -107,13 +105,11 @@ void CItem::Input(float fDeltaTime)
 
 void CItem::Update(float fDeltaTime)
 {
-	CObject::m_tLTPos.y += fDeltaTime * 50;
-
+	std::cout << m_iObjID << "- Update()" << std::endl;
+	/*CObject::m_tLTPos.y += fDeltaTime * 50;
 
 	if (CObject::m_tLTPos.y > 750)
-		m_bEnable = false;
-
-
+		m_bEnable = false;*/
 }
 
 void CItem::LateUpdate(float fDeltaTime)
@@ -132,6 +128,7 @@ void CItem::SendMsgCreateItem(ITEM_TYPE nType, POSITION pos)
 	Telegram tel_CreateItem;
 	tel_CreateItem.Receiver = 0;
 	tel_CreateItem.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+	tel_CreateItem.DispatchTime = CTimer::GetInst()->GetTime();
 	tel_CreateItem.Extrainfo;
 	char* extraInfo = new char[16];
 	
@@ -140,24 +137,5 @@ void CItem::SendMsgCreateItem(ITEM_TYPE nType, POSITION pos)
 	memcpy(&extraInfo[4], &pos, sizeof(POSITION));
 	tel_CreateItem.Extrainfo = extraInfo;
 
-	if (CCore::GetInst()->m_hPlayer1)
-	{
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-		EnterCriticalSection(&cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-		p->AddMessage(tel_CreateItem);
-		LeaveCriticalSection(&cs);
-	}
-
-	if (CCore::GetInst()->m_hPlayer2)
-	{
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
-		EnterCriticalSection(&cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-		p->AddMessage(tel_CreateItem);
-		LeaveCriticalSection(&cs);
-	}
-
+	CObject::SendMessageToClient(tel_CreateItem);
 }

@@ -100,6 +100,8 @@ int CScene::Update(float fDeltaTime)
 		}
 	}
 
+
+	// Need To Delete
 	else
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);
@@ -107,6 +109,13 @@ int CScene::Update(float fDeltaTime)
 		{
 			m_bEndScene = true;
 		}
+	}
+
+	if (!m_ItemList.empty())
+	{
+		for (std::list<CItem*>::iterator lBegin = m_ItemList.begin();
+			lBegin != m_ItemList.end(); ++lBegin)
+			(*lBegin)->Update(fDeltaTime * 300.0f);
 	}
 	//if (m_Player)
 	//{

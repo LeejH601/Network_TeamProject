@@ -192,26 +192,7 @@ void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 
 	memcpy(tel_ChangeScene.Extrainfo, &nType, sizeof(SCENE_TYPE));
 
-	if (CCore::GetInst()->m_hPlayer1)
-	{
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-		EnterCriticalSection(&cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-		p->AddMessage(tel_ChangeScene);
-		LeaveCriticalSection(&cs);
-	}
-	
-	if (CCore::GetInst()->m_hPlayer2)
-	{
-		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
-		EnterCriticalSection(&cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-		p->AddMessage(tel_ChangeScene);
-		LeaveCriticalSection(&cs);
-	}
-
+	CObject::SendMessageToClient(tel_ChangeScene);
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
