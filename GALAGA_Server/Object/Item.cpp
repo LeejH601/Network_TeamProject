@@ -126,14 +126,13 @@ bool CItem::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)
 void CItem::SendMsgCreateItem(ITEM_TYPE nType, POSITION pos)
 {
 	Telegram tel_CreateItem;
+	tel_CreateItem.Sender = m_iObjID;
 	tel_CreateItem.Receiver = 0;
 	tel_CreateItem.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
 	tel_CreateItem.DispatchTime = CTimer::GetInst()->GetTime();
-	tel_CreateItem.Extrainfo;
-	char* extraInfo = new char[16];
+	char* extraInfo = new char[12];
 	
 	memcpy(&extraInfo[0], &nType, sizeof(ITEM_TYPE));
-	
 	memcpy(&extraInfo[4], &pos, sizeof(POSITION));
 	tel_CreateItem.Extrainfo = extraInfo;
 

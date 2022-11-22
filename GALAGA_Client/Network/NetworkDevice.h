@@ -7,13 +7,13 @@ public:
 	DECLARE_SINGLE(CNetworkDevice);
 private:
 	std::array<int, 7> Message_Sizes = {
+	28,
+	24,
 	16,
-	12,
-	4,
-	8,
-	8,
-	8,
-	4
+	20,
+	20,
+	20,
+	16
 	};
 	SOCKET m_sock;
 

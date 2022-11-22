@@ -129,6 +129,10 @@ bool CNetworkDevice::SendToNetwork()
 	{
 		for (int j = 0; j < m_SendTelegrams[i].size(); j++)
 		{
+			memcpy(Data + AddDataSize, &m_SendTelegrams[i][j].Sender, sizeof(int));
+			AddDataSize += sizeof(int);
+			memcpy(Data + AddDataSize, &m_SendTelegrams[i][j].DispatchTime, sizeof(LONGLONG));
+			AddDataSize += sizeof(LONGLONG);
 			memcpy(Data + AddDataSize, &m_SendTelegrams[i][j].Receiver, sizeof(int));
 			AddDataSize += sizeof(int);
 			if (m_SendTelegrams[i][j].Extrainfo)
@@ -209,6 +213,11 @@ bool CNetworkDevice::RecvByNetwork()
 	for (int i = 0; i < (int)MESSAGE_TYPE::END_Enum; ++i) {
 		for (int j = 0; j < nEvents[i]; ++j) {
 			Telegram telegram;
+			memcpy(&telegram.Sender, dataBuf + ReadPointer, sizeof(int));
+			ReadPointer += sizeof(int);
+
+			memcpy(&telegram.DispatchTime, dataBuf + ReadPointer, sizeof(LONGLONG));
+			ReadPointer += sizeof(LONGLONG);
 
 			memcpy(&telegram.Receiver, dataBuf + ReadPointer, sizeof(int));
 			ReadPointer += sizeof(int);

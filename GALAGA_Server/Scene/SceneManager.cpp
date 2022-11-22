@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include "../Core/Timer.h"
 #include "../Core.h"
 #include "../Network/NetworkDevice.h"
 #include "../Locator.h"
@@ -186,7 +187,9 @@ CPlayer* CSceneManager::GetPlayer2()
 void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 {
 	Telegram tel_ChangeScene;
+	tel_ChangeScene.Sender = 0;
 	tel_ChangeScene.Receiver = 0;
+	tel_ChangeScene.DispatchTime = CTimer::GetInst()->GetTime();
 	tel_ChangeScene.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 	tel_ChangeScene.Extrainfo = new int;
 
@@ -202,7 +205,9 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	case MESSAGE_TYPE::Msg_clientReady:
 	{
 		Telegram tel_Checked;
+		tel_Checked.Sender = m_iObjID;
 		tel_Checked.Receiver = 0;
+		tel_Checked.DispatchTime = CTimer::GetInst()->GetTime();
 		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 		tel_Checked.Extrainfo = new int;
 		
