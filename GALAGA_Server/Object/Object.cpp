@@ -1,5 +1,8 @@
 #include "Object.h"
 #include "../Scene/SceneManager.h"
+#include "../Core.h"
+#include "../Locator.h"
+#include "../Network/NetworkDevice.h"
 
 int CObject::m_iObjN = 0;
 
@@ -87,7 +90,7 @@ void CObject::SetID(const int id)
 
 
 // init ( 이미지 파일 경로 , 화면에 출력할 오브젝트 위치 , 오브젝트 방향 , 오브젝트 사이즈 , 오브젝트 HP , png 파일에서의 사이즈 , png 파일에서의 위치 ) 
-bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE Size, float HP, POSITION imgSize, POSITION imgLT, PLAYER_TYPE obType)
+bool CObject::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYER_TYPE obType)
 {
 
 	m_iObjID = m_iObjN++;
@@ -145,6 +148,30 @@ bool CObject::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize
 	return IntersectRect(&rcTemp, &mypos, &CollisionPos);
 
 }
+
+void CObject::SendMessageToClient(Telegram& msg)
+{
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+		EnterCriticalSection(&cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		p->AddMessage(msg);
+		LeaveCriticalSection(&cs);
+	}
+
+	if (CCore::GetInst()->m_hPlayer2)
+	{
+		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
+		EnterCriticalSection(&cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+		p->AddMessage(msg);
+		LeaveCriticalSection(&cs);
+	}
+}
+
 bool CObject::HandleMessage(const Telegram& telegram)
 {
 	return false;

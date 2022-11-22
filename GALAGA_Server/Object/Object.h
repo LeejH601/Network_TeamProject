@@ -25,8 +25,8 @@ public:
 	// 기본 구동 함수
 	// CObject 를 상속하는 모든 클래스는 이 구동함수를 갖고있으며 가상함수(virtual)로 설정한다.
 
-	// init ( 이미지 파일 경로 , 화면에 출력할 오브젝트 위치 , 오브젝트 방향 , 오브젝트 사이즈 , 오브젝트 HP , png 파일에서의 사이즈 , png 파일에서의 위치 ) 
-	virtual bool Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE Size, float HP, POSITION imgSize, POSITION imgLT, PLAYER_TYPE obType);
+	// init ( 화면에 출력할 오브젝트 위치 , 오브젝트 방향 , 오브젝트 사이즈 , 오브젝트 HP , PLAYER or MONSTER) 
+	virtual bool Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYER_TYPE obType);
 	virtual	void Update(float fDeltaTime);
 	virtual	void LateUpdate(float fDeltaTime);
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
@@ -52,6 +52,7 @@ public:
 	void SetHP(const float fHP);
 	void SetID(const int id);
 
+	void SendMessageToClient(Telegram& msg);
 	virtual bool HandleMessage(const Telegram& telegram);
 
 public:

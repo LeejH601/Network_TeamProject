@@ -70,7 +70,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (true)
 	{
-		std::cout << "??????????" << std::endl;
+		//std::cout << "??????????" << std::endl;
 		EnterCriticalSection(&tCs);
 		if (Network_Device.RecvByNetwork());
 		LeaveCriticalSection(&tCs);

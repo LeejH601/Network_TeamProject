@@ -40,21 +40,22 @@ void CCore::Logic()
 
 int CCore::Update(float fDeltaTime)
 {
-	std::cout << "Server Update" << std::endl;
-
+	//std::cout << "Server Update" << std::endl;
+	if (CSceneManager::GetInst())
+		CSceneManager::GetInst()->Update(fDeltaTime);
 	return 0;
 }
 
 int CCore::LateUpdate(float fDeltaTime)
 {
-	std::cout << "Server LateUpdate" << std::endl;
+	//std::cout << "Server LateUpdate" << std::endl;
 
 	return 0;
 }
 
 void CCore::Collision(float fDeltaTime)
 {
-	std::cout << "Server Collision" << std::endl;
+	//std::cout << "Server Collision" << std::endl;
 }
 
 

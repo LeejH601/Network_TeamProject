@@ -1,4 +1,6 @@
 #include "../Include/Game.h"
+#include "../Object/Player.h"
+#include "../Object/Item.h"
 #include "Scene.h"
 
 // 주석 - 클래스가 존재하지 않을때
@@ -14,7 +16,14 @@ CScene::~CScene()
 	//Monster_BulletList->EraseAll();
 	//delete Monster_BulletList;
 
-	//m_ItemList->EraseAll();
+	for (std::list<CItem*>::iterator p = m_ItemList.begin();
+		p!=m_ItemList.end(); ++p)
+	{
+		CObjectManager::GetInst()->RemoveObject((*p)->GetID());
+		delete (*p);
+	}
+
+	m_ItemList.clear();
 	//delete m_ItemList;
 
 	//if (m_boss)
@@ -30,30 +39,26 @@ CScene::~CScene()
 
 }
 
-bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistance, bool enable, int stageNum)
+bool CScene::Init(class CPlayer* player1, class CPlayer* player2, long long MaxDistance, bool enable, int stageNum)
 {
-	//m_StageNum = stageNum;
+	m_StageNum = stageNum;
 
+
+	// Create ItemList
 	//if (player != nullptr)
 	//{
 	//	m_ItemList = new CItemList;
 	//	m_ItemList->Init();
-
 	//}
 
-	//// Load Fail -> 무한루프 
-	//if (S_OK != rst) {
-	//	while (true);
-	//}
+	m_Player1 = player1;
+	m_Player2 = player2;
 
-	////if(m_Player)
-	////m_Player = new Cm_Player(*m_Player);
-	//m_Player = player;
+	m_MaxDistance = MaxDistance;
+	m_bEnable = enable;
+	m_bEndScene = false;
 
-	//m_MaxDistance = MaxDistance;
-	//m_bEnable = enable;
-	//m_bEndScene = false;
-
+	// Get MonsterList and init Monster Bullet List
 	//if (player != nullptr)
 	//{
 	//	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
@@ -73,25 +78,45 @@ void CScene::AddObject(CMonster* pMonster)
 
 int CScene::Update(float fDeltaTime)
 {
-	//// 아이템이 플레이어의 이동거리에 따라서 생성됩니다... ( 랜덤한 아이템 생성 )
-	//static int iCOunt = 0;
-	//iCOunt += 1;
+	// 아이템이 플레이어의 이동거리에 따라서 생성됩니다... ( 랜덤한 아이템 생성 )
+	fItemSpawn -= (fDeltaTime * 300.0f);
 
-	//if (iCOunt % 5000 == 0)
-	//{
-	//	if (m_ItemList)
-	//	{
+	if (fItemSpawn < FLT_EPSILON)
+	{
+		CItem* pItem = new CItem;
+		pItem->Init(ITEM_TYPE::IT_RANDOM, { 1.f + rand() % 600, 30 });
+		m_ItemList.push_back(pItem);
 
-	//		if (m_Player)
-	//			m_ItemList->PushBack(ITEM_TYPE::IT_RANDOM);
+		fItemSpawn = 500.0f;
+	}
 
-	//	}
-	//	iCOunt = 0;
+	if (m_StageNum)
+	{
+		UpdateMaxDistance(fDeltaTime * 300.0f);
 
-	//}
+		if (m_Distance >= m_MaxDistance)
+		{
+			m_bEndScene = true;
+		}
+	}
 
 
+	// Need To Delete
+	else
+	{
+		UpdateMaxDistance(fDeltaTime * 300.0f);
+		if (m_Distance >= m_MaxDistance)
+		{
+			m_bEndScene = true;
+		}
+	}
 
+	if (!m_ItemList.empty())
+	{
+		for (std::list<CItem*>::iterator lBegin = m_ItemList.begin();
+			lBegin != m_ItemList.end(); ++lBegin)
+			(*lBegin)->Update(fDeltaTime * 300.0f);
+	}
 	//if (m_Player)
 	//{
 
@@ -238,6 +263,8 @@ int CScene::Update(float fDeltaTime)
 	//if (m_bEndScene)
 	//	return 1;
 
+	if (m_bEndScene)
+		return 1;
 	return 0;
 }
 
@@ -380,7 +407,7 @@ void CScene::Collision(float fDeltaTime)
 	//}
 }
 
-void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
+void CScene::UpdateMaxDistance(double distance)
 {
 	m_Distance += distance;
 	//if (m_Distance >= m_MaxDistance)
@@ -392,10 +419,7 @@ void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
 	//	//// 다음 스테이지를 출력하게 합니다...
 	//	//NextScene->SetEnable(true);
 	//	//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 2);
-
 	//}
-
-
 }
 
 

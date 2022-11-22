@@ -38,12 +38,12 @@ bool CSceneManager::Init()
 	m_iObjID = m_iObjN++;
 	CObjectManager::GetInst()->RegisterObject(this);
 
-	wcscpy_s(m_img_Text[0], L"../Bin/Item_img/Bullets.png");
+	wcscpy_s(m_img_Text[0], L"./Image/Item_img/Bullets.png");
 
-	wcscpy_s(m_img_Text[1], L"../Bin/Item_img/icon_ATKSPDUP.png");
-	wcscpy_s(m_img_Text[2], L"../Bin/Item_img/icon_HPUP.png");
-	wcscpy_s(m_img_Text[3], L"../Bin/Item_img/invincibility (2).png");
-	wcscpy_s(m_img_Text[4], L"../Bin/Item_img/icon_PowUp.png");;
+	wcscpy_s(m_img_Text[1], L"./Image/Item_img/icon_ATKSPDUP.png");
+	wcscpy_s(m_img_Text[2], L"./Image/Item_img/icon_HPUP.png");
+	wcscpy_s(m_img_Text[3], L"./Image/Item_img/invincibility (2).png");
+	wcscpy_s(m_img_Text[4], L"./Image/Item_img/icon_PowUp.png");;
 
 	wcscpy_s(m_img_Text[5], L"../Bin/Terran_img/Wraith.png");;
 	wcscpy_s(m_img_Text[6], L"../Bin/Terran_img/Valkyrie.png");;
@@ -72,11 +72,11 @@ bool CSceneManager::Init()
 	m_Scene_End3 = new CScene;
 	{
 		// ������ 
-		images[0].Load(L"../Bin/Item_img/Bullets.png");
-		images[1].Load(L"../Bin/Item_img/icon_ATKSPDUP.png");
-		images[2].Load(TEXT("../Bin/Item_img/icon_HPUP.png"));
-		images[3].Load(TEXT("../Bin/Item_img/invincibility (2).png"));
-		images[4].Load(TEXT("../Bin/Item_img/icon_PowUp.png"));
+		images[0].Load(L"./Image/Item_img/Bullets.png");
+		images[1].Load(L"./Image/Item_img/icon_ATKSPDUP.png");
+		images[2].Load(TEXT("./Image/Item_img/icon_HPUP.png"));
+		images[3].Load(TEXT("./Image/Item_img/invincibility (2).png"));
+		images[4].Load(TEXT("./Image/Item_img/icon_PowUp.png"));
 
 		// protoss
 		images[5].Load(L"../Bin/Terran_img/Wraith.png");
@@ -99,9 +99,9 @@ bool CSceneManager::Init()
 	//m_Player->Init();
 
 	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, false, 0);
-	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", m_Player, 8000, false, 1);
-	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", m_Player, 8000, false, 2);
-	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", m_Player, 8000, false, 3);
+	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", m_Player, 3000, false, 1);
+	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", m_Player, 3000, false, 2);
+	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", m_Player, 3000, false, 3);
 	m_Scene_StageClear->Init(L"./Image/Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
 	m_Scene_End->Init(L"./Image/Scene_Back_img/End1.png", nullptr, 0, false, 0);
 
@@ -311,7 +311,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		memcpy(it_type, tmp, sizeof(ITEM_TYPE));
 
 		POSITION* pos = new POSITION;
-		memcpy(pos, (void*)(tmp[sizeof(int)]), sizeof(POSITION));
+		memcpy(pos, (void*)(&tmp[sizeof(ITEM_TYPE)]), sizeof(POSITION));
 
 		if (m_Scene_Begin->GetEnable())
 			return false;
