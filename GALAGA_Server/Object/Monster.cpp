@@ -23,27 +23,25 @@ void CPath::CalculUniformPos()
 {
 	float detT = pow(20.0f, 2);
 	std::vector<POSITION> points;
-	bool flag = true;
 	float length = 0.0f;
+	float total_len = 0.0f;
 	for (int i = 0; i < m_points.size() - 1 - 3; ++i) {
-
-		POSITION dist = m_points[i + 1] - m_points[i];
-		float total_len = dist.x * dist.x + dist.y * dist.y;
-		length = total_len;
 
 		if (length < FLT_EPSILON)
 			points.push_back(m_points[i]);
 		else {
-			points.push_back(CardinalSpline(m_points[i], m_points[i + 1], m_points[i + 2], m_points[i + 3], (detT - length / total_len), m_ftension));
+			points.push_back(CardinalSpline(m_points[i], m_points[i + 1], m_points[i + 2], m_points[i + 3], (length / total_len), m_ftension));
 		}
+
+		POSITION dist = m_points[i + 1] - m_points[i];
+		total_len = dist.x * dist.x + dist.y * dist.y;
+		length = total_len;		
 
 		while (length > detT)
 		{
 			length -= detT;
 			points.push_back(CardinalSpline(m_points[i], m_points[i + 1], m_points[i + 2], m_points[i + 3], (1 - (length / total_len)), m_ftension));
 		}
-
-		flag = true;
 	}
 
 	m_points = points;
@@ -83,15 +81,16 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 {
 	MONSTER_PATTERN Pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
 
-	RESOLUTION Resolution = CCore::GetInst()->GetResolution();
+	RESOLUTION Resol = CCore::GetInst()->GetResolution();
+	POSITION Resolution{ (float)Resol.iW, (float)Resol.iH };
 
 	switch (Pattern)
 	{
 	case MONSTER_PATTERN::PAT_STRAIGHT:
 	{
 		m_Path.SetTension(0.0f);
-		POSITION start{ Resolution.iW / 4 + rand() % (Resolution.iW / 2), -50 };
-		POSITION end{ start.x , Resolution.iH + 100 };
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION end{ start.x , Resolution.y + 100 };
 
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(end);
@@ -104,10 +103,10 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 	{
 		m_Path.SetTension(0.0f);
 
-		POSITION start{ Resolution.iW / 4, -50 };
+		POSITION start{ Resolution.x / 4, -50 };
 		POSITION p0{ start.x, 100 };
 		POSITION p1{ start.x * 3, 100 };
-		POSITION end{ start.x * 3,  Resolution.iH + 100 };
+		POSITION end{ start.x * 3,  Resolution.y + 100 };
 
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(p0);
@@ -121,11 +120,11 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 	case MONSTER_PATTERN::PAT_RING:
 	{
 		m_Path.SetTension(0.5f);
-		POSITION start{ Resolution.iW / 4 + rand() % (Resolution.iW / 2), -50 };
-		POSITION p0{ start.x, Resolution.iH / 4 + 50 };
-		POSITION p1{ Resolution.iW / 2, Resolution.iH / 2 + 50 };
-		POSITION p2{ Resolution.iW - start.x, Resolution.iH / 4 + 50 };
-		POSITION p3{ p1.x,Resolution.iH / 4 + 50 };
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION p0{ start.x, Resolution.y / 4 + 50 };
+		POSITION p1{ Resolution.x / 2, Resolution.y / 2 + 50 };
+		POSITION p2{ Resolution.x - start.x, Resolution.y / 4 + 50 };
+		POSITION p3{ p1.x,Resolution.y / 4 + 50 };
 		POSITION end{ p2.x, -50 };
 
 		m_Path.AddPoint(start);
@@ -145,9 +144,9 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 	case MONSTER_PATTERN::PAT_UTURN:
 	{
 		m_Path.SetTension(0.3f);
-		POSITION start{ Resolution.iW / 4 + rand() % (Resolution.iW / 2), -50 };
-		POSITION p0{ Resolution.iW / 2, Resolution.iH / 2 };
-		POSITION end{ Resolution.iW - start.x, -50 };
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION p0{ Resolution.x / 2, Resolution.y / 2 };
+		POSITION end{ Resolution.x - start.x, -50 };
 
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(p0);
@@ -158,12 +157,14 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 	}
 	break;
 	case MONSTER_PATTERN::PAT_CROSS:
-		POSITION start{ Resolution.iW / 4 + rand() % (Resolution.iW / 2), -50 };
+	{
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	}
 		break;
 	default:
 		break;
 	}
-	m_Path.CalculUniformPos();
+	//m_Path.CalculUniformPos();
 
 	CObject::Init(LTpos, Vector, Size, HP, obType);
 }

@@ -17,7 +17,7 @@ CScene::~CScene()
 	//delete Monster_BulletList;
 
 	for (std::list<CItem*>::iterator p = m_ItemList.begin();
-		p!=m_ItemList.end(); ++p)
+		p != m_ItemList.end(); ++p)
 	{
 		CObjectManager::GetInst()->RemoveObject((*p)->GetID());
 		delete (*p);
@@ -313,6 +313,16 @@ int CScene::LateUpdate(float fDeltaTime)
 		m_ItemList->Update(fDeltaTime);*/
 
 
+	for (auto it = m_ItemList.begin(); it != m_ItemList.end();) {
+		if (!(*it)->GetEnbale()) {
+			auto temp = *it;
+			it++;
+			m_ItemList.remove(temp);
+			delete temp;
+		}
+		else
+			it++;
+	}
 
 	return 0;
 }
@@ -320,6 +330,17 @@ int CScene::LateUpdate(float fDeltaTime)
 
 void CScene::Collision(float fDeltaTime)
 {
+
+	for (CItem* Item : m_ItemList) {
+		if (m_Player1) {
+			Item->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize());
+		}
+		if (m_Player2) {
+			Item->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize());
+		}
+	}
+
+
 	//if (m_Player == nullptr)
 	//	return;
 
