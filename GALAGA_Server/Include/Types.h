@@ -233,3 +233,13 @@ enum class MESSAGE_TYPE {
 	Msg_clientReady,
 	END_Enum,
 };
+
+
+enum class MONSTER_PATTERN {
+	PAT_STRAIGHT,
+	PAT_STAIRS,
+	PAT_RING,
+	PAT_UTURN,
+	PAT_CROSS,
+	END_ENUM,
+};

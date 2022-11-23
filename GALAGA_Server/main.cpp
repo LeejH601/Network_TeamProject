@@ -4,6 +4,9 @@
 #include "MessageDispatcher/CMessageDispatcher.h"
 #include "Locator.h"
 
+
+ 
+
 #define SERVERPORT 9000
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
@@ -91,6 +94,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 int main(int argc, char* argv[])
 {
 	int retval;
+
 
 	if (argc > 1) {
 		SERVERIP = argv[1];
