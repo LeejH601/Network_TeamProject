@@ -165,9 +165,10 @@ void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 	tel_ChangeScene.Receiver = 0;
 	tel_ChangeScene.DispatchTime = CTimer::GetInst()->GetTime();
 	tel_ChangeScene.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
-	tel_ChangeScene.Extrainfo = new int;
+	tel_ChangeScene.Extrainfo = new char[4];
+	int scene_type = (int)nType;
 
-	memcpy(tel_ChangeScene.Extrainfo, &nType, sizeof(SCENE_TYPE));
+	memcpy(tel_ChangeScene.Extrainfo, &scene_type, sizeof(SCENE_TYPE));
 
 	CObject::SendMessageToClient(tel_ChangeScene);
 }
