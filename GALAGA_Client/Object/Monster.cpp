@@ -18,7 +18,7 @@ void CMonster::Run(HDC mainhDC, HDC hdc, float fDeltaTime)
 }
 
 
-bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const Monster_type& type, POSITION Vector, int StageNum)
+bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
 {
 
 	if (m_Explode_img == NULL)
@@ -49,45 +49,45 @@ bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const Monster_type& 
 	fire_rate = 3000;
 	switch (type) // 타입에 따라 이미지를 로드
 	{
-	case Monster_type::Wraith:
+	case OBJECT_TYPE::OBJ_Wraith:
 		CObject::Init(L"../Image/Terran_img/Wraith.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 46,41 }, { 15 * 46, 0 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Valkyrie:
+	case OBJECT_TYPE::OBJ_Valkyrie:
 		CObject::Init(L"../Image/Terran_img/Valkyrie.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 106,102 }, { 1, 1 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Battlecruiser:
+	case OBJECT_TYPE::OBJ_Battlecruiser:
 		CObject::Init(L"../Image/Terran_img/Battle Cruiser.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 73,73 }, { 1,56 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Dropship:
+	case OBJECT_TYPE::OBJ_Dropship:
 		CObject::Init(L"../Image/Terran_img/Dropship.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 89,80 }, { 2, 0 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Vessel:
+	case OBJECT_TYPE::OBJ_Vessel:
 		CObject::Init(L"../Image/Terran_img/Vessel.png", LTpos, Vector, { 80,80 }, 2000.0f * AttackRate, { 203,158 }, { 5, 5 }, PLAYER_TYPE::PT_MONSTER);
 		break;
 
-	case Monster_type::Mutalisk:
+	case OBJECT_TYPE::OBJ_Mutalisk:
 		CObject::Init(L"../Image/Zerg_img/Mutalisk.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 59 , 49 }, { 539 ,13 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Queen:
+	case OBJECT_TYPE::OBJ_Queen:
 		CObject::Init(L"../Image/Zerg_img/Queen.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 45 , 46 }, { 636 ,14 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Scourge:
+	case OBJECT_TYPE::OBJ_Scourge:
 		CObject::Init(L"../Image/Zerg_img/Scourge.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 22 , 17 }, { 277 ,8 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Devourer:
+	case OBJECT_TYPE::OBJ_Devourer:
 		CObject::Init(L"../Image/Zerg_img/Devourer.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 48 , 64 }, { 597 ,105 }, PLAYER_TYPE::PT_MONSTER);
 		break;
 
-	case Monster_type::Scout:
+	case OBJECT_TYPE::OBJ_Scout:
 		CObject::Init(L"../Image/Protoss_img/scout.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 23 , 31 }, { 9 ,12 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Arbiter:
+	case OBJECT_TYPE::OBJ_Arbiter:
 		CObject::Init(L"../Image/Protoss_img/Archon.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 63 , 70 }, { 1672 ,112 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Carrier:
+	case OBJECT_TYPE::OBJ_Carrier:
 		CObject::Init(L"../Image/Protoss_img/carrier.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 35 , 47 }, { 5 ,9 }, PLAYER_TYPE::PT_MONSTER);
 		break;
-	case Monster_type::Corsair:
+	case OBJECT_TYPE::OBJ_Corsair:
 		CObject::Init(L"../Image/Protoss_img/mothership.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 67 , 62 }, { 23 ,18 }, PLAYER_TYPE::PT_MONSTER);
 		break;
 	default:
@@ -388,34 +388,6 @@ void CMonster::LateUpdate(float fDeltaTime)
 {
 }
 
-bool CMonster::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)
-{
-	return true;
-}
-
-
-bool CMonster::Collision(float fDeltaTime, CBulletList* player_BulletList)
-{
-
-	int  CollisionCheckNum = player_BulletList->Collision(fDeltaTime, CObject::m_tLTPos, CObject::m_tSize);
-	CObject::m_fHP -= (CollisionCheckNum * player_BulletList->GetAttack());
-
-	if (m_bDie == false)
-	{
-		if (CObject::m_fHP <= 0)
-		{
-			m_bDie = true;
-		}
-
-	}
-
-
-	//m_state = MONSTER_STATE::DESTORY;
-
-
-	return m_bDie;
-
-}
 void CMonster::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
 
@@ -428,27 +400,6 @@ void CMonster::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 
 }
-
-void CMonster::CreateBullet(CBulletList** _bulletList)
-{
-	if (rand() % 2 == 1) {
-		POSITION b_vector = CObject::GetPos();
-		if (rand() % 3 == 1) {
-			//CPlayer* player = CSceneManager::GetInst()->GetPlayer();
-			//b_vector = (player->GetPos() + (player->GetSize() / 3)) - CObject::GetPos();
-		}
-		else {
-			b_vector.x = 0;
-		}
-		b_vector = b_vector / (sqrt(b_vector.x * b_vector.x + b_vector.y * b_vector.y));
-		//printf("b_vector = (%f, %f)\n", b_vector.x, b_vector.y);
-		(*_bulletList)->AddBullet(CObject::GetPos(), { 15,15 }, b_vector, float(rand() % 200) + B_speed);
-		// 몬스터 총알의 공격력을 50으로 설정합니다...
-		(*_bulletList)->SetAttack(50.0f);
-
-	}
-}
-
 
 void CMonster::RenderExplode(HDC mainhDC, HDC hdc, float fDeltaTime)
 {

@@ -1,29 +1,6 @@
 #pragma once
 #include "Object.h"
 
-enum class Monster_type : int // 몬스터들의 타입
-{
-	Wraith = 10001,
-	Valkyrie = 10002,
-	Battlecruiser = 10003,
-	Dropship = 10004,
-	Vessel = 10005,
-
-	Mutalisk = 20001,
-	Devourer = 20002,
-	Queen = 20003,
-	Scourge = 20004,
-
-	Scout = 30001,
-	Corsair = 30002,
-	Carrier = 30003,
-	Arbiter = 30004,
-
-	BOSS_ONE = 40001,
-	BOSS_TWO = 40002,
-	BOSS_THREE = 40003
-};
-
 enum class Pattern {  // 패턴 분류용 자료형, 이름엔 별다른 의미가 없는 상태고 추후 교체 예정
 	SIN,
 	SIN2,
@@ -102,16 +79,12 @@ public:
 public:
 	// 기본 구동 함수들 입니다...
 	// CObject 를 상속하는 모든 클래스는 이 구동함수를 갖고있으며 가상함수(virtual)로 설정한다.
-	virtual  bool Init(POSITION LTpos, const Pattern& pattern, const Monster_type& type, POSITION Vector, int StageNum);
+	virtual  bool Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum);
 
 	virtual	void Input(float fDeltaTime);
 	virtual	void Update(float fDeltaTime);
 	virtual	void LateUpdate(float fDeltaTime);
-	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
 	virtual	void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
-
-	bool Collision(float fDeltaTime, class CBulletList* player_BulletList);
-
 
 	MONSTER_STATE GetState() {
 		return m_state;
@@ -120,8 +93,6 @@ public:
 	int GetFireDelay() {
 		return fire_delay;
 	}
-
-	void CreateBullet(class CBulletList** _bulletList);
 
 	virtual bool HandleMessage(const Telegram& msg);
 };

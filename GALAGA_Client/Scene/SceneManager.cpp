@@ -172,62 +172,26 @@ void CSceneManager::Update(float fDeltaTime)
 		// �� ����
 		if (m_Scene_Stage1->Update(fDeltaTime) == 1)
 		{
-			m_Scene_Stage1->SetEnable(false);
-			// ���� �� ��ȯ
-			m_Scene_StageClear->SetEnable(true);
 			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
-			NextStageNum = 2;
 		}
 
 	}
 	else if (m_Scene_StageClear->GetEnable())
 	{
-		m_StageClearCount += 1;
-		if (m_StageClearCount == 3000)
-		{
-			m_StageClearCount = 0;
-			switch (NextStageNum)
-			{
-			case 2:
-				m_Scene_StageClear->SetEnable(false);
-				m_Scene_stage2->SetEnable(true);
-				CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 2);
-				break;
-			case 3:
-				m_Scene_StageClear->SetEnable(false);
-				m_Scene_stage3->SetEnable(true);
-				CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 3);
-				break;
-			case 0:
-				m_Scene_StageClear->SetEnable(false);
-				m_Scene_End->SetEnable(true);
-				CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 0);
-			default:
-				break;
-			}
-		}
-
+		
 	}
 	else if (m_Scene_stage2->GetEnable())
 	{
 		if (m_Scene_stage2->Update(fDeltaTime) == 1)
 		{
-			m_Scene_stage2->SetEnable(false);
-			// ���� �� ����
-			m_Scene_StageClear->SetEnable(true);
 			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
-			NextStageNum = 3;
 		}
 	}
 	else if (m_Scene_stage3->GetEnable())
 	{
 		if (m_Scene_stage3->Update(fDeltaTime) == 1)
 		{
-			m_Scene_stage3->SetEnable(false);
-			// ���� �� ����
-			m_Scene_StageClear->SetEnable(true);
 			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
-			NextStageNum = 0;
 		}
 	}
 
@@ -301,70 +265,70 @@ CPlayer* CSceneManager::GetPlayer()
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
 {
-
 	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))
 	{
 	case MESSAGE_TYPE::Msg_objectCreate:
 	{
-//		int id = telegram.Sender;
-//		char* tmp = (char*)telegram.Extrainfo;
-//		OBJECT_TYPE* it_type = new OBJECT_TYPE;
-//		memcpy(it_type, tmp, sizeof(OBJECT_TYPE));
-//
-//		POSITION* pos = new POSITION;
-//		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
-//
-//        if (m_Scene_Begin->GetEnable())
-//			return false;
-//
-//		else if (m_Scene_Stage1->GetEnable())
-//			m_Scene_Stage1->AddObject(telegram.Sender, *it_type, *pos);
-//
-//		else if (m_Scene_stage2->GetEnable())
-//			m_Scene_stage2->AddObject(telegram.Sender, *it_type, *pos);
-//
-//		else if (m_Scene_stage3->GetEnable())
-//			m_Scene_stage3->AddObject(telegram.Sender, *it_type, *pos);
-//
-//		delete pos;
-//		delete it_type;
+		int id = telegram.Sender;
+		char* tmp = (char*)telegram.Extrainfo;
+		OBJECT_TYPE* obj_type = new OBJECT_TYPE;
+		memcpy(obj_type, tmp, sizeof(OBJECT_TYPE));
 
-		int Object_Type; // 해당 오브젝트의 enum
-		POSITION Position;
-		int Object_Type2; // 오브젝트 enum -> 어떤 오브젝트인지
-		memcpy(&Object_Type, telegram.Extrainfo, sizeof(int));
-		memcpy(&Position, (void*)((char*)telegram.Extrainfo + sizeof(int)), sizeof(POSITION));
-		memcpy(&Object_Type2, (void*)((char*)telegram.Extrainfo + sizeof(int) + sizeof(POSITION)), sizeof(int));
+		POSITION* pos = new POSITION;
+		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
 
-		switch (Object_Type2)
-		{
-		case 0: // Monster
-			if (m_Scene_Begin->GetEnable())
-				return false;
-			else if (m_Scene_Stage1->GetEnable())
-				m_Scene_Stage1->AddMonster((Monster_type)Object_Type, Position);
+		if (m_Scene_Begin->GetEnable())
+			return false;
 
-			else if (m_Scene_stage2->GetEnable())
-				m_Scene_stage2->AddMonster((Monster_type)Object_Type, Position);
+		else if (m_Scene_Stage1->GetEnable())
+			m_Scene_Stage1->AddObject(telegram.Sender, *obj_type, *pos);
 
-			else if (m_Scene_stage3->GetEnable())
-				m_Scene_stage3->AddMonster((Monster_type)Object_Type, Position);
-			return true;
+		else if (m_Scene_stage2->GetEnable())
+			m_Scene_stage2->AddObject(telegram.Sender, *obj_type, *pos);
 
-		case 1: // Bullet
-					//POSITION Position;
-			if (m_Scene_Begin->GetEnable())
-				return false;
-			else if (m_Scene_Stage1->GetEnable())
-				m_Scene_Stage1->AddMonsterBullet(Object_Type, Position);
-			else if (m_Scene_stage2->GetEnable())
-				m_Scene_stage2->AddMonsterBullet(Object_Type, Position);
-			else if (m_Scene_stage3->GetEnable())
-				m_Scene_stage3->AddMonsterBullet(Object_Type, Position);
-			return true;
-		}
+		else if (m_Scene_stage3->GetEnable())
+			m_Scene_stage3->AddObject(telegram.Sender, *obj_type, *pos);
+
+		delete pos;
+		delete obj_type;
+
+		//	int Object_Type; // 해당 오브젝트의 enum
+		//	POSITION Position;
+		//	int Object_Type2; // 오브젝트 enum -> 어떤 오브젝트인지
+		//	memcpy(&Object_Type, telegram.Extrainfo, sizeof(int));
+		//	memcpy(&Position, (void*)((char*)telegram.Extrainfo + sizeof(int)), sizeof(POSITION));
+		//	memcpy(&Object_Type2, (void*)((char*)telegram.Extrainfo + sizeof(int) + sizeof(POSITION)), sizeof(int));
+
+		//	switch (Object_Type2)
+		//	{
+		//	case 0: // Monster
+		//		if (m_Scene_Begin->GetEnable())
+		//			return false;
+		//		else if (m_Scene_Stage1->GetEnable())
+		//			m_Scene_Stage1->AddMonster((Monster_type)Object_Type, Position);
+
+		//		else if (m_Scene_stage2->GetEnable())
+		//			m_Scene_stage2->AddMonster((Monster_type)Object_Type, Position);
+
+		//		else if (m_Scene_stage3->GetEnable())
+		//			m_Scene_stage3->AddMonster((Monster_type)Object_Type, Position);
+		//		return true;
+
+		//	case 1: // Bullet
+		//				//POSITION Position;
+		//		if (m_Scene_Begin->GetEnable())
+		//			return false;
+		//		else if (m_Scene_Stage1->GetEnable())
+		//			m_Scene_Stage1->AddMonsterBullet(Object_Type, Position);
+		//		else if (m_Scene_stage2->GetEnable())
+		//			m_Scene_stage2->AddMonsterBullet(Object_Type, Position);
+		//		else if (m_Scene_stage3->GetEnable())
+		//			m_Scene_stage3->AddMonsterBullet(Object_Type, Position);
+		//		return true;
+		//	}
+		//}
 	}
-
+	break;
 	case MESSAGE_TYPE::Msg_changeScene:
 		switch (*((int*)telegram.Extrainfo))
 		{

@@ -55,10 +55,6 @@ public:
 
 public:
 	void AddObject(int id, OBJECT_TYPE type_Item, POSITION pos);
-
-    //----------------------------------------
-	void AddMonsterBullet(int TYPE, POSITION POS);
-	void AddMonster(Monster_type TYPE, POSITION POS);
 public:
 	void	Input(float fDeltaTime, class CScene* NextScene);
 	int		Update(float fDeltaTime);

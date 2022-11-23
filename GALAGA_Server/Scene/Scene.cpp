@@ -73,12 +73,6 @@ bool CScene::Init(class CPlayer* player1, class CPlayer* player2, long long MaxD
 
 	//}
 
-	if (player != nullptr)
-	{
-		//m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
-		//Monster_BulletList = new CBulletList;
-	}
-
 	return true;
 }
 
@@ -90,8 +84,10 @@ int CScene::Update(float fDeltaTime)
 {
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		(*it)->Update(fDeltaTime);
-		if ((*it)->GetFireDelay() <= 0)
+		if ((*it)->GetFireDelay() <= FLT_EPSILON)
+		{
 			(*it)->CreateBullet(&Monster_BulletList);
+		}
 		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
 			(*it)->~CMonster();
 			it = m_MonsterList->erase(it);
@@ -103,11 +99,11 @@ int CScene::Update(float fDeltaTime)
 		}
 	}
 
-	static float MspawnTime = 1000.f;
+	static float MspawnTime = 500.f;
 
 	if (MspawnTime > 1000.f)
 	{
-		Monster_type m_type = (Monster_type)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
+		OBJECT_TYPE m_type = (OBJECT_TYPE)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
 		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
 		//	m_type = (Monster_type)((int)m_type + 10000);
 
@@ -167,7 +163,9 @@ int CScene::Update(float fDeltaTime)
 		}
 		MspawnTime = 0.f;
 	}
-	MspawnTime += fDeltaTime;
+
+	MspawnTime += 300.0f * fDeltaTime;
+
 	//Monster Bullet ���� Ȯ�ο�
 	//static float Time = 0.f;
 	//if (Time > 5.f) {

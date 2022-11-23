@@ -105,6 +105,7 @@ void CSceneManager::Update(float fDeltaTime)
 	}
 	else if (m_Scene_StageClear->GetEnable())
 	{
+
 	}
 
 	else if (m_Scene_End->GetEnable())

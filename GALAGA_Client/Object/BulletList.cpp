@@ -11,24 +11,26 @@ CBulletList::~CBulletList()
 	EraseAll();
 }
 
-void CBulletList::AddBullet(POSITION playerLT, POSITION playerSize, float Speed)
+void CBulletList::AddBullet(int id, POSITION playerLT, POSITION playerSize, float Speed)
 {
 	POSITION BulletSize = { 18,30 };
 	POSITION BulletLTPos = { playerLT.x + playerSize.x / 2 - BulletSize.x / 2, playerLT.y - BulletSize.y };
 
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, 800.0f);
+	pBullet->RegisterObject(id);
 	m_listBulletList.push_back(pBullet);
 }
 
 // BulletSize에 왜 MonsterSize를 넣어주지?
-void CBulletList::AddBullet(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed)
+void CBulletList::AddBullet(int id, POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed)
 {
 	POSITION BulletSize = { MonsterSize.x, MonsterSize.y };
 	POSITION BulletLTPos = { MonsterLT.x + MonsterSize.x / 2 - BulletSize.x / 2, MonsterLT.y - BulletSize.y };
 
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, BulletVector, Speed);
+	pBullet->RegisterObject(id);
 	m_listBulletList.push_back(pBullet);
 }
 

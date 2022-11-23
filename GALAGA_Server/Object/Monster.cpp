@@ -2,7 +2,8 @@
 #include "../Core.h"
 #include "../Locator.h"
 #include "Monster.h"
-#include "BulletList.h""
+#include "BulletList.h"
+#include "../Core/Timer.h"
 #include <math.h>
 
 
@@ -79,7 +80,7 @@ CMonster::~CMonster()
 
 }
 
-bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const Monster_type& type, POSITION Vector, int StageNum)
+bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
 {
 
 	//if (m_Explode_img == NULL)
@@ -108,147 +109,127 @@ bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const Monster_type& 
 		break;
 	}
 
-	fire_rate = 3000;
-	switch (type) // Ÿ�Կ� ���� �̹����� �ε�
-	{
-	case Monster_type::Wraith:
-		CObject::Init(L"./Image/Terran_img/Wraith.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 46,41 }, { 15 * 46, 0 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Valkyrie:
-		CObject::Init(L"./Image/Terran_img/Valkyrie.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 106,102 }, { 1, 1 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Battlecruiser:
-		CObject::Init(L"./Image/Terran_img/Battle Cruiser.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 73,73 }, { 1,56 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Dropship:
-		CObject::Init(L"./Image/Terran_img/Dropship.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 89,80 }, { 2, 0 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Vessel:
-		CObject::Init(L"./Image/Terran_img/Vessel.png", LTpos, Vector, { 80,80 }, 2000.0f * AttackRate, { 203,158 }, { 5, 5 }, PLAYER_TYPE::PT_MONSTER);
-		break;
+	fire_delay = 1000.0f;
+	fire_rate = 1000.0f;
 
-	case Monster_type::Mutalisk:
-		CObject::Init(L"./Image/Zerg_img/Mutalisk.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 59 , 49 }, { 539 ,13 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Queen:
-		CObject::Init(L"./Image/Zerg_img/Queen.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 45 , 46 }, { 636 ,14 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Scourge:
-		CObject::Init(L"./Image/Zerg_img/Scourge.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 22 , 17 }, { 277 ,8 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Devourer:
-		CObject::Init(L"./Image/Zerg_img/Devourer.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 48 , 64 }, { 597 ,105 }, PLAYER_TYPE::PT_MONSTER);
-		break;
+	if(type == OBJECT_TYPE::OBJ_Vessel)
+		CObject::Init(LTpos, Vector, { 80,80 }, 2000.0f * AttackRate, PLAYER_TYPE::PT_MONSTER);
+	else
+		CObject::Init(LTpos, Vector, { 40,40 }, 100.0f * AttackRate, PLAYER_TYPE::PT_MONSTER);
 
-	case Monster_type::Scout:
-		CObject::Init(L"./Image/Protoss_img/scout.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 23 , 31 }, { 9 ,12 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Arbiter:
-		CObject::Init(L"./Image/Protoss_img/Archon.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 63 , 70 }, { 1672 ,112 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Carrier:
-		CObject::Init(L"./Image/Protoss_img/carrier.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 35 , 47 }, { 5 ,9 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	case Monster_type::Corsair:
-		CObject::Init(L"./Image/Protoss_img/mothership.png", LTpos, Vector, { 40,40 }, 100.0f * AttackRate, { 67 , 62 }, { 23 ,18 }, PLAYER_TYPE::PT_MONSTER);
-		break;
-	default:
-		break;
-	}
-	bias = (LTpos.x > 400) ? 0 : 1;
-	mPattern = pattern;
-	switch (mPattern) // ���� Ÿ�Կ� ���� �ʱ�ȭ ����
-	{
-	case Pattern::SIN:
-		update_count = 1.0f;
-		t_speed = 300.0f;
-		t_count = 500 / t_speed;
-		ceta = 90;
-		d_count = 0;
-		c_det = 1;
+	//MONSTER_PATTERN Pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
 
-		fire_delay = fire_rate;
+	//RESOLUTION Resol = CCore::GetInst()->GetResolution();
+	//POSITION Resolution{ (float)Resol.iW, (float)Resol.iH };
 
-		break;
-	case Pattern::SIN2:
-		t_count = 0.2f;
-		t_speed = 500.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
+	//switch (Pattern)
+	//{
+	//case MONSTER_PATTERN::PAT_STRAIGHT:
+	//{
+	//	m_Path.SetTension(0.0f);
+	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	//	POSITION end{ start.x , Resolution.y + 100 };
 
-		fire_delay = 1000;
+	//	m_Path.AddPoint(start);
+	//	m_Path.AddPoint(end);
 
-		break;
-	case Pattern::SIN3:
-		t_count = 0.5f;
-		update_count = 3.0f;
-		t_speed = 500.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
+	//	for (int i = 0; i < 3; ++i)
+	//		m_Path.AddPoint(end);
+	//}
+	//break;
+	//case MONSTER_PATTERN::PAT_STAIRS:
+	//{
+	//	m_Path.SetTension(0.0f);
 
-		fire_delay = 500;
+	//	POSITION start{ Resolution.x / 4, -50 };
+	//	POSITION p0{ start.x, 100 };
+	//	POSITION p1{ start.x * 3, 100 };
+	//	POSITION end{ start.x * 3,  Resolution.y + 100 };
 
-		break;
-	case Pattern::SIN4:
-		t_count = 0.5f;
-		t_speed = 600.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
+	//	m_Path.AddPoint(start);
+	//	m_Path.AddPoint(p0);
+	//	m_Path.AddPoint(p1);
+	//	m_Path.AddPoint(end);
 
-		fire_delay = 200;
+	//	for (int i = 0; i < 3; ++i)
+	//		m_Path.AddPoint(end);
+	//}
+	//break;
+	//case MONSTER_PATTERN::PAT_RING:
+	//{
+	//	m_Path.SetTension(0.5f);
+	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	//	POSITION p0{ start.x, Resolution.y / 4 + 50 };
+	//	POSITION p1{ Resolution.x / 2, Resolution.y / 2 + 50 };
+	//	POSITION p2{ Resolution.x - start.x, Resolution.y / 4 + 50 };
+	//	POSITION p3{ p1.x,Resolution.y / 4 + 50 };
+	//	POSITION end{ p2.x, -50 };
 
-		break;
-	case Pattern::SIN5:
-		t_count = 0.5f;
-		t_speed = 500.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
+	//	m_Path.AddPoint(start);
+	//	m_Path.AddPoint(p0);
+	//	m_Path.AddPoint(p1);
+	//	m_Path.AddPoint(p2);
+	//	m_Path.AddPoint(p3);
+	//	m_Path.AddPoint(p0);
+	//	m_Path.AddPoint(p1);
+	//	m_Path.AddPoint(p2);
+	//	m_Path.AddPoint(end);
 
-		fire_delay = 200;
+	//	for (int i = 0; i < 3; ++i)
+	//		m_Path.AddPoint(end);
+	//}
+	//break;
+	//case MONSTER_PATTERN::PAT_UTURN:
+	//{
+	//	m_Path.SetTension(0.3f);
+	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	//	POSITION p0{ Resolution.x / 2, Resolution.y / 2 };
+	//	POSITION end{ Resolution.x - start.x, -50 };
 
-		break;
-	case Pattern::SIN6:
-		t_speed = 200.0f;
+	//	m_Path.AddPoint(start);
+	//	m_Path.AddPoint(p0);
+	//	m_Path.AddPoint(end);
 
-		fire_delay = 300;
-		break;
-	case Pattern::SIN7:
-		t_speed = 300.0f;
-
-		fire_rate = 1000000000;
-		fire_delay = fire_rate;
-		break;
-	default:
-		break;
-	}
+	//	for (int i = 0; i < 3; ++i)
+	//		m_Path.AddPoint(end);
+	//}
+	//break;
+	//case MONSTER_PATTERN::PAT_CROSS:
+	//{
+	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	//}
+	//break;
+	//default:
+	//	break;
+	//}
+	////m_Path.CalculUniformPos();
 
 	Msg_Create(type, LTpos);
 	return true;
 }
 
-void CMonster::Msg_Create(Monster_type TYPE, POSITION POS)
+void CMonster::Msg_Create(OBJECT_TYPE TYPE, POSITION POS)
 {
-	int ObjectEnum = 0;
+	// Monster Create Message
 	Telegram telegram;
+	telegram.Sender = m_iObjID;
 	telegram.Receiver = 0;
 	telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION) + sizeof(int)];
+	telegram.DispatchTime = CTimer::GetInst()->GetTime();
+	telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION)];
 	memcpy(telegram.Extrainfo, &TYPE, sizeof(int));
 	memcpy((char*)telegram.Extrainfo + sizeof(int), &POS, sizeof(POSITION));
-	memcpy((char*)telegram.Extrainfo + sizeof(int) + sizeof(POSITION), &ObjectEnum, sizeof(int));
 
-	CNetworkDevice* p;
+	CObject::SendMessageToClient(telegram);
+
+	/*CNetworkDevice* p;
 	if (!CCore::GetInst()->m_hPlayer2)
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
 	else
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
 
 	p->AddMessage(telegram);
-	LeaveCriticalSection(&cs);
+	LeaveCriticalSection(&cs);*/
 }
 
 void CMonster::Msg_Move(POSITION POS)
@@ -361,15 +342,7 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 	}
 	//m_Path.CalculUniformPos();
 
-	CObject::Init(LTpos, Vector, Size, HP, obType);
-}
-
-void CMonster::Update(float fDeltaTime)
-{
-	m_Path.Update(fDeltaTime);
-	SetPos(m_Path.GetNextPos());
-
-	CObject::Update(fDeltaTime);
+	return CObject::Init(LTpos, Vector, Size, HP, obType);
 }
 
 bool CMonster::HandleMessage(const Telegram& telegram)
@@ -404,9 +377,10 @@ void CMonster::CreateBullet(CBulletList** _bulletList)
 		POSITION b_vector = CObject::GetPos();
 
 		(*_bulletList)->AddBullet(CObject::GetPos(), { 15,15 }, b_vector, float(rand() % 200) + 50.f);
-		// ���� �Ѿ��� ���ݷ��� 50���� �����մϴ�...
 		(*_bulletList)->SetAttack(50.0f);
 	}
+
+	fire_delay = fire_rate;
 
 	//if (rand() % 2 == 1) {
 	//	POSITION b_vector = CObject::GetPos();
@@ -437,19 +411,13 @@ void CMonster::Update(float fDeltaTime)
 	if (m_bDie == true)
 		return;
 
-	static float Time = 0.f;
-	if (!m_bBullet)
-		return;
-	if (fire_delay < 0)
-	{
-		m_bBullet = false; // �ѹ��� �ҷ� ����(Ƽ��Ʈ)
-		fire_delay = fire_rate;
-	}
-	if (Time > 0.001f) {
-		fire_delay--;
-		Time = 0.f;
-	}
-	Time += fDeltaTime;
+	fire_delay -= (fDeltaTime * 300.0f);
+
+	/*m_Path.Update(fDeltaTime);
+	SetPos(m_Path.GetNextPos());
+
+	CObject::Update(fDeltaTime);*/
+
 	//if (m_state != MONSTER_STATE::DESTORY) {
 	//	switch (mPattern) // ������Ʈ�� ������ ���Ͽ� �°� ��ġ�� ������Ʈ
 	//	{

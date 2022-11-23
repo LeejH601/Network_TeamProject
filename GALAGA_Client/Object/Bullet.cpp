@@ -54,8 +54,7 @@ bool CBullet::Init(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector,
 {
 	POSITION BulletimgSize = { 16,16 };
 	POSITION BulletimgLT = { 167,297 };
-	CObject::Init(L"../Image/Item_img/Bullets.png", MonsterLT, BulletVector,
-		MonsterSize, 1000.0f, BulletimgSize, BulletimgLT, PLAYER_TYPE::PT_MONSTER);
+	CObject::Init(L"../Image/Item_img/Bullets.png", MonsterLT, BulletVector, MonsterSize, 1000.0f, BulletimgSize, BulletimgLT, PLAYER_TYPE::PT_MONSTER);
 
 	m_fSpeed = Speed;
 	m_bEnable = true;

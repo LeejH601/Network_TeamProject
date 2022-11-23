@@ -10,8 +10,8 @@ public:
 
 public:
 	// Bullet Ãß°¡
-	void AddBullet(POSITION playerLT, POSITION playerSize, float Speed);
-	void AddBullet(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed);
+	void AddBullet(int id, POSITION playerLT, POSITION playerSize, float Speed);
+	void AddBullet(int id, POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed);
 
 	// Update
 	void Update(float fDeltaTime);

@@ -15,18 +15,19 @@ CBullet::~CBullet()
 }
 
 					    //BULLET_TYPE   POSITION    OBJECT_ENUM
-void CBullet::Msg_Create(int TYPE, POSITION POS)
+void CBullet::Msg_Create(OBJECT_TYPE TYPE, POSITION POS)
 {
-	int ObjectEnum = 1;
 	Telegram telegram;
+	telegram.Sender = m_iObjID;
 	telegram.Receiver = 0;
 	telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION) + sizeof(int)];
+	telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION)];
 	memcpy(telegram.Extrainfo, &TYPE, sizeof(int)); // Bullet_Type
 	memcpy((char*)telegram.Extrainfo + sizeof(int), & POS, sizeof(POSITION)); // Position
-	memcpy((char*)telegram.Extrainfo + sizeof(int) + sizeof(POSITION), &ObjectEnum, sizeof(int));
-	//memcpy((char*)telegram.Extrainfo + sizeof(int) + sizeof(int), &ObjectEnum, sizeof(int));
-	auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+
+	CObject::SendMessageToClient(telegram);
+
+	/*auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
 	EnterCriticalSection(&cs);
 	CNetworkDevice* p;
 	if (!CCore::GetInst()->m_hPlayer2)
@@ -35,7 +36,7 @@ void CBullet::Msg_Create(int TYPE, POSITION POS)
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
 
 	p->AddMessage(telegram);
-	LeaveCriticalSection(&cs);
+	LeaveCriticalSection(&cs);*/
 }
 
 void CBullet::Msg_Move(POSITION POS, int ObjectEnum)
@@ -89,8 +90,7 @@ bool CBullet::HandleMessage(const Telegram& msg)
 bool CBullet::Init(POSITION PlayerLT, _SIZE PlayerSize, float Speed)
 {
 	// 이미지 파일 크기 값 변수로 바꾸기
-	CObject::Init(L"../Image/Item_img/Bullets.png", PlayerLT, POSITION(0, 1),
-		PlayerSize, 1000.0f, POSITION(8, 15), POSITION(84, 42), PLAYER_TYPE::PT_MONSTER);
+	CObject::Init(PlayerLT, POSITION(0, 1), PlayerSize, 1000.0f, PLAYER_TYPE::PT_MONSTER);
 
 	m_fSpeed = Speed;
 	m_bEnable = true;
@@ -102,8 +102,7 @@ bool CBullet::Init(POSITION PlayerLT, _SIZE PlayerSize, float Speed)
 
 bool CBullet::Init(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed)
 {
-	CObject::Init(L"../Image/Item_img/Bullets.png", MonsterLT, BulletVector,
-		MonsterSize, 1000.0f, POSITION(16, 16), POSITION(167, 297), PLAYER_TYPE::PT_MONSTER);
+	CObject::Init(MonsterLT, BulletVector, MonsterSize, 1000.0f, PLAYER_TYPE::PT_MONSTER);
 
 	m_fSpeed = Speed;
 	m_bEnable = true;
