@@ -105,9 +105,9 @@ void CItem::Input(float fDeltaTime)
 
 void CItem::Update(float fDeltaTime)
 {
-	CObject::m_tLTPos.y += fDeltaTime * 50;
+	CObject::m_tLTPos.y += fDeltaTime * 2.5f;
 
-	if (CObject::m_tLTPos.y > 750)
+	if (CObject::m_tLTPos.y > 750.0f)
 		m_bEnable = false;
 	
 	CObject::SendMsgMoveObject();

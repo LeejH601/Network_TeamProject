@@ -207,7 +207,11 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 			for (const Telegram& tel: m_SendTelegrams[messageQueue.Msg])
 			{
 				if (tel.Receiver == messageQueue.Receiver)
+				{
 					bReturn = true;
+					memcpy(tel.Extrainfo, Message.Extrainfo, sizeof(POSITION));
+					break;
+				}
 			}
 		}
 	}

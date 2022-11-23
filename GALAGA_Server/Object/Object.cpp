@@ -198,10 +198,9 @@ void CObject::SendMsgMoveObject()
 	tel_MoveObject.Receiver = m_iObjID;
 	tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
 	tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
+	tel_MoveObject.Extrainfo = new char[8];
+	memcpy(tel_MoveObject.Extrainfo, &m_tLTPos, sizeof(POSITION));
 
-	char* extraInfo = new char[8];
-	memcpy(&extraInfo[0], &m_tLTPos, sizeof(POSITION));
-	tel_MoveObject.Extrainfo = extraInfo;
 	CObject::SendMessageToClient(tel_MoveObject);
 
 	delete[] tel_MoveObject.Extrainfo;

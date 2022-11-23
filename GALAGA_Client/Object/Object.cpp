@@ -200,7 +200,21 @@ void CObject::RegisterObject(const int id)
 }
 bool CObject::HandleMessage(const Telegram& telegram)
 {
+	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))
+	{
+	case MESSAGE_TYPE::Msg_objectMove:
+	{
+		POSITION* pos = new POSITION;
+		memcpy(pos, telegram.Extrainfo, sizeof(POSITION));
+
+		SetPos(*pos);
+		delete pos;
+	}
 	return true;
+	default:
+		break;
+	}
+	return false;
 }
 
 //=================================================================================================

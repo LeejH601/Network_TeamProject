@@ -106,11 +106,6 @@ void CItem::Input(float fDeltaTime)
 
 void CItem::Update(float fDeltaTime)
 {
-	CObject::m_tLTPos.y += fDeltaTime * 50;
-
-
-	if (CObject::m_tLTPos.y > 750)
-		m_bEnable = false;
 }
 
 void CItem::LateUpdate(float fDeltaTime)
