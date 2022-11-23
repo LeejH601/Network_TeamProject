@@ -154,7 +154,7 @@ void CObject::SendMessageToClient(Telegram& msg)
 {
 	if (CCore::GetInst()->m_hPlayer1)
 	{
-		auto c_cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
+		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
 		EnterCriticalSection(&c_cs);
 		CNetworkDevice* p;
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
@@ -164,7 +164,7 @@ void CObject::SendMessageToClient(Telegram& msg)
 
 	if (CCore::GetInst()->m_hPlayer2)
 	{
-		auto c_cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second;
+		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
 		EnterCriticalSection(&c_cs);
 		CNetworkDevice* p;
 		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);

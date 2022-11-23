@@ -188,24 +188,27 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 
-		auto c_cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-        EnterCriticalSection(&c_cs);
-
-		CNetworkDevice* p;
 		if (!CCore::GetInst()->m_hPlayer2)
 		{
+			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
+			EnterCriticalSection(&c_cs);
+			CNetworkDevice* p;
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+			p->AddMessage(tel_Checked);
+			LeaveCriticalSection(&c_cs);
+
+			m_Scene_Begin->SetEnable(false);
+			m_Scene_Stage1->SetEnable(true);
 		}
 		else
 		{
+			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
+			EnterCriticalSection(&c_cs);
+			CNetworkDevice* p;
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+			p->AddMessage(tel_Checked);
+			LeaveCriticalSection(&c_cs);
 		}
-
-		p->AddMessage(tel_Checked);
-		LeaveCriticalSection(&c_cs);
-
-		m_Scene_Begin->SetEnable(false);
-		m_Scene_Stage1->SetEnable(true);
 	}
 	return true;
 	default:

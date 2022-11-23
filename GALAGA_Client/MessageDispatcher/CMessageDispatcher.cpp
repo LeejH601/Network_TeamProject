@@ -15,8 +15,8 @@ void CMessageDispatcher::DispatchMessages()
 		const Telegram& telegram = *PriorityQ.begin();
 
 		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Receiver);
-		Discharge(pReceiver, telegram);
-
+		if (pReceiver)
+			Discharge(pReceiver, telegram);
 		PriorityQ.erase(PriorityQ.begin());
 	}
 }
