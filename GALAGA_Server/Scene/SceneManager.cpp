@@ -46,12 +46,12 @@ bool CSceneManager::Init()
 	m_Scene_End2 = new CScene;
 	m_Scene_End3 = new CScene;
 
-	// Player ���� ����X
+
 	m_Player1 = new CPlayer;
 	m_Player2 = new CPlayer;
 	m_Player1->Init();
 	m_Player2->Init();
-
+	
 	// Init Scene
 	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
 	m_Scene_Stage1->Init(m_Player1, m_Player2, 8000, false, 1);
@@ -185,7 +185,6 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		tel_Checked.DispatchTime = CTimer::GetInst()->GetTime();
 		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 		tel_Checked.Extrainfo = new int;
-		
 		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 

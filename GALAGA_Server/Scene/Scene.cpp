@@ -1,20 +1,27 @@
 #include "../Include/Game.h"
 #include "../Object/Player.h"
 #include "../Object/Item.h"
+#include "../Object/Monster.h"
+#include "../Object/BulletList.h"
+#include "SceneManager.h"
 #include "Scene.h"
 
-// ÁÖ¼® - Å¬·¡½º°¡ Á¸ÀçÇÏÁö ¾ÊÀ»¶§
 CScene::CScene() : m_bEnable(false), m_bSlide(false)
 {
+	// Monster, Bullet È®ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½
+	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
+	Monster_BulletList = new CBulletList;
+
+
 }
 
 CScene::~CScene()
 {
-	//if (m_MonsterList != nullptr)
-	//	(*m_MonsterList).clear();
+	if (m_MonsterList != nullptr)
+		(*m_MonsterList).clear();
 
-	//Monster_BulletList->EraseAll();
-	//delete Monster_BulletList;
+	Monster_BulletList->EraseAll();
+	delete Monster_BulletList;
 
 	for (std::list<CItem*>::iterator p = m_ItemList.begin();
 		p != m_ItemList.end(); ++p)
@@ -43,7 +50,6 @@ bool CScene::Init(class CPlayer* player1, class CPlayer* player2, long long MaxD
 {
 	m_StageNum = stageNum;
 
-
 	// Create ItemList
 	//if (player != nullptr)
 	//{
@@ -67,7 +73,11 @@ bool CScene::Init(class CPlayer* player1, class CPlayer* player2, long long MaxD
 
 	//}
 
-
+	if (player != nullptr)
+	{
+		//m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
+		//Monster_BulletList = new CBulletList;
+	}
 
 	return true;
 }
@@ -78,8 +88,118 @@ void CScene::AddObject(CMonster* pMonster)
 
 int CScene::Update(float fDeltaTime)
 {
-	// ¾ÆÀÌÅÛÀÌ ÇÃ·¹ÀÌ¾îÀÇ ÀÌµ¿°Å¸®¿¡ µû¶ó¼­ »ý¼ºµË´Ï´Ù... ( ·£´ýÇÑ ¾ÆÀÌÅÛ »ý¼º )
-	fItemSpawn -= (fDeltaTime * 300.0f);
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		(*it)->Update(fDeltaTime);
+		if ((*it)->GetFireDelay() <= 0)
+			(*it)->CreateBullet(&Monster_BulletList);
+		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
+			(*it)->~CMonster();
+			it = m_MonsterList->erase(it);
+			if (it != m_MonsterList->begin())
+				it--;
+			else if (it == m_MonsterList->end()) {
+				break;
+			}
+		}
+	}
+
+	static float MspawnTime = 1000.f;
+
+	if (MspawnTime > 1000.f)
+	{
+		Monster_type m_type = (Monster_type)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
+		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
+		//	m_type = (Monster_type)((int)m_type + 10000);
+
+		Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
+		pattern = Pattern::SIN;
+		if (pattern == Pattern::SIN5) {
+			for (int i = 0; i < 5; i++) {
+				CMonster* t_mon = new CMonster;
+				t_mon->Init(POSITION(100, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(t_mon);
+				t_mon = new CMonster;
+				t_mon->Init(POSITION(500, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(t_mon);
+			}
+		}
+		else if (pattern == Pattern::SIN6) {
+			float yPos = float(rand() % 100 + 100);
+			if (rand() % 2 == 0) {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(-100 - i * 40, yPos), pattern, m_type, POSITION(1, 0), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+			else {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(700 + i * 40, yPos), pattern, m_type, POSITION(-1, 0), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+		}
+		else if (pattern == Pattern::SIN4) {
+			float xPos = float(rand() % 500 + 50);
+			for (int i = 0; i < 5; i++) {
+				CMonster* t_mon = new CMonster;
+				t_mon->Init(POSITION(xPos, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(t_mon);
+			}
+
+		}
+		else {
+			if (rand() % 2 == 0) {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(100, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+			else {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(500, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+		}
+		MspawnTime = 0.f;
+	}
+	MspawnTime += fDeltaTime;
+	//Monster Bullet ï¿½ï¿½ï¿½ï¿½ È®ï¿½Î¿ï¿½
+	//static float Time = 0.f;
+	//if (Time > 5.f) {
+	//	//for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+	//	//	(*it)->Update(fDeltaTime);
+	//		Monster_BulletList->AddBullet(POSITION(50.f, 50.f), _SIZE(20.f, 20.f), 5.f);
+	//	//}
+	//	Time = 0.f;
+	//}
+	//Time += fDeltaTime;
+	//Monster_BulletList->Update(fDeltaTime);
+
+	//imgLT_Move_Auto(fDeltaTime);//ï¿½ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½...
+
+   /* if (I_MspawnCount <= 0) {*/
+
+
+
+
+		//I_MspawnCount = I_MspawnDelay + (rand() % 3000 - 2000);
+
+	//else
+	//	Time2 = 0.f;
+	
+    //else
+    	//I_MspawnCount--;
+
+
+	//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë´Ï´ï¿½... ( ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ )
+	//static int iCOunt = 0;
+	//iCOunt += 1;
+    fItemSpawn -= (fDeltaTime * 300.0f);
 
 	if (fItemSpawn < FLT_EPSILON)
 	{
@@ -120,6 +240,7 @@ int CScene::Update(float fDeltaTime)
 				(*lBegin)->Update(fDeltaTime * 300.0f);
 		}
 	}
+
 	//if (m_Player)
 	//{
 
@@ -197,24 +318,6 @@ int CScene::Update(float fDeltaTime)
 	//	else
 	//		I_MspawnCount--;
 
-	//	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
-	//		(*it)->Update(fDeltaTime);
-	//		if ((*it)->GetFireDelay() <= 0)
-	//			(*it)->CreateBullet(&Monster_BulletList);
-	//		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
-	//			/*list<CMonster*>::iterator temp = it;
-	//			it--;*/
-	//			//m_MonsterList->remove(temp._Unwrapped());
-	//			(*it)->~CMonster();
-	//			it = m_MonsterList->erase(it);
-	//			if (it != m_MonsterList->begin())
-	//				it--;
-	//			else if (it == m_MonsterList->end()) {
-	//				break;
-	//			}
-	//		}
-	//	}
-	//	Monster_BulletList->Update(fDeltaTime);
 
 	//	if (m_boss == nullptr && m_Distance >= m_MaxDistance) {
 	//		m_boss = new Boss;
@@ -352,15 +455,15 @@ void CScene::Collision(float fDeltaTime)
 	//	m_Player->Collision(fDeltaTime, { 0,0 }, { 0,0 });
 
 
-	//// ¸ó½ºÅÍ¿Í ÇÃ·¹ÀÌ¾îÀÇ ÃÑ¾Ë°ú Ãæµ¹Ã¼Å© ÇÕ´Ï´Ù...
+	//// ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½Ñ¾Ë°ï¿½ ï¿½æµ¹Ã¼Å© ï¿½Õ´Ï´ï¿½...
 	//for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++)
 	//{
 	//	if ((*it)->GetState() == MONSTER_STATE::DONDESTORY || (*it)->GetIsDie() == true)
 	//		continue;
-	//	// ¸ó½ºÅÍ¿Í ÇÃ·¹ÀÌ¾î ÃÑ¾Ë°ú Ãæµ¹Ã¼Å© ÇÕ´Ï´Ù... 
+	//	// ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Ñ¾Ë°ï¿½ ï¿½æµ¹Ã¼Å© ï¿½Õ´Ï´ï¿½... 
 	//	(*it)->Collision(fDeltaTime, m_Player->GetmyBulletList());
 
-	//	// Ãæµ¹ ÈÄ ¸ó½ºÅÍÀÇ »óÅÂ°¡ DESTROY ÀÌ¸é »èÁ¦ÇÕ´Ï´Ù...
+	//	// ï¿½æµ¹ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ DESTROY ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½...
 	//	if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
 	//		(*it)->~CMonster();
 	//		it = m_MonsterList->erase(it);
@@ -378,7 +481,7 @@ void CScene::Collision(float fDeltaTime)
 
 	//if (m_boss)
 	//{
-	//	// º¸½º°¡ Á×¾ú´Ù¸é 
+	//	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¾ï¿½ï¿½Ù¸ï¿½ 
 	//	m_boss->Collision(fDeltaTime, m_Player->GetmyBulletList());
 	//	//	m_bEndScene = true;
 	//	if (m_boss->GetState() == MONSTER_STATE::DESTORY)
@@ -386,16 +489,16 @@ void CScene::Collision(float fDeltaTime)
 
 	//}
 
-	//// ÇÃ·¹ÀÌ¾î¿Í ¸ó½ºÅÍ ÃÑ¾Ë°ú Ãæµ¹Ã¼Å© ÇÕ´Ï´Ù...
+	//// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾Ë°ï¿½ ï¿½æµ¹Ã¼Å© ï¿½Õ´Ï´ï¿½...
 	//if (m_Player)
 	//{
 	//	m_Player->Collision(fDeltaTime, Monster_BulletList);
 
-	//	// º¸½ºÀÇ ÃÑ¾Ë°ú Ãæµ¹Ã¼Å© ÇÕ´Ï´Ù...
+	//	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾Ë°ï¿½ ï¿½æµ¹Ã¼Å© ï¿½Õ´Ï´ï¿½...
 	//	if (m_boss)
 	//		m_Player->Collision(fDeltaTime, m_boss->GetMyBulletList());
 
-	//	// Æ®·¢ÅÍ ºö°ú Ãæ‰ŸÃ¼Å© ÇÕ´Ï´Ù... 
+	//	// Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½æ‰ŸÃ¼Å© ï¿½Õ´Ï´ï¿½... 
 	//	if (m_Tractor)
 	//	{
 
@@ -424,7 +527,7 @@ void CScene::Collision(float fDeltaTime)
 
 
 
-	//	// ¾ÆÀÌÅÛ°úÀÇ Ãæµ¹ Ã¼Å© 
+	//	// ï¿½ï¿½ï¿½ï¿½ï¿½Û°ï¿½ï¿½ï¿½ ï¿½æµ¹ Ã¼Å© 
 
 	//	if (m_ItemList)
 	//		m_ItemList->Collision(fDeltaTime, m_Player->GetPos(), m_Player->GetSize(), m_Player);
@@ -438,9 +541,9 @@ void CScene::UpdateMaxDistance(double distance)
 	//{
 	//	m_bEndScene = true;
 
-	//	//// ÇöÀç ½ºÅ×ÀÌÁö Ãâ·ÂÀ» ÁßÁöÇÕ´Ï´Ù..
+	//	//// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½..
 	//	//this->m_bEnable = false;
-	//	//// ´ÙÀ½ ½ºÅ×ÀÌÁö¸¦ Ãâ·ÂÇÏ°Ô ÇÕ´Ï´Ù...
+	//	//// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Õ´Ï´ï¿½...
 	//	//NextScene->SetEnable(true);
 	//	//CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 2);
 	//}

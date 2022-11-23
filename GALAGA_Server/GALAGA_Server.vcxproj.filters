@@ -40,6 +40,9 @@
     <Filter Include="03.Object\03-2 Monster">
       <UniqueIdentifier>{03a942b6-50ce-4b6b-bcad-51a6bda9c31a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Object\Bullet">
+      <UniqueIdentifier>{f17f5fb3-2985-4a4c-98e8-81b0be1c8c7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -93,6 +96,12 @@
     <ClInclude Include="Object\Item.h">
       <Filter>03.Object</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Bullet.h">
+      <Filter>03.Object\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\BulletList.h">
+      <Filter>03.Object\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -136,6 +145,12 @@
     </ClCompile>
     <ClCompile Include="Object\Item.cpp">
       <Filter>03.Object</Filter>
+     </ClCompile>
+    <ClCompile Include="Object\Bullet.cpp">
+      <Filter>03.Object\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\BulletList.cpp">
+      <Filter>03.Object\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

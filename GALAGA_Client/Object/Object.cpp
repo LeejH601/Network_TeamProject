@@ -117,13 +117,14 @@ void CObject::SetID(const int id)
 
 
 
-// init ( ÀÌ¹ÌÁö ÆÄÀÏ °æ·Î , È­¸é¿¡ Ãâ·ÂÇÒ ¿ÀºêÁ§Æ® À§Ä¡ , ¿ÀºêÁ§Æ® ¹æÇâ , ¿ÀºêÁ§Æ® »çÀÌÁî , ¿ÀºêÁ§Æ® HP , png ÆÄÀÏ¿¡¼­ÀÇ »çÀÌÁî , png ÆÄÀÏ¿¡¼­ÀÇ À§Ä¡ ) 
+// init ( ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ , È­ï¿½é¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡ , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® HP , png ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ , png ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ) 
 bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE Size, float HP, POSITION imgSize, POSITION imgLT, PLAYER_TYPE obType)
 {
 
 	/*m_iObjID = m_iObjN++;
 	CObjectManager::GetInst()->RegisterObject(this);*/
 
+	//m_img_Back.Load(imgText);
 	if (m_img_Back == NULL)
 	{
 		m_img_Back = CSceneManager::GetInst()->GetCimage(imgText);
@@ -131,7 +132,7 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 			m_img_Back->SetTransparentColor(RGB(255, 255, 255));
 
 	}
-	if (wcscmp(imgText, L"./Bin/Zerg_img/Devourer.png") == 0 && obType == PLAYER_TYPE::PT_PLAYER)
+	if (wcscmp(imgText, L"../Image/Zerg_img/Devourer.png") == 0 && obType == PLAYER_TYPE::PT_PLAYER)
 	{
 		if (m_img_Back)
 			m_img_Back->SetTransparentColor(RGB(0, 0, 0));

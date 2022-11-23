@@ -20,18 +20,18 @@ CCore::~CCore()
 	DESTROY_SINGLE(CTimer);
 }
 
-// Game ±¸µ¿ °ü·Ã ÇÔ¼öµéÀÔ´Ï´Ù. ***
+// Game ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½. ***
 
 void CCore::Logic()
 {
-	// µ¨Å¸Å¸ÀÓÀ» °»½ÅÇÑ ÈÄ ¾ò½À´Ï´Ù. 
+	// ï¿½ï¿½Å¸Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. 
 	GET_SINGLE(CTimer)->Update();
 	float fDeltaTime = GET_SINGLE(CTimer)->GetDeltaTime();
 	// fDeltaTime_update = GET_SINGLE(CTimer)->GetTimer_Update();
 
-	Update(fDeltaTime);			// * ¾÷µ¥ÀÌÆ®
-	LateUpdate(fDeltaTime);		// * ¾÷µ¥ÀÌÆ® ÈÄÃ³¸® 
-	Collision(fDeltaTime);		// * Ãæµ¹ Ã³¸®
+	Update(fDeltaTime);			// * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+	LateUpdate(fDeltaTime);		// * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ã³ï¿½ï¿½ 
+	Collision(fDeltaTime);		// * ï¿½æµ¹ Ã³ï¿½ï¿½
 
 	CMessageDispatcher::GetInst()->DispatchMessages();
 
@@ -43,6 +43,7 @@ int CCore::Update(float fDeltaTime)
 	//std::cout << "Server Update" << std::endl;
 	if (CSceneManager::GetInst())
 		CSceneManager::GetInst()->Update(fDeltaTime);
+
 	return 0;
 }
 
@@ -64,20 +65,20 @@ void CCore::Collision(float fDeltaTime)
 
 bool CCore::Init()
 {
-	// ÇØ»óµµ ¼³Á¤
+	// ï¿½Ø»ï¿½ ï¿½ï¿½ï¿½ï¿½
 	m_tRS.iW = 600;
 	m_tRS.iH = 750;
 
 
-	// Å¸ÀÌ¸Ó¸¦ ÃÊ±âÈ­ ÇÕ´Ï´Ù. 
+	// Å¸ï¿½Ì¸Ó¸ï¿½ ï¿½Ê±ï¿½È­ ï¿½Õ´Ï´ï¿½. 
 	if (!CTimer::GetInst()->Init())
 		return false;
 
-	// Àå¸é °ü¸®ÀÚ¸¦ ÃÊ±âÈ­ ÇÕ´Ï´Ù. 
+	// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½Ê±ï¿½È­ ï¿½Õ´Ï´ï¿½. 
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-	// »ç¿îµå ¸Å´ÏÀú¸¦ ÃÊ±âÈ­ ÇÕ´Ï´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Õ´Ï´ï¿½.
 
 	return true;
 }
@@ -86,10 +87,10 @@ int CCore::Run()
 {
 	MSG msg;
 
-	// ±âº» ¸Þ½ÃÁö ·çÇÁÀÔ´Ï´Ù
+	// ï¿½âº» ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½
 	while (m_bLoop)
 	{
-		// °ÔÀÓ±¸µ¿ logic ÀÌ ±¸ÇöµË´Ï´Ù.
+		// ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ logic ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë´Ï´ï¿½.
 		Logic();
 	}
 

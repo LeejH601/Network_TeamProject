@@ -1,6 +1,8 @@
 #include "../Include/Game.h"
 #include "../Object/Item.h"
 #include "../Object/Player.h"
+#include "../Object/BulletList.h"
+#include "../Scene/SceneManager.h"
 #include "Scene.h"
 
 // 주석 - 클래스가 존재하지 않을때
@@ -10,6 +12,8 @@ CScene::CScene() : m_bEnable(false), m_bSlide(false)
 
 CScene::~CScene()
 {
+	Monster_BulletList->EraseAll();
+	delete Monster_BulletList;
 	//if (m_MonsterList != nullptr)
 	//	(*m_MonsterList).clear();
 
@@ -176,6 +180,12 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistan
 	//	Monster_BulletList->Init();
 	//}
 
+
+	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
+	Monster_BulletList = new CBulletList;
+
+
+
 	return true;
 }
 
@@ -190,6 +200,19 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 	}
 }
 
+void CScene::AddMonsterBullet(int TYPE, POSITION POS)
+{
+	Monster_BulletList->AddBullet(POS, _SIZE(10, 10), POSITION(0.f, 1.f), 20.f);
+	Monster_BulletList->SetAttack(50.f);
+}
+
+void CScene::AddMonster(Monster_type TYPE, POSITION POS)
+{
+	CMonster* t_mon = new CMonster;
+	t_mon->Init(POS, Pattern(m_StageNum), TYPE, POSITION(0, 1), m_StageNum);
+	m_MonsterList->push_back(t_mon);
+}
+
 void CScene::Input(float fDeltaTime, CScene* NextScene)
 {
 	//if (m_Player)
@@ -198,6 +221,7 @@ void CScene::Input(float fDeltaTime, CScene* NextScene)
 
 int CScene::Update(float fDeltaTime)
 {
+
 	return 0;
 }
 
@@ -209,7 +233,7 @@ int CScene::LateUpdate(float fDeltaTime)
 
 void CScene::Collision(float fDeltaTime)
 {
-	
+
 }
 
 void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
@@ -235,6 +259,13 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 			m_imgLT.x, m_imgLT.y, m_imgSize.x, m_imgSize.y);
 	}
 
+	// 몬스터 출력
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		(*it)->Render(mainhDC, hDC, fDeltaTime);
+	}
+	//// 몬스터 총알 출력
+	if (Monster_BulletList)
+		Monster_BulletList->RenderAll(mainhDC, hDC, fDeltaTime);
 	// 플레이어 출력
 	if (m_Player)
 	{
