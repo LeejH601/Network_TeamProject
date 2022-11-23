@@ -59,19 +59,21 @@ public:
 	void AddObject(class CMonster* pMonster);
 	// m_ItemList	 - 아이템 추가
 	void AddItem(ITEM_TYPE type_Item, POSITION pos);
-
+	// 수정 필요
+	void AddMonsterBullet(int TYPE, POSITION POS);
+	void AddMonster(Monster_type TYPE, POSITION POS);
 public:
 	void	Input(float fDeltaTime, class CScene* NextScene);
 	int		Update(float fDeltaTime);
 	int		LateUpdate(float fDeltaTime);
 	void	Collision(float fDeltaTime);
 	void	Render(HDC mainhDC, HDC hDC, float fDeltaTime);
- 
+
 public:
 	// CScene 화면 활성화 여부 반환
-	bool	GetEnable(){return m_bEnable;}
-	void	SetEnable(bool enable){m_bEnable = enable;}
-	int		GetCurSceneMaxDistance(){return m_MaxDistance;}
+	bool	GetEnable() { return m_bEnable; }
+	void	SetEnable(bool enable) { m_bEnable = enable; }
+	int		GetCurSceneMaxDistance() { return m_MaxDistance; }
 	void	UpdateMaxDistance(double distance, CScene* NextScene);
 };
 

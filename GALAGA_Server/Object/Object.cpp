@@ -94,24 +94,24 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 	CObjectManager::GetInst()->RegisterObject(this);
 
 	//m_img_Back.Load(imgText);
-	/*if (m_img_Back == NULL)
-	{
-		m_img_Back = CSceneManager::GetInst()->GetCimage(imgText);
-		if (m_img_Back)
-			m_img_Back->SetTransparentColor(RGB(255, 255, 255));
+	//if (m_img_Back == NULL)
+	//{
+	//	m_img_Back = CSceneManager::GetInst()->GetCimage(imgText);
+	//	if (m_img_Back)
+	//		m_img_Back->SetTransparentColor(RGB(255, 255, 255));
 
-	}
-	if (wcscmp(imgText, L"../Bin/Zerg_img/Devourer.png") == 0 && obType == PLAYER_TYPE::PT_PLAYER)
-	{
-		if (m_img_Back)
-			m_img_Back->SetTransparentColor(RGB(0, 0, 0));
-	}
-
-
+	//}
+	//if (wcscmp(imgText, L"../Bin/Zerg_img/Devourer.png") == 0 && obType == PLAYER_TYPE::PT_PLAYER)
+	//{
+	//	if (m_img_Back)
+	//		m_img_Back->SetTransparentColor(RGB(0, 0, 0));
+	//}
 
 
-	m_imgText = new WCHAR[lstrlen(imgText)];
-	StringCchCopyW(m_imgText, lstrlen(imgText), imgText);
+
+
+	//m_imgText = new WCHAR[lstrlen(imgText)];
+	//StringCchCopyW(m_imgText, lstrlen(imgText), imgText);
 
 	m_tLTPos = LTpos;
 	m_tVector = Vector;
@@ -120,8 +120,8 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 	m_bLife = true;
 
 
-	m_img_Size = imgSize;
-	m_img_LT = imgLT;*/
+	//m_img_Size = imgSize;
+	//m_img_LT = imgLT;
 
 
 

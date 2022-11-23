@@ -1,6 +1,7 @@
 #pragma once
 #include "../Include/Game.h"
 #include "../Object/Object.h"
+#include "../Object/Monster.h"
 class CSceneManager : public CObject
 {
 private:
@@ -30,7 +31,7 @@ private:
 	WCHAR m_img_Text[20][50];
 private:
 	class CPlayer* m_Player;
-
+	list<class CMonster*> m_MonsterList; // 출현할 몬스터 정보
 public:
 	bool Init();
 public:
@@ -55,6 +56,20 @@ public:
 			}
 		}
 		return nullptr;
+	}
+	list<CMonster*>* GetMonsterList() {
+		return &m_MonsterList;
+	}
+
+	// 몬스터 정보 List 를 전부 삭제합니다. 
+	void DeleteAllMonster()
+	{
+		m_MonsterList.clear();
+	}
+
+	void DeleteMonster(CMonster* it)
+	{
+		m_MonsterList.remove(it);
 	}
 
 	virtual bool HandleMessage(const Telegram& telegram);

@@ -7,7 +7,7 @@ class CNetworkDevice
 {
 private:
 	std::array<int, 7> Message_Sizes = {
-	16,
+	20, // -> Object Enum 추가 (4byte) 이전: 16
 	12,
 	4,
 	8,

@@ -55,7 +55,7 @@ void CCore::Input(float fDeltaTime)
 int CCore::Update(float fDeltaTime)
 {
 	// Update를 처리합니다.
-	/*CSceneManager::GetInst()->Update(fDeltaTime);*/
+	CSceneManager::GetInst()->Update(fDeltaTime);
 
 	return 0;
 }

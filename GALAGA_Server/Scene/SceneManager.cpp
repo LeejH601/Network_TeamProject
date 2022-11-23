@@ -47,7 +47,6 @@ bool CSceneManager::Init()
 	//m_Player = new CPlayer;
 	//m_Player->Init();
 
-
 	//m_Scene_End->Init(m_Player,false);
 	//m_Scene_stage3->Init(m_Player,false);
 
@@ -192,7 +191,9 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 		tel_Checked.Extrainfo = new int;
 		
-		SCENE_TYPE st_Begin = SCENE_TYPE::ST_BEGIN;
+		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
+		if (m_Scene_Stage1)
+			m_Scene_Stage1->SetEnable(true);
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 
 		auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;

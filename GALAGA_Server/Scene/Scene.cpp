@@ -1,18 +1,26 @@
 #include "../Include/Game.h"
+#include "../Object/Monster.h"
+#include "../Object/BulletList.h"
+#include "SceneManager.h"
 #include "Scene.h"
 
 // 주석 - 클래스가 존재하지 않을때
 CScene::CScene() : m_bEnable(false), m_bSlide(false)
 {
+	// Monster, Bullet 확인용 생성 - 지우기
+	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
+	Monster_BulletList = new CBulletList;
+
+
 }
 
 CScene::~CScene()
 {
-	//if (m_MonsterList != nullptr)
-	//	(*m_MonsterList).clear();
+	if (m_MonsterList != nullptr)
+		(*m_MonsterList).clear();
 
-	//Monster_BulletList->EraseAll();
-	//delete Monster_BulletList;
+	Monster_BulletList->EraseAll();
+	delete Monster_BulletList;
 
 	//m_ItemList->EraseAll();
 	//delete m_ItemList;
@@ -32,7 +40,8 @@ CScene::~CScene()
 
 bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistance, bool enable, int stageNum)
 {
-	//m_StageNum = stageNum;
+	m_StageNum = stageNum;
+
 
 	//if (player != nullptr)
 	//{
@@ -54,13 +63,11 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistan
 	//m_bEnable = enable;
 	//m_bEndScene = false;
 
-	//if (player != nullptr)
-	//{
-	//	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
-	//	Monster_BulletList = new CBulletList;
-	//	Monster_BulletList->Init();
-
-	//}
+	if (player != nullptr)
+	{
+		//m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
+		//Monster_BulletList = new CBulletList;
+	}
 
 
 
@@ -73,6 +80,115 @@ void CScene::AddObject(CMonster* pMonster)
 
 int CScene::Update(float fDeltaTime)
 {
+
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		(*it)->Update(fDeltaTime);
+		if ((*it)->GetFireDelay() <= 0)
+			(*it)->CreateBullet(&Monster_BulletList);
+		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
+			(*it)->~CMonster();
+			it = m_MonsterList->erase(it);
+			if (it != m_MonsterList->begin())
+				it--;
+			else if (it == m_MonsterList->end()) {
+				break;
+			}
+		}
+	}
+
+	static float MspawnTime = 1000.f;
+
+	if (MspawnTime > 1000.f)
+	{
+		Monster_type m_type = (Monster_type)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
+		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
+		//	m_type = (Monster_type)((int)m_type + 10000);
+
+		Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
+		pattern = Pattern::SIN;
+		if (pattern == Pattern::SIN5) {
+			for (int i = 0; i < 5; i++) {
+				CMonster* t_mon = new CMonster;
+				t_mon->Init(POSITION(100, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(t_mon);
+				t_mon = new CMonster;
+				t_mon->Init(POSITION(500, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(t_mon);
+			}
+		}
+		else if (pattern == Pattern::SIN6) {
+			float yPos = float(rand() % 100 + 100);
+			if (rand() % 2 == 0) {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(-100 - i * 40, yPos), pattern, m_type, POSITION(1, 0), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+			else {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(700 + i * 40, yPos), pattern, m_type, POSITION(-1, 0), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+		}
+		else if (pattern == Pattern::SIN4) {
+			float xPos = float(rand() % 500 + 50);
+			for (int i = 0; i < 5; i++) {
+				CMonster* t_mon = new CMonster;
+				t_mon->Init(POSITION(xPos, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(t_mon);
+			}
+
+		}
+		else {
+			if (rand() % 2 == 0) {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(100, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+			else {
+				for (int i = 0; i < 5; i++) {
+					CMonster* t_mon = new CMonster;
+					t_mon->Init(POSITION(500, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
+					m_MonsterList->push_back(t_mon);
+				}
+			}
+		}
+		MspawnTime = 0.f;
+	}
+	MspawnTime += fDeltaTime;
+	//Monster Bullet 생성 확인용
+	//static float Time = 0.f;
+	//if (Time > 5.f) {
+	//	//for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+	//	//	(*it)->Update(fDeltaTime);
+	//		Monster_BulletList->AddBullet(POSITION(50.f, 50.f), _SIZE(20.f, 20.f), 5.f);
+	//	//}
+	//	Time = 0.f;
+	//}
+	//Time += fDeltaTime;
+	//Monster_BulletList->Update(fDeltaTime);
+
+	//imgLT_Move_Auto(fDeltaTime);//배경화면이 자동으로 이동합니다...
+
+   /* if (I_MspawnCount <= 0) {*/
+
+
+
+
+		//I_MspawnCount = I_MspawnDelay + (rand() % 3000 - 2000);
+
+	//else
+	//	Time2 = 0.f;
+	
+    //else
+    	//I_MspawnCount--;
+
+
 	//// 아이템이 플레이어의 이동거리에 따라서 생성됩니다... ( 랜덤한 아이템 생성 )
 	//static int iCOunt = 0;
 	//iCOunt += 1;
@@ -169,24 +285,6 @@ int CScene::Update(float fDeltaTime)
 	//	else
 	//		I_MspawnCount--;
 
-	//	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
-	//		(*it)->Update(fDeltaTime);
-	//		if ((*it)->GetFireDelay() <= 0)
-	//			(*it)->CreateBullet(&Monster_BulletList);
-	//		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
-	//			/*list<CMonster*>::iterator temp = it;
-	//			it--;*/
-	//			//m_MonsterList->remove(temp._Unwrapped());
-	//			(*it)->~CMonster();
-	//			it = m_MonsterList->erase(it);
-	//			if (it != m_MonsterList->begin())
-	//				it--;
-	//			else if (it == m_MonsterList->end()) {
-	//				break;
-	//			}
-	//		}
-	//	}
-	//	Monster_BulletList->Update(fDeltaTime);
 
 	//	if (m_boss == nullptr && m_Distance >= m_MaxDistance) {
 	//		m_boss = new Boss;

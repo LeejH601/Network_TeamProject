@@ -41,7 +41,7 @@ void CCore::Logic()
 int CCore::Update(float fDeltaTime)
 {
 	std::cout << "Server Update" << std::endl;
-
+	CSceneManager::GetInst()->Update(fDeltaTime);
 	return 0;
 }
 
