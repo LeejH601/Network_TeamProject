@@ -8,6 +8,7 @@ private:
 private:
 	HINSTANCE	m_hInst;
 	HWND		m_hWnd;
+	HWND		m_tmphWnd;
 	HDC			m_hDC;
 	RESOLUTION	m_tRS;
 
@@ -19,6 +20,10 @@ public:
 	void SetEnd()
 	{
 		m_bLoop = false;
+
+	}
+	void proc_tmp()
+	{
 
 	}
 private:
@@ -47,6 +52,8 @@ private:
 	BOOL Create();
 public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
+		WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK WndProc2(HWND hWnd, UINT message,
 		WPARAM wParam, LPARAM lParam);
 	RESOLUTION GetResolution()const
 	{

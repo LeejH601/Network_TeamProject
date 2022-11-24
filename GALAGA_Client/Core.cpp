@@ -41,10 +41,13 @@ void CCore::Logic()
 	Collision(fDeltaTime);		// * 충돌 처리
 	Render(fDeltaTime);			// * 출력
 
-	CNetworkDevice::GetInst()->SendToNetwork();
-	CNetworkDevice::GetInst()->RecvByNetwork();
+	if (CNetworkDevice::GetInst()->GetSock())
+	{
+		CNetworkDevice::GetInst()->SendToNetwork();
+		CNetworkDevice::GetInst()->RecvByNetwork();
 
-	CMessageDispatcher::GetInst()->DispatchMessages();
+		CMessageDispatcher::GetInst()->DispatchMessages();
+	}
 }
 
 void CCore::Input(float fDeltaTime)
@@ -85,7 +88,7 @@ void CCore::Render(float fDeltaTime)
 
 ATOM CCore::MyRegisterClass()
 {
-	WNDCLASSEXW wcex;
+	WNDCLASSEXW wcex , mywcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
@@ -101,6 +104,21 @@ ATOM CCore::MyRegisterClass()
 	wcex.lpszClassName = TEXT("GALAGA_STARCRAFT");
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(NULL));
 
+	mywcex.cbSize = sizeof(WNDCLASSEX);
+
+	mywcex.style = CS_HREDRAW | CS_VREDRAW;
+	mywcex.lpfnWndProc = CCore::WndProc2;
+	mywcex.cbClsExtra = 0;
+	mywcex.cbWndExtra = 0;
+	mywcex.hInstance = m_hInst;
+	mywcex.hIcon = LoadIcon(m_hInst, MAKEINTRESOURCE(NULL));
+	mywcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	mywcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	mywcex.lpszMenuName = NULL;//MAKEINTRESOURCEW(IDC_GAMEASSORTRAK04PEEKMESSAGEKEY);
+	mywcex.lpszClassName = TEXT("TMP");
+	mywcex.hIconSm = LoadIcon(mywcex.hInstance, MAKEINTRESOURCE(NULL));
+	RegisterClassExW(&mywcex);
+
 	return RegisterClassExW(&wcex);
 }
 
@@ -109,7 +127,7 @@ BOOL CCore::Create()
 	// 윈도우창 핸들
 	m_hWnd = CreateWindowW(TEXT("GALAGA_STARCRAFT"), TEXT("GALAGA_STARCRAFT"), WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, m_hInst, nullptr);
-
+	m_tmphWnd = CreateWindowW(TEXT("TMP"), TEXT("TMP"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, m_hInst, nullptr);
 	if (!m_hWnd)
 	{
 		// 윈도우 창 핸들 만들기를 실패하였습니다.
@@ -118,11 +136,14 @@ BOOL CCore::Create()
 
 	//       ** 클라이언트 영역의 크기를 맞춥니다.  **
 	RECT rc = { 0,0,m_tRS.iW,m_tRS.iH };
+
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left,
-		rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
+	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
+	SetWindowPos(m_tmphWnd, HWND_TOPMOST, 0, 0, 600, 300, SWP_NOMOVE | SWP_NOZORDER);
 
 	ShowWindow(m_hWnd, SW_SHOW);
+	ShowWindow(m_tmphWnd, SW_SHOW);
+
 	UpdateWindow(m_hWnd);
 
 	return TRUE;
@@ -132,14 +153,16 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-
+	case WM_LBUTTONDOWN:
+	{
+		MessageBox(hWnd, L"마우스를 클릭했습니다.", L"마우스 메시지", MB_OK);
+	}
+	break;
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 		// TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-
-
 		EndPaint(hWnd, &ps);
 	}
 	break;
@@ -148,6 +171,22 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		m_bLoop = false;
 		PostQuitMessage(0);
 		break;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+	return 0;
+}
+
+LRESULT CCore::WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_LBUTTONDOWN:
+	{
+		MessageBox(hWnd, L"마우스를 클릭했습니다.", L"마우스 메시지", MB_OK);
+	}
+	break;
+	// 윈도우 종료시킬 때 들어오는 메시지
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
@@ -206,7 +245,6 @@ int CCore::Run()
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-
 		}
 		// 윈도우 데드타임일 경우
 		else

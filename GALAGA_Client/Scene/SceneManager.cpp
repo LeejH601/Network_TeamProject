@@ -97,7 +97,7 @@ bool CSceneManager::Init()
 	m_Player = new CPlayer;
 	//m_Player->Init();
 
-	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, false, 0);
+	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
 	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", m_Player, 3000, false, 1);
 	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", m_Player, 3000, false, 2);
 	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", m_Player, 3000, false, 3);

@@ -23,7 +23,9 @@ public:
 	bool Init();
 	void init(SOCKET sock);
 	void AddMessage(Telegram& Message);
+	bool ConnectNetwork();
 	bool SendToNetwork();
 	bool RecvByNetwork();
 	void GetTelegram();
+	const SOCKET& GetSock();
 };
