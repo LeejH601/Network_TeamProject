@@ -15,7 +15,6 @@ HINSTANCE my_hInstance;
 
 CCore::CCore()
 {
-
 }
 
 
@@ -141,7 +140,10 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_LBUTTONDOWN:
 	{
-		if(DialogBox(my_hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc));
+		if (!CCore::GetInst()->IsConnected())
+		{
+			DialogBox(my_hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
+		}
 	}
 	break;
 	case WM_PAINT:
@@ -184,7 +186,9 @@ INT_PTR CCore::DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				THIRD_IPADDRESS(dwAddr),
 				FOURTH_IPADDRESS(dwAddr));
 
-			CNetworkDevice::GetInst()->ConnectNetwork(ipv4);
+			if (CNetworkDevice::GetInst()->ConnectNetwork(ipv4))
+				CCore::GetInst()->SetConnected();
+
 			DestroyWindow(hDlg);
 		}
 			return TRUE;
@@ -204,6 +208,7 @@ bool CCore::Init(HINSTANCE hInst)
 	// 해상도 설정
 	m_tRS.iW = 600;
 	m_tRS.iH = 750;
+	bConnected = false;
 
 	Create();
 

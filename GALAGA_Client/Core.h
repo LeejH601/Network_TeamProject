@@ -17,6 +17,7 @@ private:
 	HDC			m_hMemDC;
 	HBITMAP		m_hBackBufferBitmap;
 	HBITMAP		m_hOldBackBufferBitmap;
+	bool		bConnected;
 public:
 	void SetEnd()
 	{
@@ -76,6 +77,15 @@ public:
 	static void DestroyInst()
 	{
 		SAFE_DELETE(m_pInst);
+	}
+
+	bool IsConnected()
+	{
+		return bConnected;
+	}
+	void SetConnected()
+	{
+		bConnected = true;
 	}
 private:
 	CCore();
