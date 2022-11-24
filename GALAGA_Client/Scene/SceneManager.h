@@ -42,6 +42,7 @@ public:
 
 	void Collision(float fDeltaTime);
 
+	void CreatePlayer();
 	CPlayer* GetPlayer();
 public:
 	CImage* GetCimage(const WCHAR* imgText)
