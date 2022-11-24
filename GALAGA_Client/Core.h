@@ -1,6 +1,8 @@
 #pragma once
 #include "Include/Game.h"
 
+extern HWND my_hDlg;
+
 class CCore
 {
 private:
@@ -8,7 +10,6 @@ private:
 private:
 	HINSTANCE	m_hInst;
 	HWND		m_hWnd;
-	HWND		m_tmphWnd;
 	HDC			m_hDC;
 	RESOLUTION	m_tRS;
 
@@ -53,8 +54,9 @@ private:
 public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		WPARAM wParam, LPARAM lParam);
-	static LRESULT CALLBACK WndProc2(HWND hWnd, UINT message,
-		WPARAM wParam, LPARAM lParam);
+
+	static INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 	RESOLUTION GetResolution()const
 	{
 		return m_tRS;

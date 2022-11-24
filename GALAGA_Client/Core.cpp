@@ -1,12 +1,17 @@
 #include "Core.h"
+#include "resource.h"
 #include "Core/Timer.h"
 #include "Object/Object.h"
 #include "Scene/SceneManager.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
 #include "Scene/SceneManager.h"
+
 DEFINITION_SINGLE(CCore)
 bool CCore::m_bLoop = true;
+
+HWND my_hDlg;
+HINSTANCE my_hInstance;
 
 CCore::CCore()
 {
@@ -21,7 +26,6 @@ CCore::~CCore()
 	/*DESTROY_SINGLE(CSoundManager);
 	DESTROY_SINGLE(CSceneManager);
 	DESTROY_SINGLE(CTimer);*/
-
 	ReleaseDC(m_hWnd, m_hDC);
 }
 
@@ -88,7 +92,7 @@ void CCore::Render(float fDeltaTime)
 
 ATOM CCore::MyRegisterClass()
 {
-	WNDCLASSEXW wcex , mywcex;
+	WNDCLASSEXW wcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
@@ -104,21 +108,6 @@ ATOM CCore::MyRegisterClass()
 	wcex.lpszClassName = TEXT("GALAGA_STARCRAFT");
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(NULL));
 
-	mywcex.cbSize = sizeof(WNDCLASSEX);
-
-	mywcex.style = CS_HREDRAW | CS_VREDRAW;
-	mywcex.lpfnWndProc = CCore::WndProc2;
-	mywcex.cbClsExtra = 0;
-	mywcex.cbWndExtra = 0;
-	mywcex.hInstance = m_hInst;
-	mywcex.hIcon = LoadIcon(m_hInst, MAKEINTRESOURCE(NULL));
-	mywcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	mywcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	mywcex.lpszMenuName = NULL;//MAKEINTRESOURCEW(IDC_GAMEASSORTRAK04PEEKMESSAGEKEY);
-	mywcex.lpszClassName = TEXT("TMP");
-	mywcex.hIconSm = LoadIcon(mywcex.hInstance, MAKEINTRESOURCE(NULL));
-	RegisterClassExW(&mywcex);
-
 	return RegisterClassExW(&wcex);
 }
 
@@ -127,7 +116,7 @@ BOOL CCore::Create()
 	// 윈도우창 핸들
 	m_hWnd = CreateWindowW(TEXT("GALAGA_STARCRAFT"), TEXT("GALAGA_STARCRAFT"), WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, m_hInst, nullptr);
-	m_tmphWnd = CreateWindowW(TEXT("TMP"), TEXT("TMP"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, m_hInst, nullptr);
+
 	if (!m_hWnd)
 	{
 		// 윈도우 창 핸들 만들기를 실패하였습니다.
@@ -139,10 +128,7 @@ BOOL CCore::Create()
 
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
-	SetWindowPos(m_tmphWnd, HWND_TOPMOST, 0, 0, 600, 300, SWP_NOMOVE | SWP_NOZORDER);
-
 	ShowWindow(m_hWnd, SW_SHOW);
-	ShowWindow(m_tmphWnd, SW_SHOW);
 
 	UpdateWindow(m_hWnd);
 
@@ -155,7 +141,7 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_LBUTTONDOWN:
 	{
-		MessageBox(hWnd, L"마우스를 클릭했습니다.", L"마우스 메시지", MB_OK);
+		if(DialogBox(my_hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc));
 	}
 	break;
 	case WM_PAINT:
@@ -177,20 +163,37 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CCore::WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CCore::DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (message)
+	switch (uMsg)
 	{
-	case WM_LBUTTONDOWN:
-	{
-		MessageBox(hWnd, L"마우스를 클릭했습니다.", L"마우스 메시지", MB_OK);
+	case WM_INITDIALOG:
+		my_hDlg = GetDlgItem(hDlg, IDC_IPADDRESS1);
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+		{
+			DWORD dwAddr;
+			SendMessage(my_hDlg, IPM_GETADDRESS, 0, (LPARAM)&dwAddr);
+			char ipv4[20];
+			StringCchPrintfA(ipv4, _countof(ipv4), "%ld.%ld.%ld.%ld",
+				FIRST_IPADDRESS(dwAddr),
+				SECOND_IPADDRESS(dwAddr),
+				THIRD_IPADDRESS(dwAddr),
+				FOURTH_IPADDRESS(dwAddr));
+
+			CNetworkDevice::GetInst()->ConnectNetwork(ipv4);
+			DestroyWindow(hDlg);
+		}
+			return TRUE;
+		case IDCANCEL:
+			DestroyWindow(hDlg);
+			return TRUE;
+		}
 	}
-	break;
-	// 윈도우 종료시킬 때 들어오는 메시지
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-	return 0;
+	return FALSE;
 }
 
 bool CCore::Init(HINSTANCE hInst)

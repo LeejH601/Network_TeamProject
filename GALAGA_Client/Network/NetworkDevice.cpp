@@ -2,7 +2,6 @@
 #include "NetworkDevice.h"
 #include "../MessageDispatcher/CMessageDispatcher.h"
 
-char* SERVERIP = (char*)"127.0.0.1";
 #define SERVERPORT 9000
 
 // 소켓 함수 오류 출력 후 종료
@@ -65,10 +64,6 @@ CNetworkDevice::~CNetworkDevice()
 bool CNetworkDevice::Init()
 {
 	return true;
-}
-
-void CNetworkDevice::init(SOCKET sock)
-{
 }
 
 bool CNetworkDevice::SendToNetwork()
@@ -238,7 +233,7 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 	m_SendTelegrams[Message.Msg].push_back(messageQueue);
 }
 
-bool CNetworkDevice::ConnectNetwork()
+bool CNetworkDevice::ConnectNetwork(const char* address)
 {
 	int retval = 0;
 
@@ -255,7 +250,7 @@ bool CNetworkDevice::ConnectNetwork()
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
+	inet_pton(AF_INET, address, &serveraddr.sin_addr);
 
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(m_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));

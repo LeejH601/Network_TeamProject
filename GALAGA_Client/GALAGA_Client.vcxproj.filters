@@ -87,6 +87,9 @@
     <ClInclude Include="Object\Monster.h">
       <Filter>03.Object</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GALAGA_Client.cpp">
@@ -131,5 +134,10 @@
     <ClCompile Include="Object\Monster.cpp">
       <Filter>03.Object</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GALAGA_Client.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
