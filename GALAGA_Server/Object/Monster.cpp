@@ -9,7 +9,7 @@
 
 void CPath::Update(float fDeltaTime)
 {
-	if (m_iIndex < m_points.size() - 3) {
+	if (m_iIndex < m_points.size() - 4) {
 		m_ft += fDeltaTime;
 		while (m_ft >= 1.0f) {
 			m_ft -= 1.0f;
@@ -80,7 +80,7 @@ CMonster::~CMonster()
 
 }
 
-bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
+bool CMonster::Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
 {
 
 	//if (m_Explode_img == NULL)
@@ -117,92 +117,97 @@ bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& t
 	else
 		CObject::Init(LTpos, Vector, { 40,40 }, 100.0f * AttackRate, PLAYER_TYPE::PT_MONSTER);
 
-	//MONSTER_PATTERN Pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
 
-	//RESOLUTION Resol = CCore::GetInst()->GetResolution();
-	//POSITION Resolution{ (float)Resol.iW, (float)Resol.iH };
+	MONSTER_PATTERN Pattern = pattern;
 
-	//switch (Pattern)
-	//{
-	//case MONSTER_PATTERN::PAT_STRAIGHT:
-	//{
-	//	m_Path.SetTension(0.0f);
-	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
-	//	POSITION end{ start.x , Resolution.y + 100 };
+	RESOLUTION Resol = CCore::GetInst()->GetResolution();
+	POSITION Resolution{ (float)Resol.iW, (float)Resol.iH };
 
-	//	m_Path.AddPoint(start);
-	//	m_Path.AddPoint(end);
+	switch (Pattern)
+	{
+	case MONSTER_PATTERN::PAT_STRAIGHT:
+	{
+		m_Path.SetTension(0.0f);
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION end{ start.x , Resolution.y + 100 };
 
-	//	for (int i = 0; i < 3; ++i)
-	//		m_Path.AddPoint(end);
-	//}
-	//break;
-	//case MONSTER_PATTERN::PAT_STAIRS:
-	//{
-	//	m_Path.SetTension(0.0f);
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(end);
 
-	//	POSITION start{ Resolution.x / 4, -50 };
-	//	POSITION p0{ start.x, 100 };
-	//	POSITION p1{ start.x * 3, 100 };
-	//	POSITION end{ start.x * 3,  Resolution.y + 100 };
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y + (i*1)*50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_STAIRS:
+	{
+		m_Path.SetTension(0.0f);
 
-	//	m_Path.AddPoint(start);
-	//	m_Path.AddPoint(p0);
-	//	m_Path.AddPoint(p1);
-	//	m_Path.AddPoint(end);
+		POSITION start{ Resolution.x / 4, -50 };
+		POSITION p0{ start.x, 100 };
+		POSITION p1{ start.x * 3, 100 };
+		POSITION end{ start.x * 3,  Resolution.y + 100 };
 
-	//	for (int i = 0; i < 3; ++i)
-	//		m_Path.AddPoint(end);
-	//}
-	//break;
-	//case MONSTER_PATTERN::PAT_RING:
-	//{
-	//	m_Path.SetTension(0.5f);
-	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
-	//	POSITION p0{ start.x, Resolution.y / 4 + 50 };
-	//	POSITION p1{ Resolution.x / 2, Resolution.y / 2 + 50 };
-	//	POSITION p2{ Resolution.x - start.x, Resolution.y / 4 + 50 };
-	//	POSITION p3{ p1.x,Resolution.y / 4 + 50 };
-	//	POSITION end{ p2.x, -50 };
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(p1);
+		m_Path.AddPoint(end);
 
-	//	m_Path.AddPoint(start);
-	//	m_Path.AddPoint(p0);
-	//	m_Path.AddPoint(p1);
-	//	m_Path.AddPoint(p2);
-	//	m_Path.AddPoint(p3);
-	//	m_Path.AddPoint(p0);
-	//	m_Path.AddPoint(p1);
-	//	m_Path.AddPoint(p2);
-	//	m_Path.AddPoint(end);
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y + (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_RING:
+	{
+		m_Path.SetTension(0.5f);
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION p0{ start.x, Resolution.y / 4 + 50 };
+		POSITION p1{ Resolution.x / 2, Resolution.y / 2 + 50 };
+		POSITION p2{ Resolution.x - start.x, Resolution.y / 4 + 50 };
+		POSITION p3{ p1.x,Resolution.y / 8 + 50 };
+		POSITION end{ p2.x, -50 };
 
-	//	for (int i = 0; i < 3; ++i)
-	//		m_Path.AddPoint(end);
-	//}
-	//break;
-	//case MONSTER_PATTERN::PAT_UTURN:
-	//{
-	//	m_Path.SetTension(0.3f);
-	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
-	//	POSITION p0{ Resolution.x / 2, Resolution.y / 2 };
-	//	POSITION end{ Resolution.x - start.x, -50 };
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(p1);
+		m_Path.AddPoint(p2);
+		m_Path.AddPoint(p3);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(p1);
+		m_Path.AddPoint(p2);
+		m_Path.AddPoint(end);
 
-	//	m_Path.AddPoint(start);
-	//	m_Path.AddPoint(p0);
-	//	m_Path.AddPoint(end);
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y + (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_UTURN:
+	{
+		m_Path.SetTension(0.3f);
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION p0{ Resolution.x / 2, Resolution.y / 2 };
+		POSITION end{ Resolution.x - start.x, -50 };
 
-	//	for (int i = 0; i < 3; ++i)
-	//		m_Path.AddPoint(end);
-	//}
-	//break;
-	//case MONSTER_PATTERN::PAT_CROSS:
-	//{
-	//	POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
-	//}
-	//break;
-	//default:
-	//	break;
-	//}
-	////m_Path.CalculUniformPos();
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(end);
+
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y + (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_CROSS:
+	{
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	}
+	break;
+	default:
+		break;
+	}
+	//m_Path.CalculUniformPos();
 
 	Msg_Create(type, LTpos);
 	return true;
@@ -268,11 +273,12 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
 		POSITION end{ start.x , Resolution.y + 100 };
 
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(end);
 
 		for (int i = 0; i < 3; ++i)
-			m_Path.AddPoint(end);
+			m_Path.AddPoint( POSITION(end.x, end.y + 50.0f*(i+1)));
 	}
 	break;
 	case MONSTER_PATTERN::PAT_STAIRS:
@@ -284,6 +290,7 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 		POSITION p1{ start.x * 3, 100 };
 		POSITION end{ start.x * 3,  Resolution.y + 100 };
 
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(p0);
 		m_Path.AddPoint(p1);
@@ -303,6 +310,7 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 		POSITION p3{ p1.x,Resolution.y / 4 + 50 };
 		POSITION end{ p2.x, -50 };
 
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(p0);
 		m_Path.AddPoint(p1);
@@ -324,6 +332,7 @@ bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYE
 		POSITION p0{ Resolution.x / 2, Resolution.y / 2 };
 		POSITION end{ Resolution.x - start.x, -50 };
 
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
 		m_Path.AddPoint(start);
 		m_Path.AddPoint(p0);
 		m_Path.AddPoint(end);
@@ -413,10 +422,11 @@ void CMonster::Update(float fDeltaTime)
 
 	fire_delay -= (fDeltaTime * 300.0f);
 
-	/*m_Path.Update(fDeltaTime);
+	m_Path.Update(fDeltaTime * 2.0f);
 	SetPos(m_Path.GetNextPos());
 
-	CObject::Update(fDeltaTime);*/
+	CObject::Update(fDeltaTime);
+	CObject::SendMsgMoveObject();
 
 	//if (m_state != MONSTER_STATE::DESTORY) {
 	//	switch (mPattern) // ������Ʈ�� ������ ���Ͽ� �°� ��ġ�� ������Ʈ

@@ -107,7 +107,13 @@ int CScene::Update(float fDeltaTime)
 		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
 		//	m_type = (Monster_type)((int)m_type + 10000);
 
-		Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
+		MONSTER_PATTERN pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
+		//pattern = MONSTER_PATTERN::PAT_STRAIGHT;
+		CMonster* mob = new CMonster;
+		mob->Init(POSITION(0, 0), pattern, m_type, POSITION(0, 1), m_StageNum);
+		m_MonsterList->push_back(mob);
+
+		/*Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
 		pattern = Pattern::SIN;
 		if (pattern == Pattern::SIN5) {
 			for (int i = 0; i < 5; i++) {
@@ -160,7 +166,7 @@ int CScene::Update(float fDeltaTime)
 					m_MonsterList->push_back(t_mon);
 				}
 			}
-		}
+		}*/
 		MspawnTime = 0.f;
 	}
 

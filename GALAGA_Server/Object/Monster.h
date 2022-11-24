@@ -89,7 +89,7 @@ public:
 	void CreateBullet(class CBulletList** _bulletList);
 
 
-	virtual  bool Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum);
+	virtual  bool Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum);
 
 	virtual	void Input(float fDeltaTime);
 	virtual	void Update(float fDeltaTime);
