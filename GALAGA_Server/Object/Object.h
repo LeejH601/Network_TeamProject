@@ -20,6 +20,7 @@ protected:
 	float		m_fHP;					//  Object 의 HP 
 private:
 	TRIBE_TYPE m_MyType;			// 종족 구분 enum class
+	OBJECT_TYPE m_eObjType;
 
 public:
 	// 기본 구동 함수
@@ -41,6 +42,7 @@ public:
 	bool	 GetLife() const;
 	float	 GetHP() const;
 	int		 GetID() const;
+	OBJECT_TYPE GetObjType() const { return m_eObjType; } ;
 
 public:
 	// 외부 오브젝트 상태 설정 함수
@@ -51,6 +53,7 @@ public:
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
 	void SetID(const int id);
+	void SetObjType(const OBJECT_TYPE type) { m_eObjType = type; };
 
 	void SendMessageToClient(Telegram& msg);
 	void SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos);

@@ -73,6 +73,8 @@ public:
 		return m_MaxDistance;
 
 	}
+
+	std::list<CItem*>* GetItemList() { return &m_ItemList; };
 	void UpdateMaxDistance(double distance);
 
 

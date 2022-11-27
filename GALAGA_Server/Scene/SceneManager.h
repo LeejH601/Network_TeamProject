@@ -5,7 +5,7 @@ class CSceneManager : public CObject
 {
 private:
 	friend class CPlayer;
-
+	friend class CItem;
 
 public:
 	// 싱글톤으로 선언
@@ -46,6 +46,8 @@ public:
 		return &m_MonsterList;
 	}
 
+	std::list<CItem*>* GetItemlistFromSceneType(SCENE_TYPE type);
+
 	// 몬스터 정보 List 를 전부 삭제합니다. 
 	void DeleteAllMonster()
 	{
@@ -56,6 +58,8 @@ public:
 	{
 		m_MonsterList.remove(it);
 	}
+
+	SCENE_TYPE GetCurrentSceneType();
 
 	void SendMsgChangeScene(SCENE_TYPE nType);
 	virtual bool HandleMessage(const Telegram& telegram);

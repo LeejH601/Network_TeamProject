@@ -158,6 +158,52 @@ CPlayer* CSceneManager::GetPlayer2()
 	return m_Player2;
 }
 
+std::list<CItem*>* CSceneManager::GetItemlistFromSceneType(SCENE_TYPE type)
+{
+	CScene* scene;
+	switch (type)
+	{
+	case SCENE_TYPE::ST_BEGIN:
+		scene = m_Scene_Begin;
+		break;
+	case SCENE_TYPE::ST_STAGE1:
+		scene = m_Scene_Stage1;
+		break;
+	case SCENE_TYPE::ST_STAGE2:
+		scene = m_Scene_stage2;
+		break;
+	case SCENE_TYPE::ST_STAGE3:
+		scene = m_Scene_stage3;
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		scene = m_Scene_StageClear;
+		break;
+	case SCENE_TYPE::ST_END:
+		scene = m_Scene_End;
+		break;
+	default:
+		break;
+	}
+	return scene->GetItemList();
+}
+
+
+SCENE_TYPE CSceneManager::GetCurrentSceneType()
+{
+	if (m_Scene_Begin->GetEnable())
+		return SCENE_TYPE::ST_BEGIN;
+	if (m_Scene_Stage1->GetEnable())
+		return SCENE_TYPE::ST_STAGE1;
+	if (m_Scene_stage2->GetEnable())
+		return SCENE_TYPE::ST_STAGE2;
+	if (m_Scene_stage3->GetEnable())
+		return SCENE_TYPE::ST_STAGE3;
+	if (m_Scene_End->GetEnable())
+		return SCENE_TYPE::ST_END;
+	if (m_Scene_StageClear->GetEnable())
+		return SCENE_TYPE::ST_CLEAR;
+	return SCENE_TYPE(-1);
+}
 
 void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 {

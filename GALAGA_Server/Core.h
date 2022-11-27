@@ -50,6 +50,7 @@ public:
 		return m_tRS;
 	}
 
+	void SnapshotInit(int nPlayer);
 
 private:
 	static CCore* m_pInst;

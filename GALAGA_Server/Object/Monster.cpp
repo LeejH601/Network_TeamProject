@@ -112,6 +112,8 @@ bool CMonster::Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT
 	fire_delay = 1000.0f;
 	fire_rate = 1000.0f;
 
+	SetObjType(type);
+
 	if (type == OBJECT_TYPE::OBJ_Vessel)
 		CObject::Init(LTpos, Vector, { 80,80 }, 2000.0f * AttackRate, PLAYER_TYPE::PT_MONSTER);
 	else
