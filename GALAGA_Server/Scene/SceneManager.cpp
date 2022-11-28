@@ -182,9 +182,12 @@ std::list<CItem*>* CSceneManager::GetItemlistFromSceneType(SCENE_TYPE type)
 		scene = m_Scene_End;
 		break;
 	default:
+		scene = nullptr;
 		break;
 	}
-	return scene->GetItemList();
+	if (scene)
+		return scene->GetItemList();
+	return nullptr;
 }
 
 
@@ -249,12 +252,13 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		}
 		else
 		{
-			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
+			/*CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
 			EnterCriticalSection(&c_cs);
 			CNetworkDevice* p;
-			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-			p->AddMessage(tel_Checked);
-			LeaveCriticalSection(&c_cs);
+			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);*/
+			//p->AddMessage(tel_Checked);
+			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
+			//LeaveCriticalSection(&c_cs);
 		}
 	}
 	return true;
