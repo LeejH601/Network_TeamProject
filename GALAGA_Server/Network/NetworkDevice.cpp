@@ -198,6 +198,7 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 	messageQueue.Receiver = Message.Receiver;
 	messageQueue.DispatchTime = Message.DispatchTime;
 	messageQueue.Msg = Message.Msg;
+	messageQueue.Extrainfo = nullptr;
 
 	bool bReturn = false;
 	if (messageQueue.Msg == 1)
@@ -223,6 +224,7 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))];
 		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
 	}
+		
 
 	m_SendTelegrams[messageQueue.Msg].push_back(messageQueue);
 }
@@ -235,7 +237,7 @@ void CNetworkDevice::GetTelegram()
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
 			MessageQueue->insert(m_RecvTelegrams[i][j]);
 		}
-		//m_RecvTelegrams[i].clear();
+		m_RecvTelegrams[i].clear();
 	}
 }
 
@@ -257,6 +259,5 @@ void CNetworkDevice::printTelegram()
 			else
 				std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << "nullptr" << std::endl;
 		}
-		m_RecvTelegrams[i].clear();
 	}
 }

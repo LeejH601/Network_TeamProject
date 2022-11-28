@@ -1,4 +1,7 @@
 #include	"Player.h"
+#include "../Network/NetworkDevice.h"
+#include "../Core/Timer.h"
+
 CPlayer::CPlayer(int id)
 {
 	RegisterObject(id);
@@ -50,7 +53,23 @@ bool CPlayer::Init(int type)
 
 void CPlayer::Update(float fDeltaTime)
 {
-	
+	if ((int)m_tLastLTPos.x != (int)m_tLTPos.x || (int)m_tLastLTPos.y != (int)m_tLTPos.y)
+	{
+		m_tLastLTPos.x = m_tLTPos.x;
+		m_tLastLTPos.y = m_tLTPos.y;
+
+		Telegram tel_MoveObject;
+		tel_MoveObject.Sender = m_iObjID;
+		tel_MoveObject.Receiver = m_iObjID;
+		tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
+		tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
+		tel_MoveObject.Extrainfo = new char[8];
+		memcpy(tel_MoveObject.Extrainfo, &m_tLTPos, sizeof(POSITION));
+
+		CNetworkDevice::GetInst()->AddMessage(tel_MoveObject);
+
+		delete[] tel_MoveObject.Extrainfo;
+	}
 }
 
 

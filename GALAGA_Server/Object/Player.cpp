@@ -41,12 +41,14 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 {
 	switch ((MESSAGE_TYPE)msg.Msg)
 	{
-	case MESSAGE_TYPE::Msg_objectMove: //extrainfo: ObjectType, Position (4byte + 12byte)
+	case MESSAGE_TYPE::Msg_objectMove:
 	{
-		int ObjectType;
-		POSITION Position;
-		memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
-		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
+		POSITION* pos = new POSITION;
+		memcpy(pos, msg.Extrainfo, sizeof(POSITION));
+
+		SetPos(*pos);
+		delete pos;
+
 		return true;
 	}
 	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState
