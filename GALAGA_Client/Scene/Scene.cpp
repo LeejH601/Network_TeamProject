@@ -226,8 +226,8 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 
 void CScene::Input(float fDeltaTime, CScene* NextScene)
 {
-	//if (m_Player)
-	//	m_Player->Input(fDeltaTime, this, NextScene);
+	if (m_Player)
+		m_Player->Input(fDeltaTime);
 }
 
 int CScene::Update(float fDeltaTime)

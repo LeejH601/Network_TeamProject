@@ -21,9 +21,10 @@ private:
 	std::vector<std::vector<Telegram>> m_RecvTelegrams;
 public:
 	bool Init();
-	void init(SOCKET sock);
 	void AddMessage(Telegram& Message);
+	bool ConnectNetwork(const char* address);
 	bool SendToNetwork();
 	bool RecvByNetwork();
 	void GetTelegram();
+	const SOCKET& GetSock();
 };

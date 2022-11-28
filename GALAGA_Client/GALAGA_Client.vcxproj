@@ -153,6 +153,7 @@
     <ClInclude Include="Object\Monster.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\Player.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Sound\SoundManager.h" />
@@ -172,6 +173,9 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Sound\SoundManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GALAGA_Client.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

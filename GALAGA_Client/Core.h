@@ -1,6 +1,8 @@
 #pragma once
 #include "Include/Game.h"
 
+extern HWND my_hDlg;
+
 class CCore
 {
 private:
@@ -15,10 +17,15 @@ private:
 	HDC			m_hMemDC;
 	HBITMAP		m_hBackBufferBitmap;
 	HBITMAP		m_hOldBackBufferBitmap;
+	bool		bConnected;
 public:
 	void SetEnd()
 	{
 		m_bLoop = false;
+
+	}
+	void proc_tmp()
+	{
 
 	}
 private:
@@ -48,6 +55,9 @@ private:
 public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		WPARAM wParam, LPARAM lParam);
+
+	static INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 	RESOLUTION GetResolution()const
 	{
 		return m_tRS;
@@ -67,6 +77,15 @@ public:
 	static void DestroyInst()
 	{
 		SAFE_DELETE(m_pInst);
+	}
+
+	bool IsConnected()
+	{
+		return bConnected;
+	}
+	void SetConnected()
+	{
+		bConnected = true;
 	}
 private:
 	CCore();

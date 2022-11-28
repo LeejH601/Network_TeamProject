@@ -1,16 +1,20 @@
 #include "Core.h"
+#include "resource.h"
 #include "Core/Timer.h"
 #include "Object/Object.h"
 #include "Scene/SceneManager.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
 #include "Scene/SceneManager.h"
+
 DEFINITION_SINGLE(CCore)
 bool CCore::m_bLoop = true;
 
+HWND my_hDlg;
+HINSTANCE my_hInstance;
+
 CCore::CCore()
 {
-
 }
 
 
@@ -21,7 +25,6 @@ CCore::~CCore()
 	/*DESTROY_SINGLE(CSoundManager);
 	DESTROY_SINGLE(CSceneManager);
 	DESTROY_SINGLE(CTimer);*/
-
 	ReleaseDC(m_hWnd, m_hDC);
 }
 
@@ -41,16 +44,19 @@ void CCore::Logic()
 	Collision(fDeltaTime);		// * 충돌 처리
 	Render(fDeltaTime);			// * 출력
 
-	CNetworkDevice::GetInst()->SendToNetwork();
-	CNetworkDevice::GetInst()->RecvByNetwork();
+	if (CNetworkDevice::GetInst()->GetSock())
+	{
+		CNetworkDevice::GetInst()->SendToNetwork();
+		CNetworkDevice::GetInst()->RecvByNetwork();
 
-	CMessageDispatcher::GetInst()->DispatchMessages();
+		CMessageDispatcher::GetInst()->DispatchMessages();
+	}
 }
 
 void CCore::Input(float fDeltaTime)
 {
 	// Input을 처리합니다.
-	/*CSceneManager::GetInst()->Input(fDeltaTime);*/
+	CSceneManager::GetInst()->Input(fDeltaTime);
 }
 int CCore::Update(float fDeltaTime)
 {
@@ -118,11 +124,11 @@ BOOL CCore::Create()
 
 	//       ** 클라이언트 영역의 크기를 맞춥니다.  **
 	RECT rc = { 0,0,m_tRS.iW,m_tRS.iH };
-	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left,
-		rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
 
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
 	ShowWindow(m_hWnd, SW_SHOW);
+
 	UpdateWindow(m_hWnd);
 
 	return TRUE;
@@ -132,14 +138,19 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-
+	case WM_LBUTTONDOWN:
+	{
+		if (!CCore::GetInst()->IsConnected())
+		{
+			DialogBox(my_hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
+		}
+	}
+	break;
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 		// TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-
-
 		EndPaint(hWnd, &ps);
 	}
 	break;
@@ -154,6 +165,41 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+INT_PTR CCore::DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+		my_hDlg = GetDlgItem(hDlg, IDC_IPADDRESS1);
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+		{
+			DWORD dwAddr;
+			SendMessage(my_hDlg, IPM_GETADDRESS, 0, (LPARAM)&dwAddr);
+			char ipv4[20];
+			StringCchPrintfA(ipv4, _countof(ipv4), "%ld.%ld.%ld.%ld",
+				FIRST_IPADDRESS(dwAddr),
+				SECOND_IPADDRESS(dwAddr),
+				THIRD_IPADDRESS(dwAddr),
+				FOURTH_IPADDRESS(dwAddr));
+
+			if (CNetworkDevice::GetInst()->ConnectNetwork(ipv4))
+				CCore::GetInst()->SetConnected();
+
+			DestroyWindow(hDlg);
+		}
+			return TRUE;
+		case IDCANCEL:
+			DestroyWindow(hDlg);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 bool CCore::Init(HINSTANCE hInst)
 {
 	this->m_hInst = hInst;
@@ -162,6 +208,7 @@ bool CCore::Init(HINSTANCE hInst)
 	// 해상도 설정
 	m_tRS.iW = 600;
 	m_tRS.iH = 750;
+	bConnected = false;
 
 	Create();
 
@@ -206,7 +253,6 @@ int CCore::Run()
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-
 		}
 		// 윈도우 데드타임일 경우
 		else

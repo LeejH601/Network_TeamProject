@@ -5,7 +5,7 @@ class CPlayer : public CObject
 {
 private:
 	TRIBE_TYPE		m_MyType; // Player_Type
-	float			m_fSpeed; // Player ¼Óµµ
+	float			m_fSpeed; // Player ï¿½Óµï¿½
 	float			m_fHP_prototype; // Player Hp
 public:
 	CPlayer(int id);
@@ -35,5 +35,8 @@ public:
 
 	virtual bool Init();
 	virtual	void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
+	virtual bool Init();
+	virtual void Input(float fDeltaTime);
+	virtual bool HandleMessage(const Telegram& msg);
+	virtual void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
 };
-

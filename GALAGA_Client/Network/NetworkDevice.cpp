@@ -2,7 +2,6 @@
 #include "NetworkDevice.h"
 #include "../MessageDispatcher/CMessageDispatcher.h"
 
-char* SERVERIP = (char*)"127.0.0.1";
 #define SERVERPORT 9000
 
 // 소켓 함수 오류 출력 후 종료
@@ -64,36 +63,14 @@ CNetworkDevice::~CNetworkDevice()
 
 bool CNetworkDevice::Init()
 {
-	int retval = 0;
-
-	// 윈속 초기화
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-		return 1;
-
-	// 소켓 생성
-	m_sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (m_sock == INVALID_SOCKET) err_quit("socket()");
-
-	// connect()
-	struct sockaddr_in serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
-
-	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(m_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-
 	return true;
-}
-
-void CNetworkDevice::init(SOCKET sock)
-{
 }
 
 bool CNetworkDevice::SendToNetwork()
 {
+	if (!m_sock)
+		return false;
+
 	// �迭 �޼��� ������ŭ
 	int MessageN[(int)MESSAGE_TYPE::END_Enum] = { 0 };
 
@@ -168,6 +145,9 @@ bool CNetworkDevice::SendToNetwork()
 
 bool CNetworkDevice::RecvByNetwork()
 {
+	if (!m_sock)
+		return false;
+
 	std::array<int, (int)MESSAGE_TYPE::END_Enum> nEvents = { 0 };
 
 	int retval;
@@ -253,6 +233,32 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 	m_SendTelegrams[Message.Msg].push_back(messageQueue);
 }
 
+bool CNetworkDevice::ConnectNetwork(const char* address)
+{
+	int retval = 0;
+
+	// 윈속 초기화
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+		return 1;
+
+	// 소켓 생성
+	m_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (m_sock == INVALID_SOCKET) err_quit("socket()");
+
+	// connect()
+	struct sockaddr_in serveraddr;
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	inet_pton(AF_INET, address, &serveraddr.sin_addr);
+
+	serveraddr.sin_port = htons(SERVERPORT);
+	retval = connect(m_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+	return true;
+}
+
 void CNetworkDevice::GetTelegram()
 {
 	std::set<Telegram>* MessageQueue = CMessageDispatcher::GetInst()->GetMessageQueue();
@@ -263,4 +269,9 @@ void CNetworkDevice::GetTelegram()
 		}
 		m_RecvTelegrams[i].clear();
 	}
+}
+
+const SOCKET& CNetworkDevice::GetSock()
+{
+	return m_sock;
 }

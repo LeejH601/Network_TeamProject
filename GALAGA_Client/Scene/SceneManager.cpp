@@ -98,7 +98,7 @@ bool CSceneManager::Init()
 	//m_Player->Init();
 
 	// 플레이어 생성 메세지를 받아 생성하기 떄문에 nullptr로 초기화
-	m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, false, 0);
+    m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
 	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", nullptr, 3000, false, 1);
 	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", nullptr, 3000, false, 2);
 	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", nullptr, 3000, false, 3);
