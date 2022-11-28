@@ -27,16 +27,6 @@ void CBullet::Msg_Create(OBJECT_TYPE TYPE, POSITION POS)
 
 	CObject::SendMessageToClient(telegram);
 
-	/*auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-	EnterCriticalSection(&cs);
-	CNetworkDevice* p;
-	if (!CCore::GetInst()->m_hPlayer2)
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-	else
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
-	p->AddMessage(telegram);
-	LeaveCriticalSection(&cs);*/
 }
 
 void CBullet::Msg_Move(POSITION POS, int ObjectEnum)

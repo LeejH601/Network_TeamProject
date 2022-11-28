@@ -12,6 +12,7 @@ int CPlayer::Init()
 	m_bDie = false;
 	m_fSpeed = 300.0f;
 
+	CObject::SendMsgCreateObject(OBJECT_TYPE::OBJ_PLAYER,  m_tLTPos);
 	return m_iObjID;
 }
 

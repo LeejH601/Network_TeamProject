@@ -128,6 +128,11 @@ void CScene::imgLT_Move_Auto(float fDeltaTime)
 	}
 }
 
+void CScene::Set_Player(CPlayer* pPlayer)
+{
+	m_Player = pPlayer;
+}
+
 bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistance, bool enable, int stageNum)
 {
 	m_StageNum = stageNum;
@@ -208,12 +213,15 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 		m_MonsterList->push_back(t_mon);
 	}
 
-	else
+	else if ((int)obj_Type > 40000 && (int)obj_Type < 50000)
 	{
 		// Bullet
 		Monster_BulletList->AddBullet(id, pos, _SIZE(10, 10), POSITION(0.f, 1.f), 20.f);
 		Monster_BulletList->SetAttack(50.f);
 	}
+
+
+
 }
 
 void CScene::Input(float fDeltaTime, CScene* NextScene)

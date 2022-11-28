@@ -50,6 +50,14 @@ public:
 	void imgLT_Move_Auto(float fDeltaTime);
 
 
+
+
+
+
+
+
+
+	void Set_Player(CPlayer* pPlayer);
 public:
 	bool Init(const WCHAR* imgBackText, class CPlayer* player, long long  MaxDistance, bool enable, int stageNum);
 

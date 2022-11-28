@@ -4,8 +4,9 @@
 class CPlayer : public CObject
 {
 private:
-	bool m_bDie = true;
-	float m_fSpeed;	// Player 의 속도 입니다
+	bool			m_bDie = true;
+	float			m_fSpeed;	// Player 의 속도 입니다
+	TRIBE_TYPE		m_MyType; // Player_Type
 public:
 	CPlayer();
 
