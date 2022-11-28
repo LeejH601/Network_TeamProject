@@ -56,7 +56,7 @@ void CCore::Logic()
 void CCore::Input(float fDeltaTime)
 {
 	// Input을 처리합니다.
-	/*CSceneManager::GetInst()->Input(fDeltaTime);*/
+	CSceneManager::GetInst()->Input(fDeltaTime);
 }
 int CCore::Update(float fDeltaTime)
 {

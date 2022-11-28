@@ -18,6 +18,8 @@ public:
 		m_fSpeed = Speed;
 	}
 
+	virtual bool Init();
+	virtual void Input(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
+	virtual void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
 };
-
