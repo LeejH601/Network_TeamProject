@@ -13,14 +13,18 @@ void CMessageDispatcher::Discharge(CObject* pReceiver, const Telegram& msg)
 
 void CMessageDispatcher::DispatchMessages()
 {
-	while (!PriorityQ.empty())
+	for (const Telegram& tel : PriorityQ)
 	{
-		Telegram& telegram = const_cast<Telegram&>(*PriorityQ.begin());
+		Telegram& telegram = const_cast<Telegram&>(tel);
 
 		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Receiver);
+
 		if (pReceiver)
 			Discharge(pReceiver, telegram);
-		PriorityQ.erase(PriorityQ.begin());
+
+		if (telegram.Extrainfo)
+			delete[] telegram.Extrainfo;
 	}
+	PriorityQ.clear();
 }
 
