@@ -30,7 +30,8 @@ private:
 	CImage images[31];
 	WCHAR m_img_Text[20][50];
 private:
-	class CPlayer* m_Player;
+	class CPlayer* m_MainPlayer;
+	class CPlayer* m_AnotherPlayer;
 	list<class CMonster*> m_MonsterList; // 출현할 몬스터 정보
 public:
 	bool Init();

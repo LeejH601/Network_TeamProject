@@ -128,12 +128,17 @@ void CScene::imgLT_Move_Auto(float fDeltaTime)
 	}
 }
 
-void CScene::Set_Player(CPlayer* pPlayer)
+void CScene::Set_MainPlayer(CPlayer* pPlayer)
 {
-	m_Player = pPlayer;
+	m_MainPlayer = pPlayer;
 }
 
-bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistance, bool enable, int stageNum)
+void CScene::Set_AnotherPlayer(CPlayer* pPlayer)
+{
+	m_AnotherPlayer = pPlayer;
+}
+
+bool CScene::Init(const WCHAR* imgBackText, CPlayer* mainplayer, CPlayer* anotherplayer, long long MaxDistance, bool enable, int stageNum)
 {
 	m_StageNum = stageNum;
 
@@ -149,7 +154,8 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* player, long long MaxDistan
 		while (true);
 	}
 
-	m_Player = player;
+	m_MainPlayer = mainplayer;
+	m_AnotherPlayer = anotherplayer;
 
 	m_MaxDistance = MaxDistance;
 	m_bEnable = enable;
@@ -226,13 +232,13 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 
 void CScene::Input(float fDeltaTime, CScene* NextScene)
 {
-	if (m_Player)
-		m_Player->Input(fDeltaTime);
+	if (m_MainPlayer)
+		m_MainPlayer->Input(fDeltaTime);
 }
 
 int CScene::Update(float fDeltaTime)
 {
-
+	/*m_Player->Update(fDeltaTime);*/
 	return 0;
 }
 
@@ -278,9 +284,9 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 	if (Monster_BulletList)
 		Monster_BulletList->RenderAll(mainhDC, hDC, fDeltaTime);
 	// 플레이어 출력
-	if (m_Player)
+	if (m_MainPlayer)
 	{
-		m_Player->Render(mainhDC, hDC, fDeltaTime);
+		m_MainPlayer->Render(mainhDC, hDC, fDeltaTime);
 		//for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		//	(*it)->Render(mainhDC, hDC, fDeltaTime);
 		//}
@@ -296,6 +302,11 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 		//	m_Tractor->Render(mainhDC, hDC, fDeltaTime);
 		//}
 
+	}
+
+	if (m_AnotherPlayer)
+	{
+		m_AnotherPlayer->Render(mainhDC, hDC, fDeltaTime);
 	}
 
 	for (auto i = m_ItemList.begin();

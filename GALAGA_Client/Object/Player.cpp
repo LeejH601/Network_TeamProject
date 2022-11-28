@@ -4,7 +4,7 @@ CPlayer::CPlayer(int id)
 	RegisterObject(id);
 }
 
-bool CPlayer::Init()
+bool CPlayer::Init(int type)
 {
 	POSITION PlayerVector = { 0 , -100 };
 	_SIZE PlayerSize = { 60,60 };
@@ -12,7 +12,7 @@ bool CPlayer::Init()
 	m_fHP_prototype = 1000.0f;
 	m_fSpeed = 300.0f;
 
-	SetType(1); // �ӽ������� OT_TERRAN���� ����
+	SetType(type); // OT_TERRAN
 
 	switch (m_MyType)
 	{
@@ -47,19 +47,12 @@ bool CPlayer::Init()
 	}
 
 }
-	int i = 0;
 
-	POSITION PlayerVector = { 0 , -100 };
-	_SIZE PlayerSize = { 60,60 };
-	POSITION PlayerLT = { 600 / 2 - PlayerSize.x , 400 };
-	POSITION PlayerimgSize = { 46,41 };
-	POSITION PlayerimgLT = { 15 * 46, 0 };
-
-	CObject::Init(L"../Image/Terran_img/Wraith.png", PlayerLT, PlayerVector, PlayerSize, 1000.0f, PlayerimgSize, PlayerimgLT, PLAYER_TYPE::PT_PLAYER);
-	m_fSpeed = 300.0f;
-
-	return true;
+void CPlayer::Update(float fDeltaTime)
+{
+	
 }
+
 
 void CPlayer::Input(float fDeltaTime)
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 
+class CNetworkDevice;
 class CPlayer : public CObject
 {
 private:
@@ -19,6 +20,7 @@ public:
 	{
 		m_fSpeed = Speed;
 	}
+	void SendCreateMessage(CNetworkDevice* pNetworkDevice, OBJECT_TYPE obj_type);
 	virtual bool HandleMessage(const Telegram& msg);
 };
 

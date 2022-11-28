@@ -31,12 +31,10 @@ public:
 		return m_MyType;
 	}
 
-	virtual bool HandleMessage(const Telegram& msg);
-
-	virtual bool Init();
-	virtual	void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
-	virtual bool Init();
+	virtual bool Init() { return true; }
+	virtual bool Init(int type);
 	virtual void Input(float fDeltaTime);
+	virtual	void Update(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
 	virtual void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
 };

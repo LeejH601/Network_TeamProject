@@ -46,12 +46,12 @@ bool CSceneManager::Init()
 	m_Scene_End2 = new CScene;
 	m_Scene_End3 = new CScene;
 
+	m_Player1 = new CPlayer;
+	m_Player2 = new CPlayer;
 
+	m_Player1->Init();
+	m_Player2->Init();
 
-	
-	
-	
-	
 	// Init Scene
 	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
 	m_Scene_Stage1->Init(m_Player1, m_Player2, 8000, false, 1);
@@ -240,14 +240,12 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 		if (!CCore::GetInst()->m_hPlayer2)
 		{
-			m_Player1 = new CPlayer;
-			m_Player1->Init();
-
 			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
 			EnterCriticalSection(&c_cs);
 			CNetworkDevice* p;
 			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
 			p->AddMessage(tel_Checked);
+			m_Player1->SendCreateMessage(p, OBJECT_TYPE::OBJ_PLAYER);
 			LeaveCriticalSection(&c_cs);
 
 			m_Scene_Begin->SetEnable(false);
@@ -255,17 +253,27 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		}
 		else
 		{
-			/*CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
-			m_Player2 = new CPlayer;
-			m_Player2->Init();
+			CRITICAL_SECTION& c_cs1 = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
+			CRITICAL_SECTION& c_cs2 = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
 
-			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
-			EnterCriticalSection(&c_cs);
-			CNetworkDevice* p;
-			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);*/
-			//p->AddMessage(tel_Checked);
+			EnterCriticalSection(&c_cs1);
+			EnterCriticalSection(&c_cs2);
+
+			CNetworkDevice* p1;
+			CNetworkDevice* p2;
+
+			p1 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+			p2 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+
+			m_Player2->SendCreateMessage(p1, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+
+			m_Player2->SendCreateMessage(p2, OBJECT_TYPE::OBJ_PLAYER);
+			m_Player1->SendCreateMessage(p2, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+
+			LeaveCriticalSection(&c_cs1);
+			LeaveCriticalSection(&c_cs2);
+
 			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
-			//LeaveCriticalSection(&c_cs);
 		}
 	}
 	return true;

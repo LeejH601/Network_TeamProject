@@ -1,4 +1,6 @@
 #include	"Player.h"
+#include "../Core/Timer.h"
+#include "../Network/NetworkDevice.h"
 
 CPlayer::CPlayer()
 {
@@ -12,8 +14,27 @@ int CPlayer::Init()
 	m_bDie = false;
 	m_fSpeed = 300.0f;
 
-	CObject::SendMsgCreateObject(OBJECT_TYPE::OBJ_PLAYER,  m_tLTPos);
 	return m_iObjID;
+}
+
+void CPlayer::SendCreateMessage(CNetworkDevice* pNetworkDevice, OBJECT_TYPE obj_type)
+{
+	Telegram tel_CreateObject;
+	tel_CreateObject.Sender = m_iObjID;
+	tel_CreateObject.Receiver = 0;
+	tel_CreateObject.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+	tel_CreateObject.DispatchTime = CTimer::GetInst()->GetTime();
+	char* extraInfo = new char[12];
+
+	int nType = (int)obj_type;
+
+	memcpy(&extraInfo[0], &nType, sizeof(OBJECT_TYPE));
+	memcpy(&extraInfo[4], &m_tLTPos, sizeof(POSITION));
+	tel_CreateObject.Extrainfo = extraInfo;
+
+	pNetworkDevice->AddMessage(tel_CreateObject);
+
+	delete[] tel_CreateObject.Extrainfo;
 }
 
 bool CPlayer::HandleMessage(const Telegram& msg)

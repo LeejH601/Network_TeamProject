@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "../Core/Timer.h"
 #include "../Scene/SceneManager.h"
 
 int CObject::m_iObjN = 0;

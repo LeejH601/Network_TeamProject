@@ -29,7 +29,8 @@ CSceneManager::~CSceneManager()
 
 	SAFE_DELETE(m_Scene_StageClear);
 
-	SAFE_DELETE(m_Player);
+	SAFE_DELETE(m_MainPlayer);
+	SAFE_DELETE(m_AnotherPlayer);
 }
 
 bool CSceneManager::Init()
@@ -98,12 +99,12 @@ bool CSceneManager::Init()
 	//m_Player->Init();
 
 	// 플레이어 생성 메세지를 받아 생성하기 떄문에 nullptr로 초기화
-    m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, 0, true, 0);
-	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", nullptr, 3000, false, 1);
-	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", nullptr, 3000, false, 2);
-	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", nullptr, 3000, false, 3);
-	m_Scene_StageClear->Init(L"./Image/Scene_Back_img/Stage_Clear.png", nullptr, 0, false, 0);
-	m_Scene_End->Init(L"./Image/Scene_Back_img/End1.png", nullptr, 0, false, 0);
+    m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, nullptr, 0, true, 0);
+	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", nullptr, nullptr,3000, false, 1);
+	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", nullptr, nullptr,3000, false, 2);
+	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", nullptr, nullptr,3000, false, 3);
+	m_Scene_StageClear->Init(L"./Image/Scene_Back_img/Stage_Clear.png", nullptr, nullptr, 0, false, 0);
+	m_Scene_End->Init(L"./Image/Scene_Back_img/End1.png", nullptr, nullptr, 0, false, 0);
 
 	return true;
 }
@@ -262,7 +263,7 @@ void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 
 CPlayer* CSceneManager::GetPlayer()
 {
-	return m_Player;
+	return m_MainPlayer;
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
@@ -280,12 +281,24 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
 		
 		if (*obj_type == OBJECT_TYPE::OBJ_PLAYER) { // Player 생성
-			m_Player = new CPlayer(id);
-			m_Player->Init();
+			m_MainPlayer = new CPlayer(id);
+			m_MainPlayer->Init(1);
 			// Player 생성 -> Scene마다 Player 셋팅
-			m_Scene_Stage1->Set_Player(m_Player);
-			m_Scene_stage2->Set_Player(m_Player);
-			m_Scene_stage3->Set_Player(m_Player);
+			m_Scene_Stage1->Set_MainPlayer(m_MainPlayer);
+			m_Scene_stage2->Set_MainPlayer(m_MainPlayer);
+			m_Scene_stage3->Set_MainPlayer(m_MainPlayer);
+			delete pos;
+			delete obj_type;
+			return true;
+		}
+
+		if (*obj_type == OBJECT_TYPE::OBJ_ANOTHER_PLAYER) { // Player 생성
+			m_AnotherPlayer = new CPlayer(id);
+			m_AnotherPlayer->Init(3);
+			// Player 생성 -> Scene마다 Player 셋팅
+			m_Scene_Stage1->Set_AnotherPlayer(m_AnotherPlayer);
+			m_Scene_stage2->Set_AnotherPlayer(m_AnotherPlayer);
+			m_Scene_stage3->Set_AnotherPlayer(m_AnotherPlayer);
 			delete pos;
 			delete obj_type;
 			return true;

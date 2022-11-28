@@ -68,8 +68,6 @@ void CCore::SnapshotInit(int nPlayer)
 	// 플레이어 핸들
 	DWORD hPlayer = (nPlayer == 0) ? m_hPlayer1 : m_hPlayer2;
 
-	
-
 	auto GenerateMsgCreate = [](DWORD hP, CObject* obj) {
 
 		Telegram telegram;
@@ -101,6 +99,7 @@ void CCore::SnapshotInit(int nPlayer)
 	SCM->SendMsgChangeScene(SCM->GetCurrentSceneType());
 	// 플레이어 생성 메시지
 	
+
 	// 몬스터 생성 메시지
 	std::list<CMonster*>* mob_list =  SCM->GetMonsterList();
 	for (CMonster* mob : *mob_list) {

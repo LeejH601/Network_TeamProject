@@ -14,8 +14,8 @@ private:
 
 	class CTractor* m_Tractor = nullptr;
 	class Boss* m_boss = nullptr;
-	class CPlayer* m_Player;
-
+	class CPlayer* m_MainPlayer;
+	class CPlayer* m_AnotherPlayer;
 private:
 	CImage				m_BackImage;
 	bool				m_bEnable;
@@ -57,9 +57,10 @@ public:
 
 
 
-	void Set_Player(CPlayer* pPlayer);
+	void Set_MainPlayer(CPlayer* pPlayer);
+	void Set_AnotherPlayer(CPlayer* pPlayer);
 public:
-	bool Init(const WCHAR* imgBackText, class CPlayer* player, long long  MaxDistance, bool enable, int stageNum);
+	bool Init(const WCHAR* imgBackText, class CPlayer* mainplayer, class CPlayer* anotherplayer, long long  MaxDistance, bool enable, int stageNum);
 
 public:
 	void AddObject(int id, OBJECT_TYPE type_Item, POSITION pos);
