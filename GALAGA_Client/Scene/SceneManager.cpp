@@ -259,11 +259,6 @@ void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 		m_Scene_End->Render(mainhDC, hDC, fDeltaTime);
 }
 
-void CSceneManager::CreatePlayer()
-{
-	m_Player = new CPlayer;
-	m_Player->Init();
-}
 
 CPlayer* CSceneManager::GetPlayer()
 {
@@ -285,7 +280,8 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
 		
 		if (*obj_type == OBJECT_TYPE::OBJ_PLAYER) { // Player 생성
-			CreatePlayer();
+			m_Player = new CPlayer(id);
+			m_Player->Init();
 			// Player 생성 -> Scene마다 Player 셋팅
 			m_Scene_Stage1->Set_Player(m_Player);
 			m_Scene_stage2->Set_Player(m_Player);

@@ -8,7 +8,7 @@ private:
 	float			m_fSpeed; // Player ¼Óµµ
 	float			m_fHP_prototype; // Player Hp
 public:
-	CPlayer();
+	CPlayer(int id);
 
 	float GetSpeed()
 	{

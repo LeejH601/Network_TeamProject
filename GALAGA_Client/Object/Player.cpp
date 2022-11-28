@@ -1,6 +1,7 @@
 #include	"Player.h"
-CPlayer::CPlayer()
+CPlayer::CPlayer(int id)
 {
+	RegisterObject(id);
 }
 
 bool CPlayer::Init()
