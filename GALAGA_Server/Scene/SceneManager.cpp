@@ -221,8 +221,6 @@ void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 	memcpy(tel_ChangeScene.Extrainfo, &scene_type, sizeof(SCENE_TYPE));
 
 	CObject::SendMessageToClient(tel_ChangeScene);
-
-	delete[] tel_ChangeScene.Extrainfo;
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
@@ -277,7 +275,6 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
 		}
-		delete tel_Checked.Extrainfo;
 	}
 	return true;
 	default:
