@@ -43,7 +43,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	memcpy(&Arg, arg, sizeof(ThreadArgument));*/
 
 	CRITICAL_SECTION tCs;
-
 	client_cs.insert(CS_PAIR(GetCurrentThreadId(), tCs));
 
 	CRITICAL_SECTION& cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(GetCurrentThreadId(), nullptr))->second);
@@ -70,7 +69,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	while (true)
 	{
 		//std::cout << "??????????" << std::endl;
+		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.RecvByNetwork();
+		LeaveCriticalSection(&msg_dispatcher_cs);
 
 		/*EnterCriticalSection(pCs);
 		Network_Device.CopyTelegramQueue();
@@ -84,7 +85,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Network_Device.SendToNetwork();
 		LeaveCriticalSection(&cs);
 
+		/*EnterCriticalSection(&cs);
 		Network_Device.printTelegram();
+		LeaveCriticalSection(&cs);*/
 	}
 
 	return 0;

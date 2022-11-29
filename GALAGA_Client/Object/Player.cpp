@@ -66,7 +66,9 @@ void CPlayer::Update(float fDeltaTime)
 		tel_MoveObject.Extrainfo = new char[8];
 		memcpy(tel_MoveObject.Extrainfo, &m_tLTPos, sizeof(POSITION));
 
+		EnterCriticalSection(&cs);
 		CNetworkDevice::GetInst()->AddMessage(tel_MoveObject);
+		LeaveCriticalSection(&cs);
 
 		delete[] tel_MoveObject.Extrainfo;
 	}

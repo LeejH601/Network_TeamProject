@@ -49,9 +49,9 @@ void CCore::Logic()
 
 	if (CNetworkDevice::GetInst()->GetSock())
 	{
-
-
+		EnterCriticalSection(&Main_cs);
 		CMessageDispatcher::GetInst()->DispatchMessages();
+		LeaveCriticalSection(&Main_cs);
 	}
 }
 
@@ -189,9 +189,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		CNetworkDevice::GetInst()->SendToNetwork();
 		LeaveCriticalSection(&cs);
 
-		CNetworkDevice::GetInst()->RecvByNetwork();
-
 		EnterCriticalSection(&Main_cs);
+		CNetworkDevice::GetInst()->RecvByNetwork();
 		CNetworkDevice::GetInst()->GetTelegram();
 		LeaveCriticalSection(&Main_cs);
 	}

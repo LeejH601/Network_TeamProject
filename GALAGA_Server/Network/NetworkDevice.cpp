@@ -222,7 +222,7 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 	if (Message.Extrainfo)
 	{
 		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))];
-		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
+		memcpy(messageQueue.Extrainfo, Message.Extrainfo, (Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))));
 	}
 
 	m_SendTelegrams[messageQueue.Msg].push_back(messageQueue);
