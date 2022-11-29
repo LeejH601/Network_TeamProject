@@ -223,14 +223,20 @@ bool CNetworkDevice::RecvByNetwork()
 
 void CNetworkDevice::AddMessage(Telegram& Message)
 {
-	Telegram messageQueue = Message;
-	if (messageQueue.Extrainfo)
+	Telegram messageQueue;
+	messageQueue.Sender = Message.Sender;
+	messageQueue.Receiver = Message.Receiver;
+	messageQueue.DispatchTime = Message.DispatchTime;
+	messageQueue.Msg = Message.Msg;
+	messageQueue.Extrainfo = nullptr;
+
+	if (Message.Extrainfo)
 	{
-		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - sizeof(int)];
-		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - sizeof(int));
+		messageQueue.Extrainfo = new char[Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG))];
+		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
 	}
 
-	m_SendTelegrams[Message.Msg].push_back(messageQueue);
+	m_SendTelegrams[messageQueue.Msg].push_back(messageQueue);
 }
 
 bool CNetworkDevice::ConnectNetwork(const char* address)

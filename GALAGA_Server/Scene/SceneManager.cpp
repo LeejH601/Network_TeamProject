@@ -237,7 +237,6 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		tel_Checked.Extrainfo = new int;
 		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
 		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
-
 		if (!CCore::GetInst()->m_hPlayer2)
 		{
 			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
@@ -275,6 +274,8 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
 		}
+
+		delete tel_Checked.Extrainfo;
 	}
 	return true;
 	default:

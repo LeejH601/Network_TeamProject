@@ -119,7 +119,7 @@ bool CNetworkDevice::RecvByNetwork()
 	ZeroMemory(buf, sizeof(buf));
 
 
-	retval = recv(m_client_sock, buf, 28, 0);
+	retval = recv(m_client_sock, buf, 28, MSG_WAITALL);
 	//retval = recv(m_client_sock, buf, nEvents.max_size() * sizeof(int), MSG_WAITALL);
 	if (retval == SOCKET_ERROR) {
 		return false;
@@ -198,6 +198,7 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 	messageQueue.Receiver = Message.Receiver;
 	messageQueue.DispatchTime = Message.DispatchTime;
 	messageQueue.Msg = Message.Msg;
+	messageQueue.Extrainfo = nullptr;
 
 	bool bReturn = false;
 	if (messageQueue.Msg == 1)
@@ -235,7 +236,7 @@ void CNetworkDevice::GetTelegram()
 		for (int j = 0; j < m_RecvTelegrams[i].size(); ++j) {
 			MessageQueue->insert(m_RecvTelegrams[i][j]);
 		}
-		//m_RecvTelegrams[i].clear();
+		m_RecvTelegrams[i].clear();
 	}
 }
 
@@ -257,6 +258,6 @@ void CNetworkDevice::printTelegram()
 			else
 				std::cout << "RecvQueue :: " << m_RecvTelegrams[i][j].Msg << " : " << m_RecvTelegrams[i][j].Receiver << " - " << "nullptr" << std::endl;
 		}
-		m_RecvTelegrams[i].clear();
+		//m_RecvTelegrams[i].clear();
 	}
 }

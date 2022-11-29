@@ -17,7 +17,6 @@ void CMessageDispatcher::DispatchMessages()
 		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Receiver);
 		if (pReceiver)
 			Discharge(pReceiver, telegram);
-
 		if (telegram.Extrainfo)
 			delete[] telegram.Extrainfo;
 		PriorityQ.erase(PriorityQ.begin());

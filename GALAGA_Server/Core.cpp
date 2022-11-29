@@ -37,8 +37,9 @@ void CCore::Logic()
 	LateUpdate(fDeltaTime);		// * ������Ʈ ��ó�� 
 	Collision(fDeltaTime);		// * �浹 ó��
 
+	EnterCriticalSection(&msg_dispatcher_cs);
 	CMessageDispatcher::GetInst()->DispatchMessages();
-
+	LeaveCriticalSection(&msg_dispatcher_cs);
 }
 
 

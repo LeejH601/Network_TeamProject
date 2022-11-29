@@ -1,7 +1,6 @@
 #include "..\Common.h"
 #include "Core.h"
 #include "Network/NetworkDevice.h"
-#include "MessageDispatcher/CMessageDispatcher.h"
 #include "Locator.h"
 
 
@@ -13,7 +12,7 @@ char* SERVERIP = (char*)"127.0.0.1";
 
 std::set<CS_PAIR, cs_comp> client_cs;
 CRITICAL_SECTION main_loop_cs;
-
+CRITICAL_SECTION msg_dispatcher_cs;
 CLocator Locator;
 
 struct ThreadArgument {
@@ -77,7 +76,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Network_Device.CopyTelegramQueue();
 		LeaveCriticalSection(pCs);*/
 
+		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.GetTelegram();
+		LeaveCriticalSection(&msg_dispatcher_cs);
 
 		EnterCriticalSection(&cs);
 		Network_Device.SendToNetwork();
@@ -101,6 +102,7 @@ int main(int argc, char* argv[])
 	}
 
 	InitializeCriticalSection(&main_loop_cs);
+	InitializeCriticalSection(&msg_dispatcher_cs);
 
 
 	WSADATA wsa;
@@ -166,6 +168,7 @@ int main(int argc, char* argv[])
 		DeleteCriticalSection(&_cs.second);
 	}
 
+	DeleteCriticalSection(&msg_dispatcher_cs);
 	DeleteCriticalSection(&main_loop_cs);
 
 	closesocket(listen_sock);
