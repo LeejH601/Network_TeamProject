@@ -455,8 +455,8 @@ void CMonster::Update(float fDeltaTime)
 
 	fire_delay -= (fDeltaTime * 300.0f);
 
-	m_Path.Update(fDeltaTime * 5.0f);
-	SetPos(m_Path.GetNextPos());
+	/*m_Path.Update(fDeltaTime * 5.0f);
+	SetPos(m_Path.GetNextPos());*/
 
 	CObject::Update(fDeltaTime);
 	CObject::SendMsgMoveObject();
