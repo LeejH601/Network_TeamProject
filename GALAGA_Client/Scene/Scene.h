@@ -49,6 +49,14 @@ public:
 	void imgLT_Move(float fDeltaTime);
 	void imgLT_Move_Auto(float fDeltaTime);
 
+
+
+
+
+
+
+
+
 	void Set_MainPlayer(CPlayer* pPlayer);
 	void Set_AnotherPlayer(CPlayer* pPlayer);
 public:

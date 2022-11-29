@@ -237,8 +237,6 @@ bool CCore::Init(HINSTANCE hInst)
 		return false;*/
 
 	Telegram testTelegram = Telegram{ 0, 0, (int)MESSAGE_TYPE::Msg_clientReady, CTimer::GetInst()->GetTime(), nullptr };
-	testTelegram.Extrainfo = nullptr;
-
 	CNetworkDevice::GetInst()->AddMessage(testTelegram);
 
 	return true;

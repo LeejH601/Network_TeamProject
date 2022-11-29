@@ -5,7 +5,6 @@ void CMessageDispatcher::Discharge(CObject* pReceiver, const Telegram& msg)
 {
 	if (!pReceiver->HandleMessage(msg)) {
 		std::cout << "Message Not Handled" << std::endl;
-		delete[] msg.Extrainfo;
 	}
 }
 

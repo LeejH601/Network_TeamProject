@@ -7,7 +7,6 @@ private:
 	TRIBE_TYPE		m_MyType; // Player_Type
 	float			m_fSpeed; // Player �ӵ�
 	float			m_fHP_prototype; // Player Hp
-	POSITION		m_tLastLTPos;				
 public:
 	CPlayer(int id);
 

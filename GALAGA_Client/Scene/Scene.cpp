@@ -238,8 +238,7 @@ void CScene::Input(float fDeltaTime, CScene* NextScene)
 
 int CScene::Update(float fDeltaTime)
 {
-	if(m_MainPlayer)
-		m_MainPlayer->Update(fDeltaTime);
+	/*m_Player->Update(fDeltaTime);*/
 	return 0;
 }
 
