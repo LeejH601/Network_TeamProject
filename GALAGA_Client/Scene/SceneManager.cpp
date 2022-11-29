@@ -287,20 +287,17 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_Stage1->Set_MainPlayer(m_MainPlayer);
 			m_Scene_stage2->Set_MainPlayer(m_MainPlayer);
 			m_Scene_stage3->Set_MainPlayer(m_MainPlayer);
-			delete pos;
-			delete obj_type;
 			return true;
 		}
 
 		if (*obj_type == OBJECT_TYPE::OBJ_ANOTHER_PLAYER) { // Player 생성
 			m_AnotherPlayer = new CPlayer(id);
+			m_AnotherPlayer->SetPos(*pos);
 			m_AnotherPlayer->Init(3);
 			// Player 생성 -> Scene마다 Player 셋팅
 			m_Scene_Stage1->Set_AnotherPlayer(m_AnotherPlayer);
 			m_Scene_stage2->Set_AnotherPlayer(m_AnotherPlayer);
 			m_Scene_stage3->Set_AnotherPlayer(m_AnotherPlayer);
-			delete pos;
-			delete obj_type;
 			return true;
 		}
 

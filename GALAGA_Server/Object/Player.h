@@ -20,6 +20,7 @@ public:
 	{
 		m_fSpeed = Speed;
 	}
+	void SendMoveMessage(CNetworkDevice* pNetworkDevice);
 	void SendCreateMessage(CNetworkDevice* pNetworkDevice, OBJECT_TYPE obj_type);
 	virtual bool HandleMessage(const Telegram& msg);
 };
