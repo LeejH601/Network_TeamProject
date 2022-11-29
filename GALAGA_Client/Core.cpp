@@ -13,6 +13,9 @@ bool CCore::m_bLoop = true;
 HWND my_hDlg;
 HINSTANCE my_hInstance;
 
+CRITICAL_SECTION cs;
+CRITICAL_SECTION Main_cs;
+
 CCore::CCore()
 {
 }
@@ -46,8 +49,7 @@ void CCore::Logic()
 
 	if (CNetworkDevice::GetInst()->GetSock())
 	{
-		CNetworkDevice::GetInst()->SendToNetwork();
-		CNetworkDevice::GetInst()->RecvByNetwork();
+
 
 		CMessageDispatcher::GetInst()->DispatchMessages();
 	}
@@ -165,6 +167,39 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+
+DWORD WINAPI ProcessClient(LPVOID arg)
+{
+	char client_ip[20];
+	memcpy(client_ip, arg, 20);
+
+	InitializeCriticalSection(&cs);
+
+	CNetworkDevice::GetInst()->ConnectNetwork(client_ip);
+	EnterCriticalSection(&Main_cs);
+	CCore::GetInst()->SetConnected();
+	LeaveCriticalSection(&Main_cs);
+
+	Telegram testTelegram = Telegram{ 0, 0, (int)MESSAGE_TYPE::Msg_clientReady, CTimer::GetInst()->GetTime(), nullptr };
+	CNetworkDevice::GetInst()->AddMessage(testTelegram);
+
+	while (true)
+	{
+		EnterCriticalSection(&cs);
+		CNetworkDevice::GetInst()->SendToNetwork();
+		LeaveCriticalSection(&cs);
+
+		CNetworkDevice::GetInst()->RecvByNetwork();
+
+		EnterCriticalSection(&Main_cs);
+		CNetworkDevice::GetInst()->GetTelegram();
+		LeaveCriticalSection(&Main_cs);
+	}
+
+	DeleteCriticalSection(&cs);
+}
+
+
 INT_PTR CCore::DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
@@ -186,12 +221,15 @@ INT_PTR CCore::DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				THIRD_IPADDRESS(dwAddr),
 				FOURTH_IPADDRESS(dwAddr));
 
-			if (CNetworkDevice::GetInst()->ConnectNetwork(ipv4))
-				CCore::GetInst()->SetConnected();
+			/*if (CNetworkDevice::GetInst()->ConnectNetwork(ipv4))
+				CCore::GetInst()->SetConnected();*/
+			HANDLE hThread = CreateThread(NULL, 0, ProcessClient, ipv4, 0, NULL);
+
+			if (hThread == NULL) CloseHandle(hThread);
 
 			DestroyWindow(hDlg);
 		}
-			return TRUE;
+		return TRUE;
 		case IDCANCEL:
 			DestroyWindow(hDlg);
 			return TRUE;
@@ -236,8 +274,7 @@ bool CCore::Init(HINSTANCE hInst)
 	/*if (!CSoundManager::GetInst()->Init())
 		return false;*/
 
-	Telegram testTelegram = Telegram{ 0, 0, (int)MESSAGE_TYPE::Msg_clientReady, CTimer::GetInst()->GetTime(), nullptr };
-	CNetworkDevice::GetInst()->AddMessage(testTelegram);
+	
 
 	return true;
 }

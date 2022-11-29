@@ -157,7 +157,6 @@ int main(int argc, char* argv[])
 				//CCore::GetInst()->SetPlayerHandle(hThread, 1);
 				//CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
 			}
-			ResumeThread(hThread);
 
 			CloseHandle(hThread);
 		}

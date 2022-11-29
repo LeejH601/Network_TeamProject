@@ -10,6 +10,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	srand((unsigned int)time(NULL));
 
+	InitializeCriticalSection(&Main_cs);
+
 	// 게임을 초기화 합니다. 
 	if (!CCore::GetInst()->Init(hInstance))
 	{
@@ -20,6 +22,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// 게임 구동을 시작합니다. 
 	int iRev = CCore::GetInst()->Run();
 	CCore::DestroyInst();
+
+	DeleteCriticalSection(&Main_cs);
 
 	return iRev;
 

@@ -216,7 +216,7 @@ bool CNetworkDevice::RecvByNetwork()
 		}
 	}
 
-	GetTelegram();
+	//GetTelegram();
 
 	delete[] dataBuf;
 }
