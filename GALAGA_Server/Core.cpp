@@ -37,8 +37,7 @@ void CCore::Logic()
 	LateUpdate(fDeltaTime);		// * ������Ʈ ��ó�� 
 	Collision(fDeltaTime);		// * �浹 ó��
 
-	if (CMessageDispatcher::GetInst())
-		CMessageDispatcher::GetInst()->DispatchMessages();
+	CMessageDispatcher::GetInst()->DispatchMessages();
 
 }
 

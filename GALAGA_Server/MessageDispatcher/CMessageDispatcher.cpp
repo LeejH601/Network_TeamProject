@@ -4,10 +4,8 @@
 void CMessageDispatcher::Discharge(CObject* pReceiver, const Telegram& msg)
 {
 	if (!pReceiver->HandleMessage(msg)) {
-		if (msg.Extrainfo)
-		{
-			std::cout << "Message Not Handled" << std::endl;
-		}
+		std::cout << "Message Not Handled" << std::endl;
+		delete[] msg.Extrainfo;
 	}
 }
 
@@ -15,11 +13,11 @@ void CMessageDispatcher::DispatchMessages()
 {
 	while (!PriorityQ.empty())
 	{
-		Telegram& telegram = const_cast<Telegram&>(*PriorityQ.begin());
+		const Telegram& telegram = *PriorityQ.begin();
 
 		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Receiver);
-		if (pReceiver)
-			Discharge(pReceiver, telegram);
+		Discharge(pReceiver, telegram);
+
 		PriorityQ.erase(PriorityQ.begin());
 	}
 }
