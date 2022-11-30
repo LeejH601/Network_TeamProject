@@ -283,6 +283,8 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		if (*obj_type == OBJECT_TYPE::OBJ_PLAYER) { // Player 생성
 			m_MainPlayer = new CPlayer(id);
 			m_MainPlayer->Init(1);
+			m_MainPlayer->SetPos(*pos);
+
 			// Player 생성 -> Scene마다 Player 셋팅
 			m_Scene_Stage1->Set_MainPlayer(m_MainPlayer);
 			m_Scene_stage2->Set_MainPlayer(m_MainPlayer);
@@ -292,8 +294,9 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 		if (*obj_type == OBJECT_TYPE::OBJ_ANOTHER_PLAYER) { // Player 생성
 			m_AnotherPlayer = new CPlayer(id);
-			m_AnotherPlayer->SetPos(*pos);
 			m_AnotherPlayer->Init(3);
+			m_AnotherPlayer->SetPos(*pos);
+
 			// Player 생성 -> Scene마다 Player 셋팅
 			m_Scene_Stage1->Set_AnotherPlayer(m_AnotherPlayer);
 			m_Scene_stage2->Set_AnotherPlayer(m_AnotherPlayer);
@@ -358,10 +361,6 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		char* tmp = (char*)telegram.Extrainfo;
 		int* scene_type = new int;
 		memcpy(scene_type, tmp, sizeof(int));
-
-		char buf[256];
-		sprintf_s(buf, sizeof(buf), "Scene : %d", *scene_type);
-		OutputDebugStringA(buf);
 
 		switch (*scene_type)
 		{

@@ -61,11 +61,6 @@ void CBulletList::Update(float fDeltaTime)
 	for (CBullet* pBullet : m_listBulletList) {
 		if (pBullet)
 			pBullet->Update(fDeltaTime);
-
-		if (!(pBullet->GetEnbale())) {
-			Erase(pBullet);
-			break;
-		}
 	}
 
 }
@@ -87,12 +82,12 @@ void CBulletList::LateUpdate(float fDeltaTime)
 {
 	for (std::list<class CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++)
 	{
-		if (!((*it)->GetEnbale()))
+		/*if (!((*it)->GetEnbale()))
 		{
 			CBullet* pBullet = *it;
 			it = m_listBulletList.erase(it);
 			SAFE_DELETE(pBullet);
-		}
+		}*/
 	}
 }
 

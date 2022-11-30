@@ -68,5 +68,4 @@ bool CBullet::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize
 void CBullet::Update(float fDeltaTime)
 {
 
-
 }

@@ -181,6 +181,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	LeaveCriticalSection(&Main_cs);
 
 	Telegram testTelegram = Telegram{ 0, 0, (int)MESSAGE_TYPE::Msg_clientReady, CTimer::GetInst()->GetTime(), nullptr };
+
 	CNetworkDevice::GetInst()->AddMessage(testTelegram);
 
 	while (true)

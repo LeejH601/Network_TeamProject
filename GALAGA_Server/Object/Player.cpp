@@ -19,11 +19,15 @@ CPlayer::~CPlayer()
 
 int CPlayer::Init()
 {
-
 	m_myBulletList = new CBulletList;
 
 	m_iObjID = m_iObjN++;
 	CObjectManager::GetInst()->RegisterObject(this);
+
+	_SIZE PlayerSize = { 60,60 };
+	POSITION PlayerLT = { 600 / 2 - PlayerSize.x , 400 };
+
+	m_tLTPos = PlayerLT;
 
 	m_bDie = false;
 	m_fSpeed = 300.0f;
@@ -91,7 +95,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 	{
 		POSITION* pos = new POSITION;
 		memcpy(pos, msg.Extrainfo, sizeof(POSITION));
-
+		
 		SetPos(*pos);
 		delete pos;
 		switch (m_iObjID)
