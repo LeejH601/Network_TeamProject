@@ -354,7 +354,16 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	}
 	break;
 	case MESSAGE_TYPE::Msg_changeScene:
-		switch (*((int*)telegram.Extrainfo))
+	{
+		char* tmp = (char*)telegram.Extrainfo;
+		int* scene_type = new int;
+		memcpy(scene_type, tmp, sizeof(int));
+
+		char buf[256];
+		sprintf_s(buf, sizeof(buf), "Scene : %d", *scene_type);
+		OutputDebugStringA(buf);
+
+		switch (*scene_type)
 		{
 		case (int)SCENE_TYPE::ST_BEGIN:
 			m_Scene_Begin->SetEnable(true);
@@ -363,6 +372,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(false);
 			m_Scene_End->SetEnable(false);
+			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_STAGE1:
 			m_Scene_Begin->SetEnable(false);
@@ -371,6 +381,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(false);
 			m_Scene_End->SetEnable(false);
+			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_STAGE2:
 			m_Scene_Begin->SetEnable(false);
@@ -379,6 +390,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(false);
 			m_Scene_End->SetEnable(false);
+			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_STAGE3:
 			m_Scene_Begin->SetEnable(false);
@@ -387,6 +399,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->SetEnable(true);
 			m_Scene_StageClear->SetEnable(false);
 			m_Scene_End->SetEnable(false);
+			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_CLEAR:
 			m_Scene_Begin->SetEnable(false);
@@ -395,6 +408,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(true);
 			m_Scene_End->SetEnable(false);
+			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_END:
 			m_Scene_Begin->SetEnable(false);
@@ -403,9 +417,10 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(false);
 			m_Scene_End->SetEnable(true);
+			delete scene_type;
 			return true;
-			break;
 		}
+	}
 	default:
 		break;
 	}

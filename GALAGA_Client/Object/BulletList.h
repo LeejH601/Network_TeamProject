@@ -17,6 +17,7 @@ public:
 	// Update
 	void Update(float fDeltaTime);
 	void Update(float fDeltaTime, _SIZE _size);
+	void LateUpdate(float fDeltaTime);
 
 	// Bullet Render
 	void RenderAll(HDC mainDC, HDC hdc, float fDeltaTime);

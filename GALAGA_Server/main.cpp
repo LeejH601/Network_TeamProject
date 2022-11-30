@@ -55,8 +55,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	Network_Device.init((SOCKET)Arg);
 	Locator.SetNetworkDevice(GetCurrentThreadId(), &Network_Device);
-	auto test = Locator.GetNetworkDevice(GetCurrentThreadId());
-
 
 	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient++);
 
@@ -81,7 +79,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Network_Device.GetTelegram();
 		LeaveCriticalSection(&msg_dispatcher_cs);
 
-		EnterCriticalSection(&cs);
+		EnterCriticalSection(&cs);	
 		Network_Device.SendToNetwork();
 		LeaveCriticalSection(&cs);
 

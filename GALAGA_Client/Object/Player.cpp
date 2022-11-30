@@ -75,7 +75,6 @@ void CPlayer::Update(float fDeltaTime)
 
 		delete[] tel_MoveObject.Extrainfo;
 	}
-	Input(fDeltaTime);
 }
 
 
@@ -136,7 +135,9 @@ void CPlayer::Input(float fDeltaTime)
 				telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
 				memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
 				memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
+				EnterCriticalSection(&cs);
 				CNetworkDevice::GetInst()->AddMessage(telegram);
+				LeaveCriticalSection(&cs);
 			}
 			m_LastFireTime = currentTime;
 			m_BulletShotCount = 100;

@@ -54,9 +54,9 @@ bool CSceneManager::Init()
 
 	// Init Scene
 	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
-	m_Scene_Stage1->Init(m_Player1, m_Player2, 8000, false, 1);
-	m_Scene_stage2->Init(m_Player1, m_Player2, 8000, false, 2);
-	m_Scene_stage3->Init(m_Player1, m_Player2, 8000, false, 3);
+	m_Scene_Stage1->Init(m_Player1, m_Player2, 2000, false, 1);
+	m_Scene_stage2->Init(m_Player1, m_Player2, 2000, false, 2);
+	m_Scene_stage3->Init(m_Player1, m_Player2, 2000, false, 3);
 	m_Scene_StageClear->Init(nullptr, nullptr, 0, false, 0);
 	m_Scene_End->Init(nullptr, nullptr, 0, false, 0);
 
@@ -103,6 +103,7 @@ void CSceneManager::Update(float fDeltaTime)
 			NextStageNum = 0;
 		}
 	}
+
 	else if (m_Scene_StageClear->GetEnable())
 	{
 
@@ -216,11 +217,30 @@ void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 	tel_ChangeScene.DispatchTime = CTimer::GetInst()->GetTime();
 	tel_ChangeScene.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 	tel_ChangeScene.Extrainfo = new char[4];
-	int scene_type = (int)nType;
 
-	memcpy(tel_ChangeScene.Extrainfo, &scene_type, sizeof(SCENE_TYPE));
+	memcpy(tel_ChangeScene.Extrainfo, &nType, sizeof(SCENE_TYPE));
 
-	CObject::SendMessageToClient(tel_ChangeScene);
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
+		EnterCriticalSection(&c_cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		p->AddMessage(tel_ChangeScene);
+		LeaveCriticalSection(&c_cs);
+	}
+
+	if (CCore::GetInst()->m_hPlayer2)
+	{
+		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
+		EnterCriticalSection(&c_cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+		p->AddMessage(tel_ChangeScene);
+		LeaveCriticalSection(&c_cs);
+	}
+
+	delete tel_ChangeScene.Extrainfo;
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)

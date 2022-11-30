@@ -16,6 +16,7 @@ public:
 	// Update
 	void Update(float fDeltaTime);
 	void Update(float fDeltaTime, _SIZE _size);
+	void LateUpdate(float fDeltaTime);
 
 	// Bullet Collision
 	// 반환값: 충돌 횟수, 인자: 오브젝트 위치, 사이즈

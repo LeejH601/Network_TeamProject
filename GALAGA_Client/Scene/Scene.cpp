@@ -250,6 +250,8 @@ int CScene::Update(float fDeltaTime)
 
 int CScene::LateUpdate(float fDeltaTime)
 {
+	if (m_MainPlayer)
+		(m_MainPlayer->GetmyBulletList())->LateUpdate(fDeltaTime);
 	return 0;
 }
 

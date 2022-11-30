@@ -25,11 +25,12 @@ private:
 	bool				  m_bEnable;	 // 화면 활성화 체크 변수 
 
 	double		      m_MaxDistance; // 스테이지가 끝날 주행거리 변수 
+public:
 	double			  m_Distance;	 // 현재 플레이어가 움직인 거리
+	bool			  m_bEndScene;	 // 해당 씬이 종료됨을 알리는 변수
 
 private:
 	bool				  m_bSlide;		//  화면에서 기준점 2를 이용해 맵을 슬라이드 해야할 때 인지 체크
-	bool				  m_bEndScene;	 // 해당 씬이 종료됨을 알리는 변수
 
 	int I_MspawnDelay = 2000;			// 값이 낮을 수록 몬스터 생성빈도가 많아집니다..
 	int I_MspawnCount = 0;

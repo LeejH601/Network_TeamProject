@@ -80,10 +80,18 @@ void CBulletList::Update(float fDeltaTime, _SIZE _size)
 			pBullet->SetPos(pBullet->GetPos() - (_size / 2));
 			pBullet->Update(fDeltaTime);
 		}
+	}
+}
 
-		if (!(pBullet->GetEnbale()))
+void CBulletList::LateUpdate(float fDeltaTime)
+{
+	for (std::list<class CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++)
+	{
+		if (!((*it)->GetEnbale()))
 		{
-			Erase(pBullet);
+			CBullet* pBullet = *it;
+			it = m_listBulletList.erase(it);
+			SAFE_DELETE(pBullet);
 		}
 	}
 }
