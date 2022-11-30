@@ -7,6 +7,24 @@ private:
 	TRIBE_TYPE		m_MyType; // Player_Type
 	float			m_fSpeed; // Player �ӵ�
 	float			m_fHP_prototype; // Player Hp
+
+	//Bullet
+private:
+	float		m_LastFireTime = 0.f;
+	int			m_BulletShotCount;
+	int			m_BulletNum = 1;		 // 총알 개수(아이템을 통해 총알 개수 증가)
+private:
+	class CBulletList* m_myBulletList;	
+
+public:
+	class CBulletList* GetmyBulletList()
+	{
+		if (m_myBulletList)
+			return m_myBulletList;
+		else
+			return NULL;
+
+	}
 public:
 	CPlayer(int id);
 
@@ -37,4 +55,5 @@ public:
 	virtual	void Update(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
 	virtual void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
+
 };

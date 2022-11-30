@@ -82,6 +82,15 @@ void CScene::AddObject(CMonster* pMonster)
 
 int CScene::Update(float fDeltaTime)
 {
+	if (m_Player1)
+	{
+		m_Player1->Update(fDeltaTime);
+	}
+	//if (m_Player2)
+	//{
+	//	m_Player2->Update(fDeltaTime);
+	//}
+
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		(*it)->Update(fDeltaTime);
 		if ((*it)->GetFireDelay() <= FLT_EPSILON)
@@ -98,6 +107,7 @@ int CScene::Update(float fDeltaTime)
 			}
 		}
 	}
+
 
 	static float MspawnTime = 500.f;
 

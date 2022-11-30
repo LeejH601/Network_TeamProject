@@ -13,6 +13,7 @@ public:
 	// -Monster Bullet
 	virtual  bool Init(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed);
 
+	virtual	void Update(float fDeltaTime);
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
 
 private:
@@ -25,4 +26,3 @@ public:
 	bool GetEnbale(){return m_bEnable;}
 	void SetEnalbeFalse(){m_bEnable = false;}
 };
-

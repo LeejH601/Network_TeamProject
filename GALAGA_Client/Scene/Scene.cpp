@@ -219,13 +219,17 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 		m_MonsterList->push_back(t_mon);
 	}
 
-	else if ((int)obj_Type > 40000 && (int)obj_Type < 50000)
+	else if ((int)obj_Type == 40001)
 	{
 		// Bullet
 		Monster_BulletList->AddBullet(id, pos, _SIZE(10, 10), POSITION(0.f, 1.f), 20.f);
 		Monster_BulletList->SetAttack(50.f);
 	}
 
+	else if ((int)obj_Type > 40001 && (int)obj_Type < 50000) // Player Bullet
+	{
+		m_MainPlayer->GetmyBulletList()->AddBullet(id, pos, m_MainPlayer->GetSize(), 800.f);
+	}
 
 
 }
@@ -238,6 +242,8 @@ void CScene::Input(float fDeltaTime, CScene* NextScene)
 
 int CScene::Update(float fDeltaTime)
 {
+	if (m_MainPlayer)
+		m_MainPlayer->Update(fDeltaTime);
 	/*m_Player->Update(fDeltaTime);*/
 	return 0;
 }
@@ -324,7 +330,3 @@ void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
 
 
 }
-
-
-
-

@@ -15,6 +15,7 @@ public:
 	virtual  bool Init(POSITION PlayerLT, _SIZE PlayerSize, float Speed);
 	// -Monster Bullet
 	virtual  bool Init(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed);
+	virtual	void Update(float fDeltaTime);
 
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
 
