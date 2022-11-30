@@ -77,3 +77,23 @@ enum class OBJECT_STATE {
 
 enum class SOUND_TYPE {
 };
+
+
+enum class Pattern {  //
+	SIN,
+	SIN2,
+	SIN3,
+	SIN4,
+	SIN5,
+	SIN6,
+	NONE,
+	SIN7
+
+};
+
+enum class MONSTER_STATE {
+	DONDESTORY,
+	NOMAL,
+	WAIT,
+	DESTORY
+};

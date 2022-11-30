@@ -2,9 +2,11 @@
 #include "../Object/Player.h"
 #include "../Object/Item.h"
 #include "../Object/Monster.h"
+#include "..\Object\Boss.h"
 #include "../Object/BulletList.h"
 #include "SceneManager.h"
 #include "Scene.h"
+//#include "..\Object\Boss.h"
 
 CScene::CScene() : m_bEnable(false), m_bSlide(false)
 {
@@ -88,20 +90,11 @@ int CScene::Update(float fDeltaTime)
 		{
 			(*it)->CreateBullet(&Monster_BulletList);
 		}
-		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
-			(*it)->~CMonster();
-			it = m_MonsterList->erase(it);
-			if (it != m_MonsterList->begin())
-				it--;
-			else if (it == m_MonsterList->end()) {
-				break;
-			}
-		}
 	}
 
-	static float MspawnTime = 500.f;
+	static float MspawnTime = 5.0f;
 
-	if (MspawnTime > 1000.f)
+	if (MspawnTime > 5.0f)
 	{
 		OBJECT_TYPE m_type = (OBJECT_TYPE)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
 		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
@@ -170,7 +163,8 @@ int CScene::Update(float fDeltaTime)
 		MspawnTime = 0.f;
 	}
 
-	MspawnTime += 300.0f * fDeltaTime;
+	MspawnTime += fDeltaTime;
+	//MspawnTime += 300.0f * fDeltaTime;
 
 	//Monster Bullet ���� Ȯ�ο�
 	//static float Time = 0.f;
@@ -218,9 +212,26 @@ int CScene::Update(float fDeltaTime)
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);
 
-		if (m_Distance >= m_MaxDistance)
+		if (m_boss == nullptr && m_Distance >= m_MaxDistance)
 		{
-			m_bEndScene = true;
+			//m_bEndScene = true;
+			m_boss = new CBoss;
+
+			if (m_StageNum == 1)
+			{
+				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 2)
+			{
+				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 3)
+			{
+				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+
+			}
 		}
 	}
 
@@ -423,8 +434,22 @@ int CScene::LateUpdate(float fDeltaTime)
 		m_ItemList->Update(fDeltaTime);*/
 
 
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		if ((*it)->GetObjectState() == OBJECT_STATE::ERASE) {
+			(*it)->~CMonster();
+			delete* it;
+			it = m_MonsterList->erase(it);
+			if (it != m_MonsterList->begin())
+				it--;
+			else if (it == m_MonsterList->end()) {
+				break;
+			}
+		}
+	}
+
+
 	for (auto it = m_ItemList.begin(); it != m_ItemList.end();) {
-		if (!(*it)->GetEnbale()) {
+		if ((*it)->GetObjectState() == OBJECT_STATE::ERASE) {
 			auto temp = *it;
 			it++;
 			m_ItemList.remove(temp);

@@ -191,6 +191,23 @@ void CObject::SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos)
 	delete[] tel_CreateObject.Extrainfo;
 }
 
+void CObject::SendMsgChangeState(OBJECT_STATE State)
+{
+	Telegram Msg;
+	Msg.Sender = m_iObjID;
+	Msg.Receiver = m_iObjID;
+	Msg.Msg = (int)MESSAGE_TYPE::Msg_objectChangeState;
+	Msg.DispatchTime = CTimer::GetInst()->GetTime();
+	char* extraInfo = new char[4];
+
+	memcpy(extraInfo, &State, sizeof(MESSAGE_TYPE));
+	Msg.Extrainfo = extraInfo;
+
+	CObject::SendMessageToClient(Msg);
+
+	delete[] Msg.Extrainfo;
+}
+
 void CObject::SendMsgMoveObject()
 {
 	Telegram tel_MoveObject;

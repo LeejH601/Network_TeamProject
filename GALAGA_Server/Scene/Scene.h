@@ -17,7 +17,7 @@ private:
 	class CBulletList* Monster_BulletList;
 
 	class CTractor* m_Tractor = nullptr;
-	class Boss* m_boss = nullptr;
+	class CBoss* m_boss = nullptr;
 
 	class CPlayer* m_Player1;		 // 플레이어1 정보 
 	class CPlayer* m_Player2;		 // 플레이어2 정보 

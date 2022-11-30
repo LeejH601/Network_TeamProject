@@ -21,6 +21,7 @@ protected:
 private:
 	TRIBE_TYPE m_MyType;			// 종족 구분 enum class
 	OBJECT_TYPE m_eObjType;
+	OBJECT_STATE m_eObjState = OBJECT_STATE::IDLE;
 
 public:
 	// 기본 구동 함수
@@ -43,12 +44,14 @@ public:
 	float	 GetHP() const;
 	int		 GetID() const;
 	OBJECT_TYPE GetObjType() const { return m_eObjType; } ;
+	OBJECT_STATE GetObjectState() const { return m_eObjState; };
 
 public:
 	// 외부 오브젝트 상태 설정 함수
 	void SetPos(const POSITION& tPos);
 	void SetVector(const POSITION& tVector);
 	void SetSize(const _SIZE tSize);
+	void SetState(const OBJECT_STATE state) { m_eObjState = state; };
 
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
@@ -57,6 +60,7 @@ public:
 
 	void SendMessageToClient(Telegram& msg);
 	void SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos);
+	void SendMsgChangeState(OBJECT_STATE);
 	void SendMsgMoveObject();
 	virtual bool HandleMessage(const Telegram& telegram);
 public:
