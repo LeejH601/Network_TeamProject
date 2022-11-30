@@ -276,20 +276,16 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			CRITICAL_SECTION& c_cs2 = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
 
 			EnterCriticalSection(&c_cs1);
-			EnterCriticalSection(&c_cs2);
-
 			CNetworkDevice* p1;
-			CNetworkDevice* p2;
-
 			p1 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-			p2 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
 			m_Player2->SendCreateMessage(p1, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-
-			m_Player2->SendCreateMessage(p2, OBJECT_TYPE::OBJ_PLAYER);
-			m_Player1->SendCreateMessage(p2, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-
 			LeaveCriticalSection(&c_cs1);
+			
+			EnterCriticalSection(&c_cs2);
+			CNetworkDevice* p2;
+			p2 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+			m_Player1->SendCreateMessage(p2, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+			m_Player2->SendCreateMessage(p2, OBJECT_TYPE::OBJ_PLAYER);
 			LeaveCriticalSection(&c_cs2);
 
 			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
