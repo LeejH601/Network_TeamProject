@@ -13,11 +13,7 @@ bool CBullet::HandleMessage(const Telegram& msg)
 	{
 	case MESSAGE_TYPE::Msg_objectMove: //extrainfo: ObjectType, Position 
 	{
-		int ObjectType;
-		POSITION Position;
-		memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
-		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
-		return true;
+		CObject::HandleMessage(msg);
 	}
 	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState
 	{
@@ -39,7 +35,7 @@ bool CBullet::Init(POSITION PlayerLT, _SIZE PlayerSize, float Speed)
 	POSITION BulletimgSize = { 8,15 };
 	POSITION BulletimgLT = { 84,42 }; //  이미지 파일에서의 x y  좌표입니다...
 	// 이미지 파일 크기 값 변수로 바꾸기
-	CObject::Init(L"../Image/Terran_img/Wraith.png", PlayerLT, POSITION(0, 1),
+	CObject::Init(L"../Image/Terran_img/Wraith.png", PlayerLT, POSITION(0, -1),
 		PlayerSize, 1000.0f, BulletimgSize, BulletimgLT, PLAYER_TYPE::PT_MONSTER);
 
 	m_fSpeed = Speed;
@@ -67,4 +63,10 @@ bool CBullet::Init(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector,
 bool CBullet::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)
 {
 	return CObject::Collision(fDeltaTime, ObjectLT, ObjectSize);
+}
+
+void CBullet::Update(float fDeltaTime)
+{
+
+
 }

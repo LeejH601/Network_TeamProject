@@ -80,7 +80,7 @@ bool CBullet::HandleMessage(const Telegram& msg)
 bool CBullet::Init(POSITION PlayerLT, _SIZE PlayerSize, float Speed)
 {
 	// 이미지 파일 크기 값 변수로 바꾸기
-	CObject::Init(PlayerLT, POSITION(0, 1), PlayerSize, 1000.0f, PLAYER_TYPE::PT_MONSTER);
+	CObject::Init(PlayerLT, POSITION(0, -1), PlayerSize, 1000.0f, PLAYER_TYPE::PT_MONSTER);
 
 	m_fSpeed = Speed;
 	m_bEnable = true;
@@ -102,7 +102,22 @@ bool CBullet::Init(POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector,
 	return true;
 }
 
+void CBullet::Update(float fDeltaTime)
+{
+
+	CObject::SetPos(CObject::GetPos() + ((CObject::GetVector() * fDeltaTime) * m_fSpeed));
+
+	m_Range += fDeltaTime * m_fSpeed;
+
+	if (m_Range >= m_MaxRange)
+		SetEnalbeFalse();
+
+	CObject::SendMsgMoveObject();
+
+}
+
 bool CBullet::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)
 {
 	return CObject::Collision(fDeltaTime, ObjectLT, ObjectSize);
 }
+
