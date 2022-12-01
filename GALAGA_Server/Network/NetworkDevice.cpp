@@ -225,8 +225,8 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 	}
 
 	m_SendTelegrams[messageQueue.Msg].push_back(messageQueue);
-	if (Message.Extrainfo != nullptr)
-		delete[] Message.Extrainfo;
+	/*if (Message.Extrainfo != nullptr)
+		delete[] Message.Extrainfo;*/
 }
 
 void CNetworkDevice::GetTelegram()
