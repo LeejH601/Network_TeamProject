@@ -184,8 +184,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	char client_ip[20];
 	memcpy(client_ip, arg, 20);
 
-	InitializeCriticalSection(&cs);
-
 	CNetworkDevice::GetInst()->ConnectNetwork(client_ip);
 	CCore::GetInst()->SetConnected();
 
@@ -200,8 +198,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		CNetworkDevice::GetInst()->GetTelegram();
 		CMessageDispatcher::GetInst()->DispatchMessages();
 	}
-
-	DeleteCriticalSection(&cs);
 }
 
 

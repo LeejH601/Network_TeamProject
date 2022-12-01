@@ -205,17 +205,21 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	}
 
 	// 몬스터 생성 메시지
-	/*std::list<CMonster*>* mob_list = SCM->GetMonsterList();
+	std::list<CMonster*>* mob_list = SCM->GetMonsterList();
 
 	for (CMonster* mob : *mob_list) {
 		GenerateMsgCreate(p, mob);
-	}*/
+		GenerateMsgMove(p, mob);
+		std::cout << "Monster Message" << std::endl;
+	}
 
 	// 아이템 생성 메시지
-	/*std::list<CItem*>* item_list = SCM->GetItemlistFromSceneType(SCM->GetCurrentSceneType());
+	std::list<CItem*>* item_list = SCM->GetItemlistFromSceneType(SCM->GetCurrentSceneType());
 	for (CItem* item : *item_list) {
 		GenerateMsgCreate(p, item);
-	}*/
+		GenerateMsgMove(p, item);
+		std::cout << "Item Message" << std::endl;
+	}
 
 	// 블릿 생성 메시지
 
