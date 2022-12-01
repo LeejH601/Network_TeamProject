@@ -38,16 +38,5 @@ using namespace std;
 
 #define BUFSIZE 4096
 
-typedef std::pair<DWORD, CRITICAL_SECTION> CS_PAIR;
-
-class cs_comp {
-public:
-	bool operator()(const CS_PAIR lhs, const CS_PAIR rhs) const {
-		return lhs.first < rhs.first;
-	}
-};
-
-extern CRITICAL_SECTION msg_dispatcher_cs;
 extern CRITICAL_SECTION main_loop_cs;
-extern std::set<CS_PAIR, cs_comp> client_cs;
 

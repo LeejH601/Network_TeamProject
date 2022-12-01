@@ -206,40 +206,6 @@ SCENE_TYPE CSceneManager::GetCurrentSceneType()
 	return SCENE_TYPE(-1);
 }
 
-void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
-{
-	Telegram tel_ChangeScene;
-	tel_ChangeScene.Sender = 0;
-	tel_ChangeScene.Receiver = 0;
-	tel_ChangeScene.DispatchTime = CTimer::GetInst()->GetTime();
-	tel_ChangeScene.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
-	tel_ChangeScene.Extrainfo = new char[4];
-
-	memcpy(tel_ChangeScene.Extrainfo, &nType, sizeof(SCENE_TYPE));
-
-	if (CCore::GetInst()->m_hPlayer1)
-	{
-		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
-		EnterCriticalSection(&c_cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-		p->AddMessage(tel_ChangeScene);
-		LeaveCriticalSection(&c_cs);
-	}
-
-	if (CCore::GetInst()->m_hPlayer2)
-	{
-		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
-		EnterCriticalSection(&c_cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-		p->AddMessage(tel_ChangeScene);
-		LeaveCriticalSection(&c_cs);
-	}
-
-	delete tel_ChangeScene.Extrainfo;
-}
-
 bool CSceneManager::HandleMessage(const Telegram& telegram)
 {
 	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))

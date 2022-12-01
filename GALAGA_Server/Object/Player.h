@@ -7,7 +7,6 @@ class CPlayer : public CObject
 private:
 	bool			m_bDie = true;
 	float			m_fSpeed;	// Player �� �ӵ� �Դϴ�
-	TRIBE_TYPE		m_MyType; // Player_Type
 
 private:
 	class CBulletList* m_myBulletList;

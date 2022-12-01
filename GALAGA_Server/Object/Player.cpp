@@ -45,16 +45,15 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 	{
 	case MESSAGE_TYPE::Msg_objectCreate:// extrainfo: ObjectType, Position
 	{
-		
-		int ObjectType;
-		POSITION Position;
-		POSITION BulletSize = { 18,30 };
-		memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
-		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
-		if (ObjectType == (int)OBJECT_TYPE::PLAYER_BULLET) // Bullet 持失
-		{
-			m_myBulletList->AddBullet(Position, BulletSize, 800.0f);
-		}
+		//int ObjectType;
+		//POSITION Position;
+		//POSITION BulletSize = { 18,30 };
+		//memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
+		//memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
+		//if (ObjectType == (int)OBJECT_TYPE::PLAYER_BULLET) // Bullet 持失
+		//{
+		//	m_myBulletList->AddBullet(Position, BulletSize, 800.0f);
+		//}
 		return true;
 	}
 	case MESSAGE_TYPE::Msg_objectMove: //extrainfo: ObjectType, Position (4byte + 12byte)

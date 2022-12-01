@@ -194,8 +194,6 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* mainplayer, CPlayer* anothe
 	m_MonsterList = CSceneManager::GetInst()->GetMonsterList();
 	Monster_BulletList = new CBulletList;
 
-
-
 	return true;
 }
 

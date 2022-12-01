@@ -327,42 +327,6 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 		delete pos;
 		delete obj_type;
-
-		//	int Object_Type; // 해당 오브젝트의 enum
-		//	POSITION Position;
-		//	int Object_Type2; // 오브젝트 enum -> 어떤 오브젝트인지
-		//	memcpy(&Object_Type, telegram.Extrainfo, sizeof(int));
-		//	memcpy(&Position, (void*)((char*)telegram.Extrainfo + sizeof(int)), sizeof(POSITION));
-		//	memcpy(&Object_Type2, (void*)((char*)telegram.Extrainfo + sizeof(int) + sizeof(POSITION)), sizeof(int));
-
-		//	switch (Object_Type2)
-		//	{
-		//	case 0: // Monster
-		//		if (m_Scene_Begin->GetEnable())
-		//			return false;
-		//		else if (m_Scene_Stage1->GetEnable())
-		//			m_Scene_Stage1->AddMonster((Monster_type)Object_Type, Position);
-
-		//		else if (m_Scene_stage2->GetEnable())
-		//			m_Scene_stage2->AddMonster((Monster_type)Object_Type, Position);
-
-		//		else if (m_Scene_stage3->GetEnable())
-		//			m_Scene_stage3->AddMonster((Monster_type)Object_Type, Position);
-		//		return true;
-
-		//	case 1: // Bullet
-		//				//POSITION Position;
-		//		if (m_Scene_Begin->GetEnable())
-		//			return false;
-		//		else if (m_Scene_Stage1->GetEnable())
-		//			m_Scene_Stage1->AddMonsterBullet(Object_Type, Position);
-		//		else if (m_Scene_stage2->GetEnable())
-		//			m_Scene_stage2->AddMonsterBullet(Object_Type, Position);
-		//		else if (m_Scene_stage3->GetEnable())
-		//			m_Scene_stage3->AddMonsterBullet(Object_Type, Position);
-		//		return true;
-		//	}
-		//}
 	}
 	break;
 	case MESSAGE_TYPE::Msg_changeScene:

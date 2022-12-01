@@ -7,9 +7,7 @@
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
 
-std::set<CS_PAIR, cs_comp> client_cs;
 CRITICAL_SECTION main_loop_cs;
-CRITICAL_SECTION msg_dispatcher_cs;
 CLocator Locator;
 
 struct ThreadArgument {
@@ -36,12 +34,6 @@ int g_nPlayClient = 0;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	CRITICAL_SECTION tCs;
-	client_cs.insert(CS_PAIR(GetCurrentThreadId(), tCs));
-
-	CRITICAL_SECTION& cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(GetCurrentThreadId(), nullptr))->second);
-	InitializeCriticalSection(&cs);
-
 	CNetworkDevice Network_Device;
 
 	SOCKET Arg;
@@ -60,14 +52,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (true)
 	{
-		//std::cout << "??????????" << std::endl;
 		Network_Device.RecvByNetwork();
 		EnterCriticalSection(&main_loop_cs);
 		CCore::GetInst()->SnapshotRun(GetCurrentThreadId());
 		LeaveCriticalSection(&main_loop_cs);
 		Network_Device.SendToNetwork();
-
-		//Network_Device.printTelegram();
 	}
 
 	return 0;
@@ -79,13 +68,11 @@ int main(int argc, char* argv[])
 {
 	int retval;
 
-
 	if (argc > 1) {
 		SERVERIP = argv[1];
 	}
 
 	InitializeCriticalSection(&main_loop_cs);
-	InitializeCriticalSection(&msg_dispatcher_cs);
 
 
 	WSADATA wsa;
@@ -147,11 +134,6 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	for (CS_PAIR _cs : client_cs) {
-		DeleteCriticalSection(&_cs.second);
-	}
-
-	DeleteCriticalSection(&msg_dispatcher_cs);
 	DeleteCriticalSection(&main_loop_cs);
 
 	closesocket(listen_sock);

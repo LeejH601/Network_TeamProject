@@ -14,9 +14,6 @@ bool CCore::m_bLoop = true;
 HWND my_hDlg;
 HINSTANCE my_hInstance;
 
-CRITICAL_SECTION cs;
-CRITICAL_SECTION Main_cs;
-
 CCore::CCore()
 {
 }

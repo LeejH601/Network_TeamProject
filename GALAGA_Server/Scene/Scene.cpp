@@ -97,15 +97,6 @@ int CScene::Update(float fDeltaTime)
 		{
 			(*it)->CreateBullet(&Monster_BulletList);
 		}
-		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
-			(*it)->~CMonster();
-			it = m_MonsterList->erase(it);
-			if (it != m_MonsterList->begin())
-				it--;
-			else if (it == m_MonsterList->end()) {
-				break;
-			}
-		}
 	}
 
 
@@ -435,6 +426,18 @@ int CScene::LateUpdate(float fDeltaTime)
 		(m_Player1->GetmyBulletList())->LateUpdate(fDeltaTime);
 	if (m_Player2)
 		(m_Player2->GetmyBulletList())->LateUpdate(fDeltaTime);
+
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
+			(*it)->~CMonster();
+			it = m_MonsterList->erase(it);
+			if (it != m_MonsterList->begin())
+				it--;
+			else if (it == m_MonsterList->end()) {
+				break;
+			}
+		}
+	}
 
 	for (auto it = m_ItemList.begin(); it != m_ItemList.end();) {
 		if (!(*it)->GetEnbale()) {
