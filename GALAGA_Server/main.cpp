@@ -52,8 +52,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient++);
 
-	int iTimeout = 1000;
-	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
+	/*int iTimeout = 1000;
+	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));*/
 	DWORD optval = 1;
 	setsockopt((SOCKET)arg, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 	std::cout << "connect client" << std::endl;
@@ -61,16 +61,17 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	while (true)
 	{
 		//std::cout << "??????????" << std::endl;
-		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.RecvByNetwork();
+		
+		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.GetTelegram();
 		LeaveCriticalSection(&msg_dispatcher_cs);
 
-		EnterCriticalSection(&cs);
+		EnterCriticalSection(&main_loop_cs);
 		CCore::GetInst()->SnapshotRun(GetCurrentThreadId());
-		Network_Device.SendToNetwork();
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&main_loop_cs);
 
+		Network_Device.SendToNetwork();
 		/*EnterCriticalSection(&cs);
 		Network_Device.printTelegram();
 		LeaveCriticalSection(&cs);*/
@@ -104,8 +105,8 @@ int main(int argc, char* argv[])
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	//serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
+	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	//inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
 
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = bind(listen_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));

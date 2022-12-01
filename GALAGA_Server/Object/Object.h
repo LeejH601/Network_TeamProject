@@ -54,10 +54,6 @@ public:
 	void SetHP(const float fHP);
 	void SetID(const int id);
 	void SetObjType(const OBJECT_TYPE type) { m_eObjType = type; };
-
-	void SendMessageToClient(Telegram& msg);
-	void SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos);
-	void SendMsgMoveObject();
 	virtual bool HandleMessage(const Telegram& telegram);
 public:
 	bool operator<(const CObject& rhs) {

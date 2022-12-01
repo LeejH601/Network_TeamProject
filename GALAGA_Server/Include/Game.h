@@ -48,5 +48,6 @@ public:
 };
 
 extern CRITICAL_SECTION msg_dispatcher_cs;
+extern CRITICAL_SECTION main_loop_cs;
 extern std::set<CS_PAIR, cs_comp> client_cs;
 

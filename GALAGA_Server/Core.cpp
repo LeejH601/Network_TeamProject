@@ -36,6 +36,10 @@ void CCore::Logic()
 	Update(fDeltaTime);			// * ������Ʈ
 	LateUpdate(fDeltaTime);		// * ������Ʈ ��ó�� 
 	Collision(fDeltaTime);		// * �浹 ó��
+
+	EnterCriticalSection(&msg_dispatcher_cs);
+	CMessageDispatcher::GetInst()->DispatchMessages();
+	LeaveCriticalSection(&msg_dispatcher_cs);
 }
 
 
@@ -117,14 +121,6 @@ void CCore::SnapshotInit(int nPlayer)
 
 void CCore::SnapshotRun(DWORD hPlayer)
 {
-	EnterCriticalSection(&msg_dispatcher_cs);
-	CMessageDispatcher::GetInst()->DispatchMessages();
-	LeaveCriticalSection(&msg_dispatcher_cs);
-
-	// 플레이어 핸들
-	CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(hPlayer, nullptr))->second);
-	EnterCriticalSection(&c_cs);
-
 	CNetworkDevice* p;
 	p = Locator.GetNetworkDevice(hPlayer);
 
@@ -226,10 +222,7 @@ void CCore::SnapshotRun(DWORD hPlayer)
 
 
 	// 플레이어 무브 메시지
-	
-		
 
-	LeaveCriticalSection(&c_cs);
 }
 
 

@@ -95,9 +95,6 @@ public:
 	virtual	void Update(float fDeltaTime);
 	virtual	void LateUpdate(float fDeltaTime);
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
-	void	Msg_Create(OBJECT_TYPE TYPE, POSITION POS);
-	void	Msg_Move(POSITION POS);
-
 
 	MONSTER_STATE GetState() {
 		return m_state;

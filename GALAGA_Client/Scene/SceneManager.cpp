@@ -281,6 +281,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
 		
 		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Sender);
+
 		if (pReceiver)
 		{
 			delete pos;

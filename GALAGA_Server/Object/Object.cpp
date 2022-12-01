@@ -150,62 +150,6 @@ bool CObject::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize
 
 }
 
-void CObject::SendMessageToClient(Telegram& msg)
-{
-	if (CCore::GetInst()->m_hPlayer1)
-	{
-		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
-		EnterCriticalSection(&c_cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-		p->AddMessage(msg);
-		LeaveCriticalSection(&c_cs);
-	}
-
-	if (CCore::GetInst()->m_hPlayer2)
-	{
-		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
-		EnterCriticalSection(&c_cs);
-		CNetworkDevice* p;
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-		p->AddMessage(msg);
-		LeaveCriticalSection(&c_cs);
-	}
-}
-
-void CObject::SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos)
-{
-	Telegram tel_CreateObject;
-	tel_CreateObject.Sender = m_iObjID;
-	tel_CreateObject.Receiver = 0;
-	tel_CreateObject.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	tel_CreateObject.DispatchTime = CTimer::GetInst()->GetTime();
-	char* extraInfo = new char[12];
-
-	memcpy(&extraInfo[0], &nType, sizeof(OBJECT_TYPE));
-	memcpy(&extraInfo[4], &pos, sizeof(POSITION));
-	tel_CreateObject.Extrainfo = extraInfo;
-
-	CObject::SendMessageToClient(tel_CreateObject);
-
-	delete[] tel_CreateObject.Extrainfo;
-}
-
-void CObject::SendMsgMoveObject()
-{
-	Telegram tel_MoveObject;
-	tel_MoveObject.Sender = m_iObjID;
-	tel_MoveObject.Receiver = m_iObjID;
-	tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
-	tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
-	tel_MoveObject.Extrainfo = new char[8];
-	memcpy(tel_MoveObject.Extrainfo, &m_tLTPos, sizeof(POSITION));
-
-	CObject::SendMessageToClient(tel_MoveObject);
-
-	delete[] tel_MoveObject.Extrainfo;
-}
-
 bool CObject::HandleMessage(const Telegram& telegram)
 {
 	return false;

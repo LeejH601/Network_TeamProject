@@ -39,40 +39,6 @@ void CPlayer::Update(float fDeltaTime)
 	if (m_myBulletList)
 		m_myBulletList->Update(fDeltaTime);
 }
-void CPlayer::SendCreateMessage(CNetworkDevice* pNetworkDevice, OBJECT_TYPE obj_type)
-{
-	Telegram tel_CreateObject;
-	tel_CreateObject.Sender = m_iObjID;
-	tel_CreateObject.Receiver = 0;
-	tel_CreateObject.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	tel_CreateObject.DispatchTime = CTimer::GetInst()->GetTime();
-
-	char* extraInfo = new char[12];
-
-	memcpy(&extraInfo[0], &obj_type, sizeof(OBJECT_TYPE));
-	memcpy(&extraInfo[4], &m_tLTPos, sizeof(POSITION));
-	tel_CreateObject.Extrainfo = extraInfo;
-
-	pNetworkDevice->AddMessage(tel_CreateObject);
-
-	delete[] tel_CreateObject.Extrainfo;
-}
-
-void CPlayer::SendMoveMessage(CNetworkDevice * pNetworkDevice)
-{
-	Telegram tel_MoveObject;
-	tel_MoveObject.Sender = m_iObjID;
-	tel_MoveObject.Receiver = m_iObjID;
-	tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
-	tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
-	tel_MoveObject.Extrainfo = new char[8];
-	memcpy(tel_MoveObject.Extrainfo, &m_tLTPos, sizeof(POSITION));
-
-	pNetworkDevice->AddMessage(tel_MoveObject);
-
-	delete[] tel_MoveObject.Extrainfo;
-}
-
 bool CPlayer::HandleMessage(const Telegram& msg)
 {
 	switch ((MESSAGE_TYPE)msg.Msg)

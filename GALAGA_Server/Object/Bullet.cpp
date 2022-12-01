@@ -14,42 +14,6 @@ CBullet::~CBullet()
 
 }
 
-					    //BULLET_TYPE   POSITION    OBJECT_ENUM
-void CBullet::Msg_Create(OBJECT_TYPE TYPE, POSITION POS)
-{
-	Telegram telegram;
-	telegram.Sender = m_iObjID;
-	telegram.Receiver = 0;
-	telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION)];
-	memcpy(telegram.Extrainfo, &TYPE, sizeof(int)); // Bullet_Type
-	memcpy((char*)telegram.Extrainfo + sizeof(int), & POS, sizeof(POSITION)); // Position
-
-	CObject::SendMessageToClient(telegram);
-
-}
-
-void CBullet::Msg_Move(POSITION POS, int ObjectEnum)
-{
-	Telegram telegram;
-	telegram.Receiver = 0;
-	telegram.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
-	telegram.Extrainfo = new char[sizeof(POSITION) + sizeof(int)];
-	memcpy(&telegram.Extrainfo, &POS, sizeof(POSITION));
-	memcpy((char*)telegram.Extrainfo + sizeof(int), &ObjectEnum, sizeof(int));
-	auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-	EnterCriticalSection(&cs);
-	CNetworkDevice* p;
-	if (!CCore::GetInst()->m_hPlayer2)
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-	else
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
-	p->AddMessage(telegram);
-	LeaveCriticalSection(&cs);
-}
-
-
 
 bool CBullet::HandleMessage(const Telegram& msg)
 {

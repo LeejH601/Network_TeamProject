@@ -18,7 +18,6 @@ void CBulletList::AddBullet(POSITION playerLT, POSITION playerSize, float Speed)
 
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, 800.0f);
-	pBullet->Msg_Create(OBJECT_TYPE::PLAYER_BULLET, BulletLTPos); // 생성 메세지 보내기
 	m_listBulletList.push_back(pBullet);
 
 }
@@ -31,7 +30,6 @@ void CBulletList::AddBullet(POSITION MonsterLT, _SIZE MonsterSize, POSITION Bull
 
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, BulletVector, Speed);
-	pBullet->Msg_Create(OBJECT_TYPE::MONSTER_BULLET, BulletLTPos); // 생성 메세지 보내기
 	m_listBulletList.push_back(pBullet);
 }
 

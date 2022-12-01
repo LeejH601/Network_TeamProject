@@ -240,55 +240,8 @@ bool CMonster::Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT
 		break;
 	}
 	//m_Path.CalculUniformPos();
-
-	Msg_Create(type, LTpos);
 	return true;
 }
-
-void CMonster::Msg_Create(OBJECT_TYPE TYPE, POSITION POS)
-{
-	// Monster Create Message
-	Telegram telegram;
-	telegram.Sender = m_iObjID;
-	telegram.Receiver = 0;
-	telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-	telegram.DispatchTime = CTimer::GetInst()->GetTime();
-	telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION)];
-	memcpy(telegram.Extrainfo, &TYPE, sizeof(int));
-	memcpy((char*)telegram.Extrainfo + sizeof(int), &POS, sizeof(POSITION));
-
-	CObject::SendMessageToClient(telegram);
-
-	/*CNetworkDevice* p;
-	if (!CCore::GetInst()->m_hPlayer2)
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-	else
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
-	p->AddMessage(telegram);
-	LeaveCriticalSection(&cs);*/
-}
-
-void CMonster::Msg_Move(POSITION POS)
-{
-	Telegram telegram;
-	telegram.Receiver = 0;
-	telegram.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
-	telegram.Extrainfo = new char[sizeof(POSITION)];
-	memcpy(telegram.Extrainfo, &POS, sizeof(POSITION));
-
-	auto cs = client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second;
-	EnterCriticalSection(&cs);
-	CNetworkDevice* p;
-	if (!CCore::GetInst()->m_hPlayer2)
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-	else
-		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
-	p->AddMessage(telegram);
-	LeaveCriticalSection(&cs);
-}
-
 
 bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYER_TYPE obType)
 {
