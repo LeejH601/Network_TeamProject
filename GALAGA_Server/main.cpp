@@ -67,9 +67,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	while (true)
 	{
 		//std::cout << "??????????" << std::endl;
-		EnterCriticalSection(&msg_dispatcher_cs);
+		//EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.RecvByNetwork();
-		LeaveCriticalSection(&msg_dispatcher_cs);
+		//LeaveCriticalSection(&msg_dispatcher_cs);
 
 		/*EnterCriticalSection(pCs);
 		Network_Device.CopyTelegramQueue();

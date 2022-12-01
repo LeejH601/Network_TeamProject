@@ -191,9 +191,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		LeaveCriticalSection(&cs);
 
 
-		EnterCriticalSection(&cs);
+		//EnterCriticalSection(&cs);
 		CNetworkDevice::GetInst()->RecvByNetwork();
-		LeaveCriticalSection(&cs);
+		//LeaveCriticalSection(&cs);
 
 		EnterCriticalSection(&Main_cs);
 		CNetworkDevice::GetInst()->GetTelegram();
