@@ -36,10 +36,6 @@ void CCore::Logic()
 	Update(fDeltaTime);			// * ������Ʈ
 	LateUpdate(fDeltaTime);		// * ������Ʈ ��ó�� 
 	Collision(fDeltaTime);		// * �浹 ó��
-
-	EnterCriticalSection(&msg_dispatcher_cs);
-	CMessageDispatcher::GetInst()->DispatchMessages();
-	LeaveCriticalSection(&msg_dispatcher_cs);
 }
 
 
@@ -123,6 +119,9 @@ void CCore::SnapshotRun(DWORD hPlayer)
 {
 	CNetworkDevice* p;
 	p = Locator.GetNetworkDevice(hPlayer);
+	p->GetTelegram();
+
+	CMessageDispatcher::GetInst()->DispatchMessages();
 
 	auto GenerateMsgCreate = [](CNetworkDevice* network, CObject* obj) {
 

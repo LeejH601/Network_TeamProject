@@ -52,8 +52,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient++);
 
-	/*int iTimeout = 1000;
-	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));*/
+	int iTimeout = 1000;
+	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
 	DWORD optval = 1;
 	setsockopt((SOCKET)arg, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 	std::cout << "connect client" << std::endl;
@@ -62,19 +62,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	{
 		//std::cout << "??????????" << std::endl;
 		Network_Device.RecvByNetwork();
-		
-		EnterCriticalSection(&msg_dispatcher_cs);
-		Network_Device.GetTelegram();
-		LeaveCriticalSection(&msg_dispatcher_cs);
-
 		EnterCriticalSection(&main_loop_cs);
 		CCore::GetInst()->SnapshotRun(GetCurrentThreadId());
 		LeaveCriticalSection(&main_loop_cs);
-
 		Network_Device.SendToNetwork();
-		/*EnterCriticalSection(&cs);
-		Network_Device.printTelegram();
-		LeaveCriticalSection(&cs);*/
+
+		//Network_Device.printTelegram();
 	}
 
 	return 0;
