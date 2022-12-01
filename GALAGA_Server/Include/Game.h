@@ -36,7 +36,7 @@ using namespace std;
 //
 //#pragma  comment(lib, "fmodex_vc.lib")
 
-#define BUFSIZE 4096
+#define BUFSIZE 8192
 
 typedef std::pair<DWORD, CRITICAL_SECTION> CS_PAIR;
 

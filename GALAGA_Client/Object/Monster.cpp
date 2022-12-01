@@ -1,5 +1,70 @@
 #include	"Monster.h"
 #include	"BulletList.h"
+#include	"..\Core.h"
+
+void CPath::Update(float fDeltaTime)
+{
+	if (m_iIndex < m_points.size() - 4) {
+		m_ft += fDeltaTime;
+		while (m_ft >= 1.0f) {
+			m_ft -= 1.0f;
+			m_iIndex++;
+		}
+	}
+}
+
+POSITION CPath::GetNextPos()
+{
+	return CardinalSpline(m_points[m_iIndex], m_points[m_iIndex + 1], m_points[m_iIndex + 2], m_points[m_iIndex + 3], m_ft, m_ftension);
+}
+
+void CPath::CalculUniformPos()
+{
+	float detT = 40.0f;
+	std::vector<POSITION> points;
+	float length = 0.0f;
+	float total_len = 0.0f;
+	for (int i = 0; i < m_points.size() - 1 - 3; ++i) {
+
+		//if (length < FLT_EPSILON)
+		points.push_back(m_points[i + 1]);
+		/*else {
+			points.push_back(CardinalSpline(m_points[i], m_points[i + 1], m_points[i + 2], m_points[i + 3], (length / total_len), m_ftension));
+		}*/
+
+		POSITION dist = m_points[i + 2] - m_points[i + 1];
+		total_len = sqrt(dist.x * dist.x + dist.y * dist.y);
+		length = total_len;
+
+		while (length > detT)
+		{
+			length -= detT;
+			points.push_back(CardinalSpline(m_points[i], m_points[i + 1], m_points[i + 2], m_points[i + 3], (1 - (length / total_len)), m_ftension));
+		}
+	}
+
+	m_points = points;
+}
+
+POSITION CPath::CardinalSpline(POSITION P0, POSITION P1, POSITION P2, POSITION P3, float t, float tension)
+{
+	POSITION Result;
+
+	float t2 = t * t;
+	float t3 = t2 * t;
+
+	float B0 = (-t3 + 2.0 * t2 - t) * (tension);
+	float B1 = 1.0 + (tension - 3) * t2 + (2 - tension) * t3;
+	float B2 = tension * t + (3 - 2 * tension) * t2 + (tension - 2) * t3;
+	float B3 = (t3 - t2) * (tension);
+
+	Result.x = (B0 * P0.x + B1 * P1.x + B2 * P2.x + B3 * P3.x);
+	Result.y = (B0 * P0.y + B1 * P1.y + B2 * P2.y + B3 * P3.y);
+
+	return Result;
+}
+
+
 
 CMonster::CMonster()
 {
@@ -18,7 +83,7 @@ void CMonster::Run(HDC mainhDC, HDC hdc, float fDeltaTime)
 }
 
 
-bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
+bool CMonster::Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
 {
 
 	if (m_Explode_img == NULL)
@@ -94,60 +159,123 @@ bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& t
 		break;
 	}
 	bias = (LTpos.x > 400) ? 0 : 1;
-	mPattern = pattern;
-	switch (mPattern) // 패턴 타입에 따라 초기화 시행
+
+	MONSTER_PATTERN Pattern = pattern;
+	//Pattern = MONSTER_PATTERN::PAT_STAIRS;
+
+	RESOLUTION Resol = CCore::GetInst()->GetResolution();
+	POSITION Resolution{ (float)Resol.iW, (float)Resol.iH };
+
+	switch (Pattern)
 	{
-	case Pattern::SIN:
-		update_count = 1.0f;
-		t_speed = 300.0f;
-		t_count = 500 / t_speed;
-		ceta = 90;
-		d_count = 0;
-		c_det = 1;
-		fire_delay = fire_rate;
-		break;
-	case Pattern::SIN2:
-		t_count = 0.2f;
-		t_speed = 500.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
-		fire_delay = 1000;
-		break;
-	case Pattern::SIN3:
-		t_count = 0.5f;
-		update_count = 3.0f;
-		t_speed = 500.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
-		fire_delay = 500;
-		break;
-	case Pattern::SIN4:
-		t_count = 0.5f;
-		t_speed = 600.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
-		fire_delay = 200;
-		break;
-	case Pattern::SIN5:
-		t_count = 0.5f;
-		t_speed = 500.0f;
-		ceta = 45;
-		d_count = 0;
-		c_det = 2;
-		fire_delay = 200;
-		break;
-	case Pattern::SIN6:
-		t_speed = 200.0f;
-		fire_delay = 300;
-		break;
-	case Pattern::SIN7:
-		t_speed = 300.0f;
-		fire_rate = 1000000000;
-		fire_delay = fire_rate;
-		break;
+	case MONSTER_PATTERN::PAT_STRAIGHT:
+	{
+		m_Path.SetTension(0.0f);
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION end{ start.x , Resolution.y + 100 };
+
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		for (int i = 0; i < 6; ++i) {
+			m_Path.AddPoint(POSITION(start.x, start.y + ((end.y - start.y) / 6 * (i + 1))));
+		}
+		m_Path.AddPoint(end);
+
+
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y + (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_STAIR_LEFT:
+	case MONSTER_PATTERN::PAT_STAIR_RIGHT:
+	{
+		POSITION start, p0, p1, p2, p3, p4, p5, end;
+
+		if (pattern == MONSTER_PATTERN::PAT_STAIR_LEFT)
+		{
+			start = POSITION{ Resolution.x / 4, -50 };
+			p0 = POSITION{ start.x, 100 };
+			p1 = POSITION{ start.x * 3, 100 };
+			p2 = POSITION{ p1.x , p1.y + 200 };
+			p3 = POSITION{ p0.x, p2.y };
+			p4 = POSITION{ p3.x , p3.y + 200 };
+			p5 = POSITION{ p1.x , p4.y };
+			end = POSITION{ start.x * 3,  Resolution.y + 100 };
+		}
+		else {
+			start = POSITION{ Resolution.x - Resolution.x / 4, -50 };
+			p0 = POSITION{ start.x, 100 };
+			p1 = POSITION{ (Resolution.x - start.x), 100 };
+			p2 = POSITION{ p1.x , p1.y + 200 };
+			p3 = POSITION{ p0.x, p2.y };
+			p4 = POSITION{ p3.x , p3.y + 200 };
+			p5 = POSITION{ p1.x , p4.y };
+			end = POSITION{ start.x,  Resolution.y + 100 };
+		}
+
+		m_Path.SetTension(0.0f);
+
+
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(p1);
+		m_Path.AddPoint(p2);
+		m_Path.AddPoint(p3);
+		m_Path.AddPoint(p4);
+		m_Path.AddPoint(p5);
+		m_Path.AddPoint(end);
+
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y + (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_RING:
+	{
+		m_Path.SetTension(0.5f);
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION p0{ start.x, Resolution.y / 4 + 50 };
+		POSITION p1{ Resolution.x / 2, Resolution.y / 2 + 50 };
+		POSITION p2{ Resolution.x - start.x, Resolution.y / 4 + 50 };
+		POSITION p3{ p1.x,Resolution.y / 8 + 50 };
+		POSITION end{ p2.x, -50 };
+
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(p1);
+		m_Path.AddPoint(p2);
+		m_Path.AddPoint(p3);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(p1);
+		m_Path.AddPoint(p2);
+		m_Path.AddPoint(end);
+
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y - (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_UTURN:
+	{
+		m_Path.SetTension(0.3f);
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+		POSITION p0{ Resolution.x / 2, Resolution.y / 2 };
+		POSITION end{ Resolution.x - start.x, -50 };
+
+		m_Path.AddPoint(POSITION(start.x, start.y - 10.0f));
+		m_Path.AddPoint(start);
+		m_Path.AddPoint(p0);
+		m_Path.AddPoint(end);
+
+		for (int i = 0; i < 3; ++i)
+			m_Path.AddPoint(POSITION(end.x, end.y - (i * 1) * 50.0f));
+	}
+	break;
+	case MONSTER_PATTERN::PAT_CROSS:
+	{
+		POSITION start{ Resolution.x / 4 + rand() % (int)(Resolution.x / 2), -50 };
+	}
+	break;
 	default:
 		break;
 	}
@@ -164,224 +292,10 @@ void CMonster::Update(float fDeltaTime)
 	if (m_bDie == true)
 		return;
 
-	//if (m_state != MONSTER_STATE::DESTORY) {
-	//	switch (mPattern) // 업데이트시 정해진 패턴에 맞게 위치를 업데이트
-	//	{
-	//	case Pattern::SIN:
-	//	{
-	//		if (CObject::GetPos().y < 700 && CObject::GetPos().y > 0) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//			if (update_count < 0.0f) {
-	//				POSITION _vector = CObject::GetVector();
-	//				POSITION n_vector = { _vector.y, -_vector.x };			// 몬스터 기준 직교 벡터 
-	//				if (bias == 0)
-	//					n_vector = n_vector * (-1);
-	//				float det = sqrt(n_vector.x * n_vector.x + n_vector.y * n_vector.y);	// 직교벡터의 크기를 구한다...
-	//				_vector = _vector + (n_vector / ceta);									// 
-	//				det = sqrt(_vector.x * _vector.x + _vector.y * _vector.y);
-	//				/*printf("%f\n", sqrt(n_vector.x * n_vector.x + n_vector.y * n_vector.y));
-	//				POSITION t_vector = n_vector / 45;
-	//				printf("%f\n", sqrt(t_vector.x * t_vector.x + t_vector.y * t_vector.y));
-	//				printf("tangent : %f\n", sqrt(n_vector.x * n_vector.x + n_vector.y * n_vector.y) / sqrt(_vector.x * _vector.x + _vector.y * _vector.y));*/
-	//				_vector = _vector / det;
-	//				CObject::SetVector(_vector);
-	//				/*if (ceta < 20)
-	//					ceta -= (c_det * 0.2f);
-	//				else
-	//				ceta -= c_det;
-	//				if (ceta < 2 || ceta > 89) {
-	//					c_det = -c_det;
-	//				}*/
-	//				t_count -= fDeltaTime;
-	//				if (t_count <= 0.0f) {
-	//					t_speed *= 2.0f;
-	//					ceta = 5;
-	//				}
-	//				else if (t_count <= 1.0f) {
-	//					t_speed /= 2.0f;
-	//					ceta = 90;
-	//				}
-	//				update_count = 0.3f;
-	//				//	printf("현재 위치 : (%f, %f) ---- 방향 : (%f, %f) ---- ceta = %f ----- t_speed = %d\n", CObject::GetPos().x, CObject::GetPos().y, CObject::GetVector().x, CObject::GetVector().y, ceta, t_count);
+	m_Path.Update(fDeltaTime * 2.0f);
+	SetPos(m_Path.GetNextPos());
 
-	//			}
-	//			else
-	//				update_count -= fDeltaTime;
-
-	//		}
-	//		else {
-	//			if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//				if (m_state != MONSTER_STATE::DONDESTORY)
-	//					m_state = MONSTER_STATE::DESTORY;
-	//			}
-	//		}
-	//	}
-	//	break;
-	//	case Pattern::SIN2:
-	//	{
-	//		if (CObject::GetPos().y < 700 && CObject::GetPos().y > 0) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//			if (update_count < 0.0f) {
-	//				POSITION _vector = CObject::GetVector();
-	//				POSITION n_vector = { _vector.y, -_vector.x };
-	//				if (bias == 0)
-	//					n_vector = n_vector * (-1);
-	//				float det = sqrt(n_vector.x * n_vector.x + n_vector.y * n_vector.y);
-	//				_vector = _vector + (n_vector / (45 - (45 * (CObject::GetPos().y / 500))));
-	//				det = sqrt(_vector.x * _vector.x + _vector.y * _vector.y);
-	//				_vector = _vector / det;
-	//				CObject::SetVector(_vector);
-	//				d_count += fDeltaTime;
-	//				update_count = t_count;
-	//				t_count -= c_det;
-	//				if (t_count <= 0.0f || t_count >= 3.0f) {
-	//					c_det = -c_det;
-	//				}
-	//				//	printf("현재 위치 : (%f, %f) ---- 방향 : (%f, %f) ---- count = %d \n", CObject::GetPos().x, CObject::GetPos().y, CObject::GetVector().x, CObject::GetVector().y, count);
-
-	//			}
-	//			else
-	//				update_count -= fDeltaTime;
-	//		}
-	//		else {
-	//			if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//				if (m_state != MONSTER_STATE::DONDESTORY)
-	//					m_state = MONSTER_STATE::DESTORY;
-	//			}
-	//		}
-
-	//	}
-	//	break;
-	//	case Pattern::SIN3:
-	//	{
-	//		if (CObject::GetPos().y < 700 && CObject::GetPos().y > 0) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//			if (update_count < 0.0f) {
-	//				POSITION _vector = CObject::GetVector();
-	//				POSITION n_vector = { _vector.y, -_vector.x };
-	//				if (bias == 0)
-	//					n_vector = n_vector * (-1);
-	//				if (!d_triger)
-	//					n_vector = n_vector * (-1);
-	//				float det = sqrt(n_vector.x * n_vector.x + n_vector.y * n_vector.y);
-	//				_vector = n_vector;
-	//				_vector = _vector / det;
-	//				CObject::SetVector(_vector);
-	//				update_count -= fDeltaTime;
-	//				if (count < 0.0f) {
-	//					count = 2.0f;
-	//					d_triger = !d_triger;
-	//				}
-	//				//	printf("현재 위치 : (%f, %f) ---- 방향 : (%f, %f) ---- count = %d \n", CObject::GetPos().x, CObject::GetPos().y, CObject::GetVector().x, CObject::GetVector().y, count);
-
-	//			}
-	//			else
-	//				update_count -= fDeltaTime;
-	//		}
-	//		else {
-	//			if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//				if (m_state != MONSTER_STATE::DONDESTORY)
-	//					m_state = MONSTER_STATE::DESTORY;
-	//			}
-	//		}
-	//	}
-	//	break;
-	//	case Pattern::SIN4:
-	//		if (CObject::GetPos().y < 700 && CObject::GetPos().y > 0) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//		}
-	//		else {
-	//			if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//				if (m_state != MONSTER_STATE::DONDESTORY)
-	//					m_state = MONSTER_STATE::DESTORY;
-	//			}
-	//		}
-	//		break;
-	//	case Pattern::SIN5:
-	//	{
-	//		if (CObject::GetPos().y < 700 && CObject::GetPos().y > 0) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//			if (update_count < 0.0f) {
-	//				POSITION _vector = CObject::GetVector();
-	//				POSITION n_vector = { _vector.y, -_vector.x };
-	//				if (bias == 0)
-	//					n_vector = n_vector * (-1);
-	//				float det = sqrt(n_vector.x * n_vector.x + n_vector.y * n_vector.y);
-	//				_vector = _vector + (n_vector / (5));
-	//				det = sqrt(_vector.x * _vector.x + _vector.y * _vector.y);
-	//				_vector = _vector / det;
-	//				CObject::SetVector(_vector);
-	//				d_count += fDeltaTime;
-	//				update_count = t_count;
-	//				t_count -= c_det;
-
-	//				//	printf("현재 위치 : (%f, %f) ---- 방향 : (%f, %f) ---- count = %d \n", CObject::GetPos().x, CObject::GetPos().y, CObject::GetVector().x, CObject::GetVector().y, count);
-
-	//			}
-	//			else
-	//				update_count -= fDeltaTime;
-	//		}
-	//		else {
-	//			if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//				if (m_state != MONSTER_STATE::DONDESTORY)
-	//					m_state = MONSTER_STATE::DESTORY;
-	//			}
-	//		}
-
-	//	}
-	//	break;
-	//	case Pattern::SIN6:
-	//		if (CObject::GetPos().y < 700 && CObject::GetPos().y > 0) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//		}
-	//		else {
-	//			if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//				if (m_state != MONSTER_STATE::DONDESTORY)
-	//					m_state = MONSTER_STATE::DESTORY;
-	//			}
-	//		}
-	//		break;
-	//	case Pattern::SIN7:
-	//		if (m_state != MONSTER_STATE::WAIT) {
-	//			if (m_state == MONSTER_STATE::DONDESTORY && CObject::GetPos().y < 700 && CObject::GetPos().y > 0)
-	//				m_state = MONSTER_STATE::NOMAL;
-	//			if (CObject::GetPos().y < 400) {
-	//				float fMovedIstance = 0.00166666f;
-	//				POSITION r_vector = CObject::GetPos() + (CObject::GetVector() * fMovedIstance) * t_speed;
-	//				CObject::SetPos(r_vector);
-	//			}
-	//			else {
-	//				if (m_state != MONSTER_STATE::WAIT)
-	//					m_state = MONSTER_STATE::WAIT;
-	//			}
-	//		}
-	//		else {
-	//			/*	if (!(m_tLTPos.y > -200 && m_tLTPos.y < 1000 && m_tLTPos.x > -200 && m_tLTPos.y < 800)) {
-	//					if (m_state != MONSTER_STATE::DONDESTORY)
-	//						m_state = MONSTER_STATE::DESTORY;
-	//				}*/
-	//		}
-	//		break;
-	//	default:
-	//		break;
-	//	}
-
-	//	if (mPattern != Pattern::SIN7) {
-	//		float fMovedIstance = 0.00166666f;
-	//		//float fMovedIstance = 0.0022222f;
-	//		POSITION r_vector = CObject::GetPos() + (CObject::GetVector() * fMovedIstance) * t_speed;
-	//		CObject::SetPos(r_vector);
-	//	}
-	//	if (fire_delay < 0)
-	//		fire_delay = fire_rate;
-	//	fire_delay--;
-	//}
+	CObject::Update(fDeltaTime);
 }
 
 void CMonster::LateUpdate(float fDeltaTime)
@@ -422,8 +336,8 @@ void CMonster::RenderExplode(HDC mainhDC, HDC hdc, float fDeltaTime)
 	}
 
 	// 출력이미지를 전부 출력했을 때 몬스터를 삭제합니다... 
-	if (m_Explode_img_Count == 300)
-		m_state = MONSTER_STATE::DESTORY;
+	/*if (m_Explode_img_Count == 300)
+		m_state = OBJECT_STATE::DESTORY;*/
 
 }
 

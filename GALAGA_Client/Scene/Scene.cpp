@@ -211,11 +211,14 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 
 	else if ((int)obj_Type > 10000 && (int)obj_Type < 40000)
 	{
+		static int pat = 0;
 		// Monster
 		CMonster* t_mon = new CMonster;
-		t_mon->Init(pos, Pattern(m_StageNum), obj_Type, POSITION(0, 1), m_StageNum);
+		t_mon->Init(pos, MONSTER_PATTERN(pat++), obj_Type, POSITION(0, 1), m_StageNum);
 		t_mon->RegisterObject(id);
 		m_MonsterList->push_back(t_mon);
+		if (pat == (int)MONSTER_PATTERN::END_ENUM)
+			pat = 0;
 	}
 
 	else if ((int)obj_Type == 40001)
@@ -244,6 +247,9 @@ int CScene::Update(float fDeltaTime)
 	if (m_MainPlayer)
 		m_MainPlayer->Update(fDeltaTime);
 
+	for (CMonster* pMob : *m_MonsterList) {
+		pMob->Update(fDeltaTime);
+	}
 	/*m_Player->Update(fDeltaTime);*/
 	return 0;
 }
