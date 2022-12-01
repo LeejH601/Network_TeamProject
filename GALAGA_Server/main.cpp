@@ -3,9 +3,6 @@
 #include "Network/NetworkDevice.h"
 #include "Locator.h"
 
-
- 
-
 #define SERVERPORT 9000
 #define MAXCLIENT 2
 char* SERVERIP = (char*)"127.0.0.1";
@@ -39,9 +36,6 @@ int g_nPlayClient = 0;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	/*ThreadArgument Arg;
-	memcpy(&Arg, arg, sizeof(ThreadArgument));*/
-
 	CRITICAL_SECTION tCs;
 	client_cs.insert(CS_PAIR(GetCurrentThreadId(), tCs));
 
@@ -69,17 +63,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		//std::cout << "??????????" << std::endl;
 		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.RecvByNetwork();
-		LeaveCriticalSection(&msg_dispatcher_cs);
-
-		/*EnterCriticalSection(pCs);
-		Network_Device.CopyTelegramQueue();
-		LeaveCriticalSection(pCs);*/
-
-		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.GetTelegram();
 		LeaveCriticalSection(&msg_dispatcher_cs);
 
-		EnterCriticalSection(&cs);	
+		EnterCriticalSection(&cs);
+		CCore::GetInst()->SnapshotRun(GetCurrentThreadId());
 		Network_Device.SendToNetwork();
 		LeaveCriticalSection(&cs);
 

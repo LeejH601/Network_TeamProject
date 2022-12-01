@@ -111,9 +111,6 @@ void CBullet::Update(float fDeltaTime)
 
 	if (m_Range >= m_MaxRange)
 		SetEnalbeFalse();
-
-	CObject::SendMsgMoveObject();
-
 }
 
 bool CBullet::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)

@@ -76,7 +76,6 @@ void CSceneManager::Update(float fDeltaTime)
 		{
 			m_Scene_Stage1->SetEnable(false);
 			m_Scene_stage2->SetEnable(true);
-			SendMsgChangeScene(SCENE_TYPE::ST_STAGE2);
 			NextStageNum = 2;
 
 		}
@@ -88,7 +87,6 @@ void CSceneManager::Update(float fDeltaTime)
 		{
 			m_Scene_stage2->SetEnable(false);
 			m_Scene_stage3->SetEnable(true);
-			SendMsgChangeScene(SCENE_TYPE::ST_STAGE3);
 			NextStageNum = 3;
 		}
 	}
@@ -99,7 +97,6 @@ void CSceneManager::Update(float fDeltaTime)
 		{
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(true);
-			SendMsgChangeScene(SCENE_TYPE::ST_CLEAR);
 			NextStageNum = 0;
 		}
 	}
@@ -249,49 +246,11 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 	{
 	case MESSAGE_TYPE::Msg_clientReady:
 	{
-		Telegram tel_Checked;
-		tel_Checked.Sender = m_iObjID;
-		tel_Checked.Receiver = 0;
-		tel_Checked.DispatchTime = CTimer::GetInst()->GetTime();
-		tel_Checked.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
-		tel_Checked.Extrainfo = new int;
-		SCENE_TYPE st_Begin = SCENE_TYPE::ST_STAGE1;
-		memcpy(tel_Checked.Extrainfo, &st_Begin, sizeof(SCENE_TYPE));
 		if (!CCore::GetInst()->m_hPlayer2)
 		{
-			CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
-			EnterCriticalSection(&c_cs);
-			CNetworkDevice* p;
-			p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-			p->AddMessage(tel_Checked);
-			m_Player1->SendCreateMessage(p, OBJECT_TYPE::OBJ_PLAYER);
-			LeaveCriticalSection(&c_cs);
-
 			m_Scene_Begin->SetEnable(false);
 			m_Scene_Stage1->SetEnable(true);
 		}
-		else
-		{
-			CRITICAL_SECTION& c_cs1 = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
-			CRITICAL_SECTION& c_cs2 = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
-
-			EnterCriticalSection(&c_cs1);
-			CNetworkDevice* p1;
-			p1 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-			m_Player2->SendCreateMessage(p1, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-			LeaveCriticalSection(&c_cs1);
-			
-			EnterCriticalSection(&c_cs2);
-			CNetworkDevice* p2;
-			p2 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-			m_Player1->SendCreateMessage(p2, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-			m_Player2->SendCreateMessage(p2, OBJECT_TYPE::OBJ_PLAYER);
-			LeaveCriticalSection(&c_cs2);
-
-			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
-		}
-
-		delete tel_Checked.Extrainfo;
 	}
 	return true;
 	default:

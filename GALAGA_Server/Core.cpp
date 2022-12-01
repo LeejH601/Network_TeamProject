@@ -36,10 +36,6 @@ void CCore::Logic()
 	Update(fDeltaTime);			// * ������Ʈ
 	LateUpdate(fDeltaTime);		// * ������Ʈ ��ó�� 
 	Collision(fDeltaTime);		// * �浹 ó��
-
-	EnterCriticalSection(&msg_dispatcher_cs);
-	CMessageDispatcher::GetInst()->DispatchMessages();
-	LeaveCriticalSection(&msg_dispatcher_cs);
 }
 
 
@@ -115,6 +111,123 @@ void CCore::SnapshotInit(int nPlayer)
 
 	// 블릿 생성 메시지
 
+
+	LeaveCriticalSection(&c_cs);
+}
+
+void CCore::SnapshotRun(DWORD hPlayer)
+{
+	EnterCriticalSection(&msg_dispatcher_cs);
+	CMessageDispatcher::GetInst()->DispatchMessages();
+	LeaveCriticalSection(&msg_dispatcher_cs);
+
+	// 플레이어 핸들
+	CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(hPlayer, nullptr))->second);
+	EnterCriticalSection(&c_cs);
+
+	CNetworkDevice* p;
+	p = Locator.GetNetworkDevice(hPlayer);
+
+	auto GenerateMsgCreate = [](CNetworkDevice* network, CObject* obj) {
+
+		Telegram telegram;
+		telegram.Sender = obj->GetID();
+		telegram.Receiver = 0;
+		telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+		telegram.DispatchTime = CTimer::GetInst()->GetTime();
+		telegram.Extrainfo = new char[sizeof(int) + sizeof(POSITION)];
+		OBJECT_TYPE type = obj->GetObjType();
+		memcpy(telegram.Extrainfo, &type, sizeof(int));
+		POSITION pos = obj->GetPos();
+		memcpy((char*)telegram.Extrainfo + sizeof(int), &pos, sizeof(POSITION));
+
+		network->AddMessage(telegram);
+
+		delete[] telegram.Extrainfo;
+	};
+	
+	auto GenerateMsgMove = [](CNetworkDevice* network, CObject* obj) {
+		Telegram telegram;
+		telegram.Sender = obj->GetID();
+		telegram.Receiver = obj->GetID();
+		telegram.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
+		telegram.DispatchTime = CTimer::GetInst()->GetTime();
+		telegram.Extrainfo = new char[sizeof(POSITION)];
+
+		POSITION pos = obj->GetPos();
+		memcpy((char*)telegram.Extrainfo, &pos, sizeof(POSITION));
+
+		network->AddMessage(telegram);
+
+		delete[] telegram.Extrainfo;
+	};
+
+	auto GenerateMsgChangeScene = [](CNetworkDevice* network) {
+
+		Telegram telegram;
+		telegram.Sender = 0;
+		telegram.Receiver = 0;
+		telegram.DispatchTime = CTimer::GetInst()->GetTime();
+		telegram.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
+		telegram.Extrainfo = new char[4];
+
+		int current_Scene = (int)CSceneManager::GetInst()->GetCurrentSceneType();
+
+		memcpy(telegram.Extrainfo, &current_Scene, sizeof(SCENE_TYPE));
+
+		network->AddMessage(telegram);
+		delete[] telegram.Extrainfo;
+	};
+
+	CSceneManager* SCM = CSceneManager::GetInst();
+
+	// 씬 메시지
+	GenerateMsgChangeScene(p);
+
+	// 플레이어 생성 메시지
+	if (CCore::GetInst()->m_hPlayer1 == hPlayer)
+	{
+		((CObject*)SCM->GetPlayer1())->SetObjType(OBJECT_TYPE::OBJ_PLAYER);
+		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
+		if (CCore::GetInst()->m_hPlayer2)
+		{
+			((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+			GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
+			GenerateMsgMove(p, (CObject*)SCM->GetPlayer2());
+		}
+	}
+
+	if (CCore::GetInst()->m_hPlayer2 == hPlayer)
+	{
+		((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_PLAYER);
+		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
+		if (CCore::GetInst()->m_hPlayer1)
+		{
+			((CObject*)SCM->GetPlayer1())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+			GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
+			GenerateMsgMove(p, (CObject*)SCM->GetPlayer1());
+		}
+	}
+
+	// 몬스터 생성 메시지
+	/*std::list<CMonster*>* mob_list = SCM->GetMonsterList();
+
+	for (CMonster* mob : *mob_list) {
+		GenerateMsgCreate(p, mob);
+	}*/
+
+	// 아이템 생성 메시지
+	/*std::list<CItem*>* item_list = SCM->GetItemlistFromSceneType(SCM->GetCurrentSceneType());
+	for (CItem* item : *item_list) {
+		GenerateMsgCreate(p, item);
+	}*/
+
+	// 블릿 생성 메시지
+
+
+	// 플레이어 무브 메시지
+	
+		
 
 	LeaveCriticalSection(&c_cs);
 }

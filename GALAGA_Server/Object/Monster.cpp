@@ -459,7 +459,6 @@ void CMonster::Update(float fDeltaTime)
 	SetPos(m_Path.GetNextPos());
 
 	CObject::Update(fDeltaTime);
-	CObject::SendMsgMoveObject();
 
 	//if (m_state != MONSTER_STATE::DESTORY) {
 	//	switch (mPattern) // ������Ʈ�� ������ ���Ͽ� �°� ��ġ�� ������Ʈ

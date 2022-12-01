@@ -280,6 +280,14 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		POSITION* pos = new POSITION;
 		memcpy(pos, (void*)(&tmp[sizeof(OBJECT_TYPE)]), sizeof(POSITION));
 		
+		CObject* pReceiver = CObjectManager::GetInst()->GetObjectFromID(telegram.Sender);
+		if (pReceiver)
+		{
+			delete pos;
+			delete obj_type;
+			return true;
+		}
+
 		if (*obj_type == OBJECT_TYPE::OBJ_PLAYER) { // Player 생성
 			m_MainPlayer = new CPlayer(id);
 			m_MainPlayer->Init(1);

@@ -94,8 +94,6 @@ bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 			break;
 		}
 	}
-	
-	CObject::SendMsgCreateObject(m_myType, LTpos);
 	return true;
 }
 
@@ -111,8 +109,6 @@ void CItem::Update(float fDeltaTime)
 
 		if (CObject::m_tLTPos.y > 750.0f)
 			m_bEnable = false;
-
-		CObject::SendMsgMoveObject();
 	}
 }
 

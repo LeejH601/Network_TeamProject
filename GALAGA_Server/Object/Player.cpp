@@ -98,34 +98,6 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		
 		SetPos(*pos);
 		delete pos;
-		switch (m_iObjID)
-		{
-		case 1:
-			if (CCore::GetInst()->m_hPlayer2)
-			{
-				CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
-				EnterCriticalSection(&c_cs);
-				CNetworkDevice* p;
-				p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-				SendMoveMessage(p);
-				LeaveCriticalSection(&c_cs);
-			}
-			break;
-		case 2:
-			if (CCore::GetInst()->m_hPlayer1)
-			{
-				CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
-				EnterCriticalSection(&c_cs);
-				CNetworkDevice* p;
-				p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-				SendMoveMessage(p);
-				LeaveCriticalSection(&c_cs);
-			}
-			break;
-		default:
-
-			break;
-		}
 		return true;
 	}
 	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState

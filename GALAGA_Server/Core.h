@@ -51,7 +51,7 @@ public:
 	}
 
 	void SnapshotInit(int nPlayer);
-
+	void SnapshotRun(DWORD hPlayer);
 private:
 	static CCore* m_pInst;
 
