@@ -188,7 +188,6 @@ void CObject::SendMsgCreateObject(OBJECT_TYPE nType, POSITION pos)
 
 	CObject::SendMessageToClient(tel_CreateObject);
 
-	delete[] tel_CreateObject.Extrainfo;
 }
 
 void CObject::SendMsgMoveObject()
@@ -203,7 +202,6 @@ void CObject::SendMsgMoveObject()
 
 	CObject::SendMessageToClient(tel_MoveObject);
 
-	delete[] tel_MoveObject.Extrainfo;
 }
 
 bool CObject::HandleMessage(const Telegram& telegram)

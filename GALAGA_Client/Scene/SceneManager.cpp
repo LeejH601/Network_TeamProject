@@ -318,6 +318,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 
 		delete pos;
 		delete obj_type;
+		delete[] tmp;
 
 		//	int Object_Type; // 해당 오브젝트의 enum
 		//	POSITION Position;
@@ -361,6 +362,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		char* tmp = (char*)telegram.Extrainfo;
 		int* scene_type = new int;
 		memcpy(scene_type, tmp, sizeof(int));
+		delete[] tmp;
 
 		switch (*scene_type)
 		{

@@ -31,6 +31,7 @@ void CCore::Logic()
 	// ��ŸŸ���� ������ �� ����ϴ�. 
 	GET_SINGLE(CTimer)->Update();
 	float fDeltaTime = GET_SINGLE(CTimer)->GetDeltaTime();
+
 	// fDeltaTime_update = GET_SINGLE(CTimer)->GetTimer_Update();
 
 	Update(fDeltaTime);			// * ������Ʈ
@@ -83,13 +84,12 @@ void CCore::SnapshotInit(int nPlayer)
 		POSITION pos = obj->GetPos();
 		memcpy((char*)telegram.Extrainfo + sizeof(int), &pos, sizeof(POSITION));
 
-		
+
 		CNetworkDevice* p;
 		p = Locator.GetNetworkDevice(hP);
 		p->AddMessage(telegram);
-		
 
-		delete[] telegram.Extrainfo;
+
 	};
 
 	// 임계영역 진입 - 안전을 위해 모든 메시지 적재 작업 완료 후 임계영역 탈출
@@ -100,10 +100,10 @@ void CCore::SnapshotInit(int nPlayer)
 	// 씬 메시지
 	SCM->SendMsgChangeScene(SCM->GetCurrentSceneType());
 	// 플레이어 생성 메시지
-	
+
 
 	// 몬스터 생성 메시지
-	std::list<CMonster*>* mob_list =  SCM->GetMonsterList();
+	std::list<CMonster*>* mob_list = SCM->GetMonsterList();
 	for (CMonster* mob : *mob_list) {
 		GenerateMsgCreate(hPlayer, mob);
 	}

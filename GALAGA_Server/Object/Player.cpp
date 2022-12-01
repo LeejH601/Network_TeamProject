@@ -55,7 +55,6 @@ void CPlayer::SendCreateMessage(CNetworkDevice* pNetworkDevice, OBJECT_TYPE obj_
 
 	pNetworkDevice->AddMessage(tel_CreateObject);
 
-	delete[] tel_CreateObject.Extrainfo;
 }
 
 void CPlayer::SendMoveMessage(CNetworkDevice * pNetworkDevice)
@@ -70,7 +69,6 @@ void CPlayer::SendMoveMessage(CNetworkDevice * pNetworkDevice)
 
 	pNetworkDevice->AddMessage(tel_MoveObject);
 
-	delete[] tel_MoveObject.Extrainfo;
 }
 
 bool CPlayer::HandleMessage(const Telegram& msg)
@@ -89,6 +87,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		{
 			m_myBulletList->AddBullet(Position, BulletSize, 800.0f);
 		}
+		delete[] msg.Extrainfo;
 		return true;
 	}
 	case MESSAGE_TYPE::Msg_objectMove: //extrainfo: ObjectType, Position (4byte + 12byte)
@@ -109,6 +108,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 				p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
 				SendMoveMessage(p);
 				LeaveCriticalSection(&c_cs);
+
 			}
 			break;
 		case 2:
@@ -120,6 +120,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 				p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
 				SendMoveMessage(p);
 				LeaveCriticalSection(&c_cs);
+
 			}
 			break;
 		default:
@@ -132,6 +133,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 	{
 		int ObjectState;
 		memcpy(&ObjectState, msg.Extrainfo, sizeof(int));
+		delete[] msg.Extrainfo;
 		return true;
 	}
 	default:

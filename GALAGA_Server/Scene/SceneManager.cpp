@@ -240,7 +240,6 @@ void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 		LeaveCriticalSection(&c_cs);
 	}
 
-	delete tel_ChangeScene.Extrainfo;
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
@@ -291,7 +290,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
 		}
 
-		delete tel_Checked.Extrainfo;
+		//delete tel_Checked.Extrainfo;
 	}
 	return true;
 	default:

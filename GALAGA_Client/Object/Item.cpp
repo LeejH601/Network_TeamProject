@@ -128,6 +128,7 @@ bool CItem::HandleMessage(const Telegram& telegram)
 		case OBJECT_STATE::ERASE:
 			CObjectManager::GetInst()->RemoveObject(this);
 			m_bEnable = false;
+			delete[] telegram.Extrainfo;
 			return true;
 		default:
 			break;

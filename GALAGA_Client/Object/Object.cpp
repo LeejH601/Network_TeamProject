@@ -207,6 +207,7 @@ bool CObject::HandleMessage(const Telegram& telegram)
 	{
 		POSITION* pos = new POSITION;
 		memcpy(pos, telegram.Extrainfo, sizeof(POSITION));
+		delete[] telegram.Extrainfo;
 
 		SetPos(*pos);
 		delete pos;

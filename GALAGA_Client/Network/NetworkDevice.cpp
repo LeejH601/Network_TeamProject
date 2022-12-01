@@ -236,7 +236,10 @@ void CNetworkDevice::AddMessage(Telegram& Message)
 		memcpy(messageQueue.Extrainfo, Message.Extrainfo, Message_Sizes[Message.Msg] - (sizeof(int) + sizeof(int) + sizeof(LONGLONG)));
 	}
 
+
 	m_SendTelegrams[messageQueue.Msg].push_back(messageQueue);
+	if (Message.Extrainfo != nullptr)
+		delete[] Message.Extrainfo;
 }
 
 bool CNetworkDevice::ConnectNetwork(const char* address)

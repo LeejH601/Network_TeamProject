@@ -73,7 +73,6 @@ void CPlayer::Update(float fDeltaTime)
 		CNetworkDevice::GetInst()->AddMessage(tel_MoveObject);
 		LeaveCriticalSection(&cs);
 
-		delete[] tel_MoveObject.Extrainfo;
 	}
 }
 
@@ -158,12 +157,14 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		memcpy(pos, msg.Extrainfo, sizeof(POSITION));
 
 		SetPos(*pos);
+		delete[] msg.Extrainfo;
 		delete pos;
 	}
 	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState
 	{
 		int ObjectState;
 		memcpy(&ObjectState, msg.Extrainfo, sizeof(int));
+		delete[] msg.Extrainfo;
 		return true;
 	}
 	default:
