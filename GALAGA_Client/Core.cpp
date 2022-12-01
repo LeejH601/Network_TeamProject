@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "Core/Timer.h"
 #include "Object/Object.h"
+#include "Object/Player.h"
 #include "Scene/SceneManager.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
@@ -46,13 +47,6 @@ void CCore::Logic()
 	LateUpdate(fDeltaTime);		// * 업데이트 후처리 
 	Collision(fDeltaTime);		// * 충돌 처리
 	Render(fDeltaTime);			// * 출력
-
-	if (CNetworkDevice::GetInst()->GetSock())
-	{
-		EnterCriticalSection(&Main_cs);
-		CMessageDispatcher::GetInst()->DispatchMessages();
-		LeaveCriticalSection(&Main_cs);
-	}
 }
 
 void CCore::Input(float fDeltaTime)
@@ -88,6 +82,23 @@ void CCore::Render(float fDeltaTime)
 	// Render를 처리합니다.
 	CSceneManager::GetInst()->Render(m_hDC, m_hMemDC, fDeltaTime);
 
+}
+void CCore::SendSnapShot()
+{
+	CPlayer* myPlayer = CSceneManager::GetInst()->GetPlayer();
+	if (myPlayer)
+	{
+		POSITION pos = myPlayer->GetPos();
+		Telegram tel_MoveObject;
+		tel_MoveObject.Sender = myPlayer->GetID();
+		tel_MoveObject.Receiver = myPlayer->GetID();
+		tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
+		tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
+		tel_MoveObject.Extrainfo = new char[8];
+		memcpy(tel_MoveObject.Extrainfo, &pos, sizeof(POSITION));
+		CNetworkDevice::GetInst()->AddMessage(tel_MoveObject);
+		delete[] tel_MoveObject.Extrainfo;
+	}
 }
 // Window 창 관련 함수들입니다. ***
 
@@ -176,24 +187,18 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	InitializeCriticalSection(&cs);
 
 	CNetworkDevice::GetInst()->ConnectNetwork(client_ip);
-	EnterCriticalSection(&Main_cs);
 	CCore::GetInst()->SetConnected();
-	LeaveCriticalSection(&Main_cs);
 
 	Telegram testTelegram = Telegram{ 0, 0, (int)MESSAGE_TYPE::Msg_clientReady, CTimer::GetInst()->GetTime(), nullptr };
-
 	CNetworkDevice::GetInst()->AddMessage(testTelegram);
 
 	while (true)
 	{
-		EnterCriticalSection(&cs);
+		CCore::GetInst()->SendSnapShot();
 		CNetworkDevice::GetInst()->SendToNetwork();
-		LeaveCriticalSection(&cs);
-
-		EnterCriticalSection(&Main_cs);
 		CNetworkDevice::GetInst()->RecvByNetwork();
 		CNetworkDevice::GetInst()->GetTelegram();
-		LeaveCriticalSection(&Main_cs);
+		CMessageDispatcher::GetInst()->DispatchMessages();
 	}
 
 	DeleteCriticalSection(&cs);

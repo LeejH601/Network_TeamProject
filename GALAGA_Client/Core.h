@@ -38,6 +38,7 @@ private:
 public:
 	bool Init(HINSTANCE hInst);
 	int Run();
+	void SendSnapShot();
 private:
 	void Logic();
 
@@ -47,6 +48,7 @@ private:
 	int LateUpdate(float fDeltaTime);				// * 업데이트 후처리
 	void Collision(float fDeltaTime);				// * 충돌
 	void Render(float fDeltaTime);					// * 출력
+
 private:
 	//  용도: 창 클래스를 등록합니다.
 	ATOM MyRegisterClass();

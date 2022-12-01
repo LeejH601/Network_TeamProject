@@ -56,25 +56,6 @@ bool CPlayer::Init(int type)
 
 void CPlayer::Update(float fDeltaTime)
 {
-	if ((int)m_tLastLTPos.x != (int)m_tLTPos.x || (int)m_tLastLTPos.y != (int)m_tLTPos.y)
-	{
-		m_tLastLTPos.x = m_tLTPos.x;
-		m_tLastLTPos.y = m_tLTPos.y;
-
-		Telegram tel_MoveObject;
-		tel_MoveObject.Sender = m_iObjID;
-		tel_MoveObject.Receiver = m_iObjID;
-		tel_MoveObject.Msg = (int)MESSAGE_TYPE::Msg_objectMove;
-		tel_MoveObject.DispatchTime = CTimer::GetInst()->GetTime();
-		tel_MoveObject.Extrainfo = new char[8];
-		memcpy(tel_MoveObject.Extrainfo, &m_tLTPos, sizeof(POSITION));
-
-		EnterCriticalSection(&cs);
-		CNetworkDevice::GetInst()->AddMessage(tel_MoveObject);
-		LeaveCriticalSection(&cs);
-
-		delete[] tel_MoveObject.Extrainfo;
-	}
 }
 
 
@@ -116,35 +97,35 @@ void CPlayer::Input(float fDeltaTime)
 
 	}
 
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
-	{
-		float currentTime = clock();
-		if (m_LastFireTime == NULL || currentTime - m_LastFireTime >= 100) {
-			if (m_myBulletList != nullptr)
-			{
-				POSITION BulletSize = { 18,30 };
-				POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
+	//if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+	//{
+	//	float currentTime = clock();
+	//	if (m_LastFireTime == NULL || currentTime - m_LastFireTime >= 100) {
+	//		if (m_myBulletList != nullptr)
+	//		{
+	//			POSITION BulletSize = { 18,30 };
+	//			POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
 
-				// Create_Msg
-				OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
-				Telegram telegram;
-				telegram.Sender = m_iObjID;
-				telegram.Receiver = m_iObjID;
-				telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-				telegram.DispatchTime = CTimer::GetInst()->GetTime();
-				telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
-				memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
-				memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
-				EnterCriticalSection(&cs);
-				CNetworkDevice::GetInst()->AddMessage(telegram);
-				LeaveCriticalSection(&cs);
-			}
-			m_LastFireTime = currentTime;
-			m_BulletShotCount = 100;
+	//			// Create_Msg
+	//			OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
+	//			Telegram telegram;
+	//			telegram.Sender = m_iObjID;
+	//			telegram.Receiver = m_iObjID;
+	//			telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+	//			telegram.DispatchTime = CTimer::GetInst()->GetTime();
+	//			telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
+	//			memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
+	//			memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
+	//			EnterCriticalSection(&cs);
+	//			CNetworkDevice::GetInst()->AddMessage(telegram);
+	//			LeaveCriticalSection(&cs);
+	//		}
+	//		m_LastFireTime = currentTime;
+	//		m_BulletShotCount = 100;
 
-			//CSoundManager::GetInst()->playSound_Effect();
-		}
-	}
+	//		//CSoundManager::GetInst()->playSound_Effect();
+	//	}
+	//}
 
 }
 
