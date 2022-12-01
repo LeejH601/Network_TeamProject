@@ -37,6 +37,10 @@ void CNetworkDevice::init(SOCKET sock)
 
 bool CNetworkDevice::SendToNetwork()
 {
+	CRITICAL_SECTION& cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(GetCurrentThreadId(), nullptr))->second);
+
+	EnterCriticalSection(&cs);
+
 	// �迭 �޼��� ������ŭ
 	int MessageN[(int)MESSAGE_TYPE::END_Enum] = { 0 };
 
@@ -50,8 +54,10 @@ bool CNetworkDevice::SendToNetwork()
 	// int�� �迭�� �������� ��Ŷ���� �۽�(�޼��� ����)
 	retval = send(m_client_sock, (const char*)MessageN, sizeof(int) * (int)(m_SendTelegrams.size()), 0);
 
-	if (retval == 0)
+	if (retval == 0) {
+		LeaveCriticalSection(&cs);
 		return false;
+	}
 	//if (retval == SOCKET_ERROR) err_display("send() - Message ����");
 
 	int DataSize = 0;
@@ -62,8 +68,10 @@ bool CNetworkDevice::SendToNetwork()
 		DataSize += MessageN[i] * Message_Sizes[i];
 	}
 
-	if (DataSize == 0)
+	if (DataSize == 0) {
+		LeaveCriticalSection(&cs);
 		return false;
+	}
 	char* Data = new char[DataSize];
 	int AddDataSize = 0; // �߰��� ������ ũ��
 
@@ -87,6 +95,8 @@ bool CNetworkDevice::SendToNetwork()
 		}
 		m_SendTelegrams[i].clear();
 	}
+
+	LeaveCriticalSection(&cs);
 
 	// �����͸� AddDataSize(����� ������ ũ��)��ŭ ����
 	int LeftDataSize = AddDataSize; // �̼��� ������ ũ��

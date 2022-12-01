@@ -78,10 +78,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		EnterCriticalSection(&msg_dispatcher_cs);
 		Network_Device.GetTelegram();
 		LeaveCriticalSection(&msg_dispatcher_cs);
-
-		EnterCriticalSection(&cs);	
+		
 		Network_Device.SendToNetwork();
-		LeaveCriticalSection(&cs);
 
 		/*EnterCriticalSection(&cs);
 		Network_Device.printTelegram();

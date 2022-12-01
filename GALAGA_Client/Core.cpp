@@ -186,9 +186,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (true)
 	{
-		EnterCriticalSection(&cs);
 		CNetworkDevice::GetInst()->SendToNetwork();
-		LeaveCriticalSection(&cs);
 
 
 		//EnterCriticalSection(&cs);

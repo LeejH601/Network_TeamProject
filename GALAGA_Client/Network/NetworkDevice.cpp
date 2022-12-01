@@ -71,6 +71,8 @@ bool CNetworkDevice::SendToNetwork()
 	if (!m_sock)
 		return false;
 
+	EnterCriticalSection(&cs);
+
 	// �迭 �޼��� ������ŭ
 	int MessageN[(int)MESSAGE_TYPE::END_Enum] = { 0 };
 
@@ -96,8 +98,11 @@ bool CNetworkDevice::SendToNetwork()
 		DataSize += MessageN[i] * Message_Sizes[i];
 	}
 
-	if (DataSize == 0)
+	if (DataSize == 0) {
+		LeaveCriticalSection(&cs);
 		return false;
+	}
+
 	char* Data = new char[DataSize];
 	int AddDataSize = 0; // �߰��� ������ ũ��
 
@@ -121,6 +126,8 @@ bool CNetworkDevice::SendToNetwork()
 		}
 		m_SendTelegrams[i].clear();
 	}
+
+	LeaveCriticalSection(&cs);
 
 	// �����͸� AddDataSize(����� ������ ũ��)��ŭ ����
 	int LeftDataSize = AddDataSize; // �̼��� ������ ũ��
