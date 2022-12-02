@@ -9,6 +9,33 @@ CPlayer::CPlayer(int id)
 	m_myBulletList = new CBulletList(id);
 }
 
+CPlayer::~CPlayer()
+{
+	CObject::~CObject();
+	if (m_myBulletList)
+		m_myBulletList->EraseAll();
+
+}
+
+void CPlayer::SendMsgAddBullet()
+{
+	POSITION BulletSize = { 18,30 };
+	for (int i = 0; i < m_BulletNum; i++) { 
+		POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2 + ((i + 1) / 2) * (13.f) * (float)pow(-1, i), m_tLTPos.y - BulletSize.y };
+		// Create_Msg
+		OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
+		Telegram telegram;
+		telegram.Sender = m_iObjID;
+		telegram.Receiver = m_iObjID;
+		telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+		telegram.DispatchTime = CTimer::GetInst()->GetTime();
+		telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
+		memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
+		memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
+		CNetworkDevice::GetInst()->AddMessage(telegram);
+	}
+}
+
 bool CPlayer::Init(int type)
 {
 	POSITION PlayerVector = { 0 , -100 };
@@ -104,26 +131,11 @@ void CPlayer::Input(float fDeltaTime)
 	{
 		float currentTime = clock();
 		if (m_LastFireTime == NULL || currentTime - m_LastFireTime >= 100) {
-			if (m_myBulletList != nullptr)
-			{
-				POSITION BulletSize = { 18,30 };
-				POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
-
-				// Create_Msg
-				OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
-				Telegram telegram;
-				telegram.Sender = m_iObjID;
-				telegram.Receiver = m_iObjID;
-				telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-				telegram.DispatchTime = CTimer::GetInst()->GetTime();
-				telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
-				memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
-				memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
-				CNetworkDevice::GetInst()->AddMessage(telegram);
+			if (m_myBulletList) {
+				SendMsgAddBullet();
+				m_LastFireTime = currentTime;
+				m_BulletShotCount = 100;
 			}
-			m_LastFireTime = currentTime;
-			m_BulletShotCount = 100;
-
 			// ÃÑ¾Ë ¼Ò¸®
 			//CSoundManager::GetInst()->playSound_Effect();
 		}

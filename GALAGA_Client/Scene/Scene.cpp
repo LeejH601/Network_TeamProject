@@ -17,9 +17,6 @@ CScene::~CScene()
 	//if (m_MonsterList != nullptr)
 	//	(*m_MonsterList).clear();
 
-	//Monster_BulletList->EraseAll();
-	//delete Monster_BulletList;
-
 	//m_ItemList->EraseAll();
 	//delete m_ItemList;
 
