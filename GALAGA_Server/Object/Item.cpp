@@ -31,25 +31,25 @@ bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 		case 1:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_STEAMPACK;
+			CObject::SetObjType(OBJECT_TYPE::IT_STEAMPACK);
 		}
 		break;
 		case 2:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_HPUP;
+			CObject::SetObjType(OBJECT_TYPE::IT_HPUP);
 		}
 		break;
 		case 3:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_INVINVIBILITY;
+			CObject::SetObjType(OBJECT_TYPE::IT_INVINVIBILITY);
 		}
 		break;
 		case 4:
 		{
 			CObject::Init(LT, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_POWERUP;
+			CObject::SetObjType(OBJECT_TYPE::IT_POWERUP);
 		}
 		break;
 		default:
@@ -69,25 +69,25 @@ bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 		case OBJECT_TYPE::IT_STEAMPACK:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_STEAMPACK;
+			CObject::SetObjType(OBJECT_TYPE::IT_STEAMPACK);
 		}
 		break;
 		case OBJECT_TYPE::IT_HPUP:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_HPUP;
+			CObject::SetObjType(OBJECT_TYPE::IT_HPUP);
 		}
 		break;
 		case OBJECT_TYPE::IT_INVINVIBILITY:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_INVINVIBILITY;
+			CObject::SetObjType(OBJECT_TYPE::IT_INVINVIBILITY);
 		}
 		break;
 		case OBJECT_TYPE::IT_POWERUP:
 		{
 			CObject::Init(LTpos, vector, Size, 100.0f, PLAYER_TYPE::PT_MONSTER);
-			m_myType = OBJECT_TYPE::IT_POWERUP;
+			CObject::SetObjType(OBJECT_TYPE::IT_POWERUP);
 		}
 		break;
 		default:
