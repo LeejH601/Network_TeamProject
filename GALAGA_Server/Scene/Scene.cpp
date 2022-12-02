@@ -102,74 +102,39 @@ int CScene::Update(float fDeltaTime)
 	}
 
 	static float MspawnTime = 5.0f;
+	static MONSTER_PATTERN pattern;
+	static bool bIsSpawning = false;
+	static float spawn_delay = 0.3f;
+	static float spawn_count = 0.0f;
+	static int ramain_spawn_mobs = 5;
 
 	if (MspawnTime > 5.0f)
 	{
 		OBJECT_TYPE m_type = (OBJECT_TYPE)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
 		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
 		//	m_type = (Monster_type)((int)m_type + 10000);
-
-		MONSTER_PATTERN pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
-		//pattern = MONSTER_PATTERN::PAT_STRAIGHT;
-		CMonster* mob = new CMonster;
-		mob->Init(POSITION(0, 0), pattern, m_type, POSITION(0, 1), m_StageNum);
-		m_MonsterList->push_back(mob);
-
-		/*Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
-		pattern = Pattern::SIN;
-		if (pattern == Pattern::SIN5) {
-			for (int i = 0; i < 5; i++) {
-				CMonster* t_mon = new CMonster;
-				t_mon->Init(POSITION(100, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-				m_MonsterList->push_back(t_mon);
-				t_mon = new CMonster;
-				t_mon->Init(POSITION(500, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-				m_MonsterList->push_back(t_mon);
-			}
+		if (!bIsSpawning) {
+			pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
+			bIsSpawning = true;
 		}
-		else if (pattern == Pattern::SIN6) {
-			float yPos = float(rand() % 100 + 100);
-			if (rand() % 2 == 0) {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(-100 - i * 40, yPos), pattern, m_type, POSITION(1, 0), m_StageNum);
-					m_MonsterList->push_back(t_mon);
+		{
+			spawn_count -= fDeltaTime;
+			if (spawn_count <= 0.0f) {
+				CMonster* mob = new CMonster;
+				mob->Init(POSITION(0, 0), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(mob);
+				ramain_spawn_mobs--;
+				spawn_count = spawn_delay;
+				if (ramain_spawn_mobs < 0) {
+					bIsSpawning = false;
+					spawn_count = 0.0f;
+					MspawnTime = 0.0f;
+					ramain_spawn_mobs = 5;
 				}
 			}
-			else {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(700 + i * 40, yPos), pattern, m_type, POSITION(-1, 0), m_StageNum);
-					m_MonsterList->push_back(t_mon);
-				}
-			}
+			
 		}
-		else if (pattern == Pattern::SIN4) {
-			float xPos = float(rand() % 500 + 50);
-			for (int i = 0; i < 5; i++) {
-				CMonster* t_mon = new CMonster;
-				t_mon->Init(POSITION(xPos, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-				m_MonsterList->push_back(t_mon);
-			}
-
-		}
-		else {
-			if (rand() % 2 == 0) {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(100, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
-					m_MonsterList->push_back(t_mon);
-				}
-			}
-			else {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(500, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
-					m_MonsterList->push_back(t_mon);
-				}
-			}
-		}*/
-		MspawnTime = 0.f;
+		//MspawnTime = 0.f;
 	}
 
 	MspawnTime += fDeltaTime;
