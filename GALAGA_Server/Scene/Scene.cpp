@@ -101,6 +101,9 @@ int CScene::Update(float fDeltaTime)
 		}
 	}
 
+	if (m_boss)
+		m_boss->Update(fDeltaTime);
+
 	static float MspawnTime = 5.0f;
 	static MONSTER_PATTERN pattern;
 	static bool bIsSpawning = false;
@@ -193,17 +196,17 @@ int CScene::Update(float fDeltaTime)
 
 			if (m_StageNum == 1)
 			{
-				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
 
 			}
 			else if (m_StageNum == 2)
 			{
-				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
 
 			}
 			else if (m_StageNum == 3)
 			{
-				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
 
 			}
 		}
@@ -214,9 +217,25 @@ int CScene::Update(float fDeltaTime)
 	else
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);
-		if (m_Distance >= m_MaxDistance)
+		if (m_Distance >= m_MaxDistance && m_boss == nullptr)
 		{
-			m_bEndScene = true;
+			//m_bEndScene = true;
+			m_boss = new CBoss;
+
+			if (m_StageNum == 1)
+			{
+				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 2)
+			{
+				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 3)
+			{
+				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+			}
 		}
 	}
 

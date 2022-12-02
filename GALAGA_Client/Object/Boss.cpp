@@ -32,33 +32,25 @@ bool CBoss::Init(POSITION LTpos, const OBJECT_TYPE& type, POSITION Vector, int s
 	switch (type)
 	{
 	case OBJECT_TYPE::OBJ_BOSS_ONE:
-		CObject::Init( LTpos, Vector, { 100,120 },  20000.0f * AttackRate,  PLAYER_TYPE::PT_MONSTER);
+		CObject::Init(L"../Image/Terran_img/Battle Cruiser.png", LTpos, Vector, { 100,120 }, 20000.0f * AttackRate, { 74,75 }, { 1, 57 }, PLAYER_TYPE::PT_MONSTER);
 		break;
 	case OBJECT_TYPE::OBJ_BOSS_TWO:
-		CObject::Init(LTpos, Vector, { 100,100 }, 40000.0f * AttackRate,  PLAYER_TYPE::PT_MONSTER);
+		CObject::Init(L"../Image/Protoss_img/mothership.png", LTpos, Vector, { 100,100 }, 40000.0f * AttackRate, { 67 , 62 }, { 23 ,18 }, PLAYER_TYPE::PT_MONSTER);
 		break;
 	case OBJECT_TYPE::OBJ_BOSS_THREE:
-		CObject::Init( LTpos, Vector, { 120,100 }, 65000.0f, PLAYER_TYPE::PT_MONSTER);
+		CObject::Init(L"../Image/Zerg_img/Guardian.png", LTpos, Vector, { 120,100 }, 65000.0f, { 70  , 40 }, { 650  ,85 }, PLAYER_TYPE::PT_MONSTER);
 		break;
 	default:
 		break;
 	}
 
-	CObject::SendMsgCreateObject(type, LTpos);
 
 	return true;
 }
 
 void CBoss::Update(float fDeltaTime)
 {
-	CObject::Update(fDeltaTime);
-
-	if(GetPos().y > 700)
-		SetPos(GetPos() + POSITION(0, 1) * fDeltaTime * 20.0f);
-	else {
-		
-	}
-	SendMsgMoveObject();
+	CMonster::Update(fDeltaTime);
 }
 
 

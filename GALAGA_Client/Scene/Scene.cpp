@@ -3,6 +3,7 @@
 #include "../Object/Player.h"
 #include "../Object/BulletList.h"
 #include "../Scene/SceneManager.h"
+#include "..\Object\Boss.h"
 #include "Scene.h"
 
 CScene::CScene() : m_bEnable(false), m_bSlide(false)
@@ -212,10 +213,18 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 	else if ((int)obj_Type > 10000 && (int)obj_Type < 40000)
 	{
 		// Monster
-		CMonster* t_mon = new CMonster;
-		t_mon->Init(pos, Pattern(m_StageNum), obj_Type, POSITION(0, 1), m_StageNum);
-		t_mon->RegisterObject(id);
-		m_MonsterList->push_back(t_mon);
+		if ((int)obj_Type >= 30005 && (int)obj_Type <= 30007) {
+			CBoss* boss = new CBoss;
+			boss->Init(pos, obj_Type, POSITION(0, 1), m_StageNum);
+			boss->RegisterObject(id);
+			m_boss = boss;
+		}
+		else {
+			CMonster* t_mon = new CMonster;
+			t_mon->Init(pos, Pattern(m_StageNum), obj_Type, POSITION(0, 1), m_StageNum);
+			t_mon->RegisterObject(id);
+			m_MonsterList->push_back(t_mon);
+		}
 	}
 
 	else if ((int)obj_Type == 40001)
@@ -289,6 +298,10 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 	}
 	if (Monster_BulletList)
 		Monster_BulletList->RenderAll(mainhDC, hDC, fDeltaTime);
+
+	if (m_boss)
+		m_boss->Render(mainhDC, hDC, fDeltaTime);
+
 	if (m_MainPlayer)
 	{
 		m_MainPlayer->Render(mainhDC, hDC, fDeltaTime);
@@ -317,6 +330,7 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 	for (auto i = m_ItemList.begin();
 		i != m_ItemList.end(); ++i)
 		(*i)->Render(mainhDC, hDC, fDeltaTime);
+
 
 	// MemDc �� �ִ� ȭ���� main HDC �� ����մϴ�... < ���� ��� >
 	BitBlt(mainhDC, 0, 0, 600, 750, hDC, 0, 0, SRCCOPY);
