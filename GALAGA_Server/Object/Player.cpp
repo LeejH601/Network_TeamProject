@@ -77,6 +77,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		POSITION Position;
 		memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
 		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
+		SetPos(Position);
 		return true;
 	}
 	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState

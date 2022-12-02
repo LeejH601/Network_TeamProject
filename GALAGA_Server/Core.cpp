@@ -60,6 +60,8 @@ int CCore::LateUpdate(float fDeltaTime)
 
 void CCore::Collision(float fDeltaTime)
 {
+	if (CSceneManager::GetInst())
+		CSceneManager::GetInst()->Collision(fDeltaTime);
 	//std::cout << "Server Collision" << std::endl;
 }
 

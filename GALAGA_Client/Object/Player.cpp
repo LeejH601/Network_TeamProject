@@ -6,7 +6,7 @@ CPlayer::CPlayer(int id)
 {
 	RegisterObject(id);
 
-	m_myBulletList = new CBulletList(id);
+	m_myBulletList = new CBulletList();
 }
 
 CPlayer::~CPlayer()

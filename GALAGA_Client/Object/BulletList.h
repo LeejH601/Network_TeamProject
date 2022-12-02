@@ -5,8 +5,7 @@
 class CBulletList
 {
 public:
-	CBulletList();
-	CBulletList(int id); // 소유하고 있는 오브젝트의 id
+	CBulletList(); 
 	~CBulletList();
 
 public:
@@ -29,8 +28,6 @@ public:
 	// Bullet Erase
 	void Erase(class CBullet* delNode);
 	bool EraseAll();
-
-	void Set_Object(int id);
 
 private:
 	float m_fAttack = 100; // 총알 공격력 
@@ -64,6 +61,5 @@ public:
 	}
 private:
 	std::list<class CBullet*> m_listBulletList;
-	int	ObjectId = -1; // 현재 해당 불렛리스트를 소유하고 있는 오브젝트 id
 };
 

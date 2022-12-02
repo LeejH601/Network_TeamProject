@@ -7,11 +7,6 @@ CBulletList::CBulletList()
 
 }
 
-CBulletList::CBulletList(int id)
-{
-	ObjectId = id;
-}
-
 CBulletList::~CBulletList()
 {
 
@@ -113,7 +108,3 @@ bool CBulletList::EraseAll()
 	return true;
 }
 
-void CBulletList::Set_Object(int id)
-{
-	ObjectId = id;
-}
