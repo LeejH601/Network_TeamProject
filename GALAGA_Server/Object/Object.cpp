@@ -184,7 +184,6 @@ CObject* CObjectManager::GetObjectFromID(int id)
 
 	if (it != ObjectSet.end())
 		return *it;
-
 	return nullptr;
 }
 

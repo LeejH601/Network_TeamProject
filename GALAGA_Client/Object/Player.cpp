@@ -106,28 +106,10 @@ void CPlayer::Input(float fDeltaTime)
 			POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
 
 			EnterCriticalSection(&Bullet_CS);
+
 			m_BulletList.push_back(CBulletInfo{ BulletLTPos });
 			LeaveCriticalSection(&Bullet_CS);
-			//if (m_myBulletList != nullptr)
-			//{
-			//	POSITION BulletSize = { 18,30 };
-			//	POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
-
-
-			//	//// Create_Msg
-			//	//OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
-			//	//Telegram telegram;
-			//	//telegram.Sender = m_iObjID;
-			//	//telegram.Receiver = m_iObjID;
-			//	//telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-			//	//telegram.DispatchTime = CTimer::GetInst()->GetTime();
-			//	//telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
-			//	//memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
-			//	//memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
-			//	//EnterCriticalSection(&cs);
-			//	//CNetworkDevice::GetInst()->AddMessage(telegram);
-			//	//LeaveCriticalSection(&cs);
-			//}
+			
 			m_LastFireTime = currentTime;
 			m_BulletShotCount = 100;
 

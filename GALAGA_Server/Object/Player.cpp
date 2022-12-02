@@ -45,6 +45,8 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 	{
 	case MESSAGE_TYPE::Msg_objectCreate:// extrainfo: ObjectType, Position
 	{
+		std::cout << "Msg_objectCreate\n";
+
 		int ObjectType;
 		POSITION Position;
 		POSITION BulletSize = { 18,30 };

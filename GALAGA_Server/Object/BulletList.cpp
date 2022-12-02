@@ -76,6 +76,8 @@ void CBulletList::LateUpdate(float fDeltaTime)
 	{
 		if (!((*it)->GetEnbale()))
 		{
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+
 			CBullet* pBullet = *it;
 			it = m_listBulletList.erase(it);
 			SAFE_DELETE(pBullet);

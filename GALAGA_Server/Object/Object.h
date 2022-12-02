@@ -55,10 +55,6 @@ public:
 	void SetID(const int id);
 	void SetObjType(const OBJECT_TYPE type) { m_eObjType = type; };
 	virtual bool HandleMessage(const Telegram& telegram);
-public:
-	bool operator<(const CObject& rhs) {
-		return m_iObjN < rhs.GetID();
-	}
 };
 
 class Compare {
@@ -73,7 +69,7 @@ class CObjectManager
 public:
 	// ½Ì±ÛÅæ ¼±¾ð
 	DECLARE_SINGLE(CObjectManager);
-private:
+public:
 	std::set<CObject*, Compare> ObjectSet;
 public:
 	bool Init();

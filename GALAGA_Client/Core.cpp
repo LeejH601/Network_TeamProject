@@ -102,27 +102,29 @@ void CCore::SendSnapShot()
 
 	if (myPlayer)
 	{
-		EnterCriticalSection(&Bullet_CS);
 
 		OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
 		Telegram telegram;
 		telegram.Sender = myPlayer->GetID();
 		telegram.Receiver = myPlayer->GetID();
 		telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
-		telegram.DispatchTime = CTimer::GetInst()->GetTime();
-
-		for (const CBulletInfo& bulletInfo : *(myPlayer->GetmyBulletInfoList()))
+		
+		if (!(myPlayer->GetmyBulletInfoList())->empty())
 		{
-			telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
-			memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
-			memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &bulletInfo.m_LTPos, sizeof(POSITION));
-			CNetworkDevice::GetInst()->AddMessage(telegram);
-			delete[] telegram.Extrainfo;
+			EnterCriticalSection(&Bullet_CS);
+			for (const CBulletInfo& bulletInfo : *(myPlayer->GetmyBulletInfoList()))
+			{
+				telegram.DispatchTime = CTimer::GetInst()->GetTime();
+				telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
+				memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
+				memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &(bulletInfo.m_LTPos), sizeof(POSITION));
+				CNetworkDevice::GetInst()->AddMessage(telegram);
+				delete[] telegram.Extrainfo;
 
+			}
+			(myPlayer->GetmyBulletInfoList())->clear();
+			LeaveCriticalSection(&Bullet_CS);
 		}
-		(myPlayer->GetmyBulletInfoList())->clear();
-
-		LeaveCriticalSection(&Bullet_CS);
 	}
 }
 // Window 창 관련 함수들입니다. ***

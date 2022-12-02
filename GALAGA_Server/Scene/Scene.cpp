@@ -246,134 +246,6 @@ int CScene::Update(float fDeltaTime)
 		}
 	}
 
-	//if (m_Player)
-	//{
-
-	//	if (m_Player->GetHitTractorBeam() == true && m_Tractor)
-	//	{
-	//		POSITION TractorPos = { m_Tractor->GetPos() + m_Tractor->GetSize() / 2 };
-	//		POSITION new_Pvector = { TractorPos - (m_Player->GetPos() + m_Player->GetSize() / 2) };
-	//		new_Pvector = new_Pvector / sqrt(new_Pvector.x * new_Pvector.x + new_Pvector.y * new_Pvector.y);
-	//		m_Player->SetVector(new_Pvector);
-
-	//	}
-
-	//	m_Player->Update(fDeltaTime);
-	//	if (I_MspawnCount <= 0) {
-	//		Monster_type m_type = (Monster_type)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
-	//		if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
-	//			m_type = (Monster_type)((int)m_type + 10000);
-
-	//		Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
-	//		pattern = Pattern::SIN;
-	//		if (pattern == Pattern::SIN5) {
-	//			for (int i = 0; i < 5; i++) {
-	//				CMonster* t_mon = new CMonster;
-	//				t_mon->Init(POSITION(100, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-	//				m_MonsterList->push_back(t_mon);
-	//				t_mon = new CMonster;
-	//				t_mon->Init(POSITION(500, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-	//				m_MonsterList->push_back(t_mon);
-	//			}
-	//		}
-	//		else if (pattern == Pattern::SIN6) {
-	//			float yPos = float(rand() % 100 + 100);
-	//			if (rand() % 2 == 0) {
-	//				for (int i = 0; i < 5; i++) {
-	//					CMonster* t_mon = new CMonster;
-	//					t_mon->Init(POSITION(-100 - i * 40, yPos), pattern, m_type, POSITION(1, 0), m_StageNum);
-	//					m_MonsterList->push_back(t_mon);
-	//				}
-	//			}
-	//			else {
-	//				for (int i = 0; i < 5; i++) {
-	//					CMonster* t_mon = new CMonster;
-	//					t_mon->Init(POSITION(700 + i * 40, yPos), pattern, m_type, POSITION(-1, 0), m_StageNum);
-	//					m_MonsterList->push_back(t_mon);
-	//				}
-	//			}
-	//		}
-	//		else if (pattern == Pattern::SIN4) {
-	//			float xPos = float(rand() % 500 + 50);
-	//			for (int i = 0; i < 5; i++) {
-	//				CMonster* t_mon = new CMonster;
-	//				t_mon->Init(POSITION(xPos, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-	//				m_MonsterList->push_back(t_mon);
-	//			}
-
-	//		}
-	//		else {
-	//			if (rand() % 2 == 0) {
-	//				for (int i = 0; i < 5; i++) {
-	//					CMonster* t_mon = new CMonster;
-	//					t_mon->Init(POSITION(100, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-	//					m_MonsterList->push_back(t_mon);
-	//				}
-	//			}
-	//			else {
-	//				for (int i = 0; i < 5; i++) {
-	//					CMonster* t_mon = new CMonster;
-	//					t_mon->Init(POSITION(500, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-	//					m_MonsterList->push_back(t_mon);
-	//				}
-	//			}
-	//		}
-	//		I_MspawnCount = I_MspawnDelay + (rand() % 3000 - 2000);
-	//	}
-	//	else
-	//		I_MspawnCount--;
-
-
-	//	if (m_boss == nullptr && m_Distance >= m_MaxDistance) {
-	//		m_boss = new Boss;
-
-	//		if (m_StageNum == 1)
-	//		{
-	//			m_boss->Init(POSITION{ 300,-100 }, Monster_type::BOSS_ONE, { 0,1 }, m_StageNum);
-	//			CSoundManager::GetInst()->PlaySound_Bossbgm(m_StageNum);
-
-	//		}
-	//		else if (m_StageNum == 2)
-	//		{
-	//			m_boss->Init(POSITION{ 300,-100 }, Monster_type::BOSS_TWO, { 0,1 }, m_StageNum);
-	//			CSoundManager::GetInst()->PlaySound_Bossbgm(m_StageNum);
-
-	//		}
-	//		else if (m_StageNum == 3)
-	//		{
-	//			m_boss->Init(POSITION{ 300,-100 }, Monster_type::BOSS_THREE, { 0,1 }, m_StageNum);
-	//			CSoundManager::GetInst()->PlaySound_Bossbgm(m_StageNum);
-
-	//		}
-
-	//	}
-
-	//	if (m_boss != nullptr) {
-	//		m_boss->Update(fDeltaTime);
-	//	}
-
-	//	if (m_Tractor == nullptr && m_Distance > m_MaxDistance / 2) {
-	//		TractorCount_Render += 1;
-
-	//		if (TractorCount_Render == 3000)
-	//		{
-	//			m_Tractor = new CTractor;
-	//			m_Tractor->Init(POSITION{ 300,-100 }, Pattern::SIN7, Monster_type::Vessel, { 0,1 }, m_StageNum);
-
-	//		}
-
-	//	}
-
-	//	if (m_Tractor != nullptr) {
-	//		m_Tractor->Update(fDeltaTime);
-	//	}
-
-
-	//}
-
-	//if (m_bEndScene)
-	//	return 1;
-
 	if (m_bEndScene)
 		return 1;
 	return 0;
@@ -429,8 +301,11 @@ int CScene::LateUpdate(float fDeltaTime)
 
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
+			CMonster* pMonster = *it;
 			(*it)->~CMonster();
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
 			it = m_MonsterList->erase(it);
+			SAFE_DELETE(pMonster);
 			if (it != m_MonsterList->begin())
 				it--;
 			else if (it == m_MonsterList->end()) {
@@ -439,17 +314,19 @@ int CScene::LateUpdate(float fDeltaTime)
 		}
 	}
 
-	for (auto it = m_ItemList.begin(); it != m_ItemList.end();) {
+	for (list<CItem*>::iterator it = m_ItemList.begin(); it != m_ItemList.end(); it++) {
 		if (!(*it)->GetEnbale()) {
-			auto temp = *it;
-			it++;
-			m_ItemList.remove(temp);
-			delete temp;
+			CItem* pItem = *it;
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+			it = m_ItemList.erase(it);
+			SAFE_DELETE(pItem);
+			if (it != m_ItemList.begin())
+				it--;
+			else if (it == m_ItemList.end()) {
+				break;
+			}
 		}
-		else
-			it++;
 	}
-
 	return 0;
 }
 
