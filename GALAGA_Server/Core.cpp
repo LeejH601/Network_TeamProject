@@ -6,6 +6,9 @@
 #include "Network/NetworkDevice.h"
 #include "Locator.h"
 #include "Object/Item.h"
+#include "Object/Player.h"
+#include "Object/Bullet.h"
+#include "Object/BulletList.h"
 //#include "Sound/SoundManager.h"
 
 DEFINITION_SINGLE(CCore)
@@ -168,8 +171,23 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	}
 
 	// 블릿 생성 메시지
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		CBulletList* pPlayerBulletList = (SCM->GetPlayer1())->GetmyBulletList();
+		for (CBullet* pBullet : *(pPlayerBulletList->GetBulletList())) {
+			GenerateMsgCreate(p, pBullet);
+			GenerateMsgMove(p, pBullet);
+		}
+	}
 
-
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		CBulletList* pPlayerBulletList = (SCM->GetPlayer2())->GetmyBulletList();
+		for (CBullet* pBullet : *(pPlayerBulletList->GetBulletList())) {
+			GenerateMsgCreate(p, pBullet);
+			GenerateMsgMove(p, pBullet);
+		}
+	}
 	// 플레이어 무브 메시지
 
 }

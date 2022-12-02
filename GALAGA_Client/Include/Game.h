@@ -36,3 +36,4 @@ using namespace std;
 //#pragma  comment(lib, "fmodex_vc.lib")
 
 #define BUFSIZE 4096
+extern CRITICAL_SECTION Bullet_CS;

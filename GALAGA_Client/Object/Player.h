@@ -14,16 +14,19 @@ private:
 	int			m_BulletShotCount;
 	int			m_BulletNum = 1;		 // 총알 개수(아이템을 통해 총알 개수 증가)
 private:
-	class CBulletList* m_myBulletList;	
+	std::list<class CBulletInfo> m_BulletList;
+	class CBulletList* m_myBulletList;
 
 public:
 	class CBulletList* GetmyBulletList()
 	{
 		if (m_myBulletList)
 			return m_myBulletList;
-		else
-			return NULL;
-
+		return NULL;
+	}
+	class std::list<class CBulletInfo>* GetmyBulletInfoList()
+	{
+		return &m_BulletList;
 	}
 public:
 	CPlayer(int id);

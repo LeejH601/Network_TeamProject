@@ -9,7 +9,6 @@ CBulletList::CBulletList()
 
 CBulletList::CBulletList(int id)
 {
-	ObjectId = id;
 }
 
 CBulletList::~CBulletList()

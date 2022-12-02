@@ -3,6 +3,7 @@
 #include "Core/Timer.h"
 #include "Object/Object.h"
 #include "Object/Player.h"
+#include "Object/Bullet.h"
 #include "Scene/SceneManager.h"
 #include "Network/NetworkDevice.h"
 #include "MessageDispatcher/CMessageDispatcher.h"
@@ -13,6 +14,7 @@ bool CCore::m_bLoop = true;
 
 HWND my_hDlg;
 HINSTANCE my_hInstance;
+CRITICAL_SECTION Bullet_CS;
 
 CCore::CCore()
 {
@@ -95,6 +97,32 @@ void CCore::SendSnapShot()
 		memcpy(tel_MoveObject.Extrainfo, &pos, sizeof(POSITION));
 		CNetworkDevice::GetInst()->AddMessage(tel_MoveObject);
 		delete[] tel_MoveObject.Extrainfo;
+	
+	}
+
+	if (myPlayer)
+	{
+		EnterCriticalSection(&Bullet_CS);
+
+		OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
+		Telegram telegram;
+		telegram.Sender = myPlayer->GetID();
+		telegram.Receiver = myPlayer->GetID();
+		telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+		telegram.DispatchTime = CTimer::GetInst()->GetTime();
+
+		for (const CBulletInfo& bulletInfo : *(myPlayer->GetmyBulletInfoList()))
+		{
+			telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
+			memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
+			memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &bulletInfo.m_LTPos, sizeof(POSITION));
+			CNetworkDevice::GetInst()->AddMessage(telegram);
+			delete[] telegram.Extrainfo;
+
+		}
+		(myPlayer->GetmyBulletInfoList())->clear();
+
+		LeaveCriticalSection(&Bullet_CS);
 	}
 }
 // Window 창 관련 함수들입니다. ***
@@ -167,6 +195,7 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	// 윈도우 종료시킬 때 들어오는 메시지
 	case WM_DESTROY:
 		m_bLoop = false;
+		DeleteCriticalSection(&Bullet_CS);
 		PostQuitMessage(0);
 		break;
 	default:
@@ -251,7 +280,7 @@ bool CCore::Init(HINSTANCE hInst)
 	// 화면 DC 를 만들어준다.
 	m_hDC = GetDC(m_hWnd);
 	SetDoubleBufferDC();
-
+	InitializeCriticalSection(&Bullet_CS);
 
 	// 타이머를 초기화 합니다. 
 	if (!CTimer::GetInst()->Init())

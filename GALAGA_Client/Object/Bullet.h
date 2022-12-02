@@ -1,6 +1,13 @@
 #pragma once
 #include "Object.h"
 
+class CBulletInfo
+{
+public:
+	CBulletInfo(POSITION LTPos) { m_LTPos = LTPos; }
+	POSITION m_LTPos;
+};
+
 class CBullet : public CObject
 {
 public:

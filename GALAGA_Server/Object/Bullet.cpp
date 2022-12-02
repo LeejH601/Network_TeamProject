@@ -50,6 +50,8 @@ bool CBullet::Init(POSITION PlayerLT, _SIZE PlayerSize, float Speed)
 	m_bEnable = true;
 	m_MaxRange = 700.0f;
 	m_Range = 0.0f;
+	
+	CObject::SetObjType(OBJECT_TYPE::PLAYER_BULLET);
 
 	return true;
 }
