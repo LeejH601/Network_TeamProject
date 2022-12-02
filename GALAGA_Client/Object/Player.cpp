@@ -1,10 +1,13 @@
-#include "Player.h"
-#include "..\Network\NetworkDevice.h"
-#include "..\Core\Timer.h"
+#include	"Player.h"
+#include	"BulletList.h"
+#include	"../Core/Timer.h"
+#include	"../Network/NetworkDevice.h"
 
 CPlayer::CPlayer(int id)
 {
 	RegisterObject(id);
+
+	m_myBulletList = new CBulletList(id);
 }
 
 bool CPlayer::Init(int type)
@@ -112,6 +115,37 @@ void CPlayer::Input(float fDeltaTime)
 			CObject::m_tLTPos.y = 750 - CObject::m_tSize.y;
 
 	}
+
+	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+	{
+		float currentTime = clock();
+		if (m_LastFireTime == NULL || currentTime - m_LastFireTime >= 100) {
+			if (m_myBulletList != nullptr)
+			{
+				POSITION BulletSize = { 18,30 };
+				POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
+
+				// Create_Msg
+				OBJECT_TYPE Type = OBJECT_TYPE::PLAYER_BULLET;
+				Telegram telegram;
+				telegram.Sender = m_iObjID;
+				telegram.Receiver = m_iObjID;
+				telegram.Msg = (int)MESSAGE_TYPE::Msg_objectCreate;
+				telegram.DispatchTime = CTimer::GetInst()->GetTime();
+				telegram.Extrainfo = new char[sizeof(OBJECT_TYPE) + sizeof(POSITION)];
+				memcpy(telegram.Extrainfo, &Type, sizeof(OBJECT_TYPE));
+				memcpy((char*)telegram.Extrainfo + sizeof(OBJECT_TYPE), &BulletLTPos, sizeof(POSITION));
+				EnterCriticalSection(&cs);
+				CNetworkDevice::GetInst()->AddMessage(telegram);
+				LeaveCriticalSection(&cs);
+			}
+			m_LastFireTime = currentTime;
+			m_BulletShotCount = 100;
+
+			//CSoundManager::GetInst()->playSound_Effect();
+		}
+	}
+
 }
 
 bool CPlayer::HandleMessage(const Telegram& msg)
@@ -143,4 +177,8 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 void CPlayer::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
 	CObject::Render(mainhDC, hdc, fDeltaTime);
+
+
+	if (m_myBulletList)
+		m_myBulletList->RenderAll(mainhDC, hdc, fDeltaTime);
 }

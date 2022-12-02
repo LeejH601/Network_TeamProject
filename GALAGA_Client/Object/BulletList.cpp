@@ -1,8 +1,15 @@
 #include	"BulletList.h"
 #include	"Bullet.h"
+#include	"../Core/Timer.h"
+#include	"../Network/NetworkDevice.h"
 CBulletList::CBulletList()
 {
 
+}
+
+CBulletList::CBulletList(int id)
+{
+	ObjectId = id;
 }
 
 CBulletList::~CBulletList()
@@ -11,7 +18,7 @@ CBulletList::~CBulletList()
 	EraseAll();
 }
 
-void CBulletList::AddBullet(int id, POSITION playerLT, POSITION playerSize, float Speed)
+void CBulletList::AddBullet(int id,  POSITION playerLT, POSITION playerSize, float Speed)
 {
 	POSITION BulletSize = { 18,30 };
 	POSITION BulletLTPos = { playerLT.x + playerSize.x / 2 - BulletSize.x / 2, playerLT.y - BulletSize.y };
@@ -19,10 +26,10 @@ void CBulletList::AddBullet(int id, POSITION playerLT, POSITION playerSize, floa
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, 800.0f);
 	pBullet->RegisterObject(id);
+
 	m_listBulletList.push_back(pBullet);
 }
 
-// BulletSize에 왜 MonsterSize를 넣어주지?
 void CBulletList::AddBullet(int id, POSITION MonsterLT, _SIZE MonsterSize, POSITION BulletVector, float Speed)
 {
 	POSITION BulletSize = { MonsterSize.x, MonsterSize.y };
@@ -31,6 +38,7 @@ void CBulletList::AddBullet(int id, POSITION MonsterLT, _SIZE MonsterSize, POSIT
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, BulletVector, Speed);
 	pBullet->RegisterObject(id);
+
 	m_listBulletList.push_back(pBullet);
 }
 
@@ -53,9 +61,6 @@ void CBulletList::Update(float fDeltaTime)
 	for (CBullet* pBullet : m_listBulletList) {
 		if (pBullet)
 			pBullet->Update(fDeltaTime);
-
-		if (!(pBullet->GetEnbale()))
-			Erase(pBullet);
 	}
 
 }
@@ -70,11 +75,19 @@ void CBulletList::Update(float fDeltaTime, _SIZE _size)
 			pBullet->SetPos(pBullet->GetPos() - (_size / 2));
 			pBullet->Update(fDeltaTime);
 		}
+	}
+}
 
-		if (!(pBullet->GetEnbale()))
+void CBulletList::LateUpdate(float fDeltaTime)
+{
+	for (std::list<class CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++)
+	{
+		/*if (!((*it)->GetEnbale()))
 		{
-			Erase(pBullet);
-		}
+			CBullet* pBullet = *it;
+			it = m_listBulletList.erase(it);
+			SAFE_DELETE(pBullet);
+		}*/
 	}
 }
 
@@ -89,6 +102,7 @@ void CBulletList::Erase(CBullet* delNode)
 {
 	if (delNode == nullptr)
 		return;
+	
 	m_listBulletList.remove(delNode);
 	SAFE_DELETE(delNode);
 }
@@ -100,4 +114,9 @@ bool CBulletList::EraseAll()
 	m_listBulletList.clear();
 
 	return true;
+}
+
+void CBulletList::Set_Object(int id)
+{
+	ObjectId = id;
 }

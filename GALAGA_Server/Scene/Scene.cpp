@@ -84,6 +84,15 @@ void CScene::AddObject(CMonster* pMonster)
 
 int CScene::Update(float fDeltaTime)
 {
+	if (m_Player1)
+	{
+		m_Player1->Update(fDeltaTime);
+	}
+	if (m_Player2)
+	{
+		m_Player2->Update(fDeltaTime);
+	}
+
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		(*it)->Update(fDeltaTime);
 		if ((*it)->GetFireDelay() <= FLT_EPSILON)
@@ -432,7 +441,10 @@ int CScene::LateUpdate(float fDeltaTime)
 
 	if (m_ItemList)
 		m_ItemList->Update(fDeltaTime);*/
-
+	if (m_Player1)
+		(m_Player1->GetmyBulletList())->LateUpdate(fDeltaTime);
+	if (m_Player2)
+		(m_Player2->GetmyBulletList())->LateUpdate(fDeltaTime);
 
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		if ((*it)->GetObjectState() == OBJECT_STATE::ERASE) {

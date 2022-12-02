@@ -105,7 +105,6 @@ bool CNetworkDevice::SendToNetwork()
 
 	}
 	delete[] Data;
-
 	return true;
 }
 

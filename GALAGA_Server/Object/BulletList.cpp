@@ -20,6 +20,7 @@ void CBulletList::AddBullet(POSITION playerLT, POSITION playerSize, float Speed)
 	pBullet->Init(BulletLTPos, BulletSize, 800.0f);
 	pBullet->Msg_Create(OBJECT_TYPE::PLAYER_BULLET, BulletLTPos); // 생성 메세지 보내기
 	m_listBulletList.push_back(pBullet);
+
 }
 
 // BulletSize에 왜 MonsterSize를 넣어주지?
@@ -50,16 +51,14 @@ int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize
 void CBulletList::Update(float fDeltaTime)
 {
 	// BulletList의 원소인 모든 Bullet 거리 이동
-	for (CBullet* pBullet : m_listBulletList) {
-		if (pBullet)
-			pBullet->Update(fDeltaTime);
 
-		if (!(pBullet->GetEnbale()))
-			Erase(pBullet);
+	for (std::list<class CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++)
+	{
+		if (*it)
+			(*it)->Update(fDeltaTime);
 	}
 
 }
-
 
 void CBulletList::Update(float fDeltaTime, _SIZE _size)
 {
@@ -70,10 +69,23 @@ void CBulletList::Update(float fDeltaTime, _SIZE _size)
 			pBullet->SetPos(pBullet->GetPos() - (_size / 2));
 			pBullet->Update(fDeltaTime);
 		}
+	}
+}
 
-		if (!(pBullet->GetEnbale()))
+void CBulletList::LateUpdate(float fDeltaTime)
+{
+	for (std::list<class CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++)
+	{
+		if (!((*it)->GetEnbale()))
 		{
-			Erase(pBullet);
+			CBullet* pBullet = *it;
+			it = m_listBulletList.erase(it);
+			SAFE_DELETE(pBullet);
+			if (it != m_listBulletList.begin())
+				it--;
+			else if (it == m_listBulletList.end()) {
+				break;
+			}
 		}
 	}
 }

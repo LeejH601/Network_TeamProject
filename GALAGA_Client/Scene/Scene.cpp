@@ -5,7 +5,6 @@
 #include "../Scene/SceneManager.h"
 #include "Scene.h"
 
-// ÁÖ¼® - Å¬·¡½º°¡ Á¸ÀçÇÏÁö ¾ÊÀ»¶§
 CScene::CScene() : m_bEnable(false), m_bSlide(false)
 {
 }
@@ -149,7 +148,7 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* mainplayer, CPlayer* anothe
 	//}
 	auto rst = m_BackImage.Load(imgBackText);
 
-	// Load Fail -> ¹«ÇÑ·çÇÁ 
+	// Load Fail -> ï¿½ï¿½ï¿½Ñ·ï¿½ï¿½ï¿½ 
 	if (S_OK != rst) {
 		while (true);
 	}
@@ -181,7 +180,7 @@ bool CScene::Init(const WCHAR* imgBackText, CPlayer* mainplayer, CPlayer* anothe
 	m_imgRenderSize2.x = 600;
 	m_imgRenderSize2.y = 1;
 
-	// »ç¿îµå¸¦ Àç»ýÇÕ´Ï´Ù. 
+	// ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. 
 	//PlaySound(TEXT("./Sound/Terran_Theme1.mp3"), NULL, SND_ASYNC | SND_LOOP);
 
 	//if (player != nullptr)
@@ -219,13 +218,17 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 		m_MonsterList->push_back(t_mon);
 	}
 
-	else if ((int)obj_Type > 40000 && (int)obj_Type < 50000)
+	else if ((int)obj_Type == 40001)
 	{
 		// Bullet
 		Monster_BulletList->AddBullet(id, pos, _SIZE(10, 10), POSITION(0.f, 1.f), 20.f);
 		Monster_BulletList->SetAttack(50.f);
 	}
 
+	else if ((int)obj_Type > 40001 && (int)obj_Type < 50000) // Player Bullet
+	{
+		m_MainPlayer->GetmyBulletList()->AddBullet(id, pos, m_MainPlayer->GetSize(), 800.f);
+	}
 
 
 }
@@ -240,11 +243,15 @@ int CScene::Update(float fDeltaTime)
 {
 	if (m_MainPlayer)
 		m_MainPlayer->Update(fDeltaTime);
+
+	/*m_Player->Update(fDeltaTime);*/
 	return 0;
 }
 
 int CScene::LateUpdate(float fDeltaTime)
 {
+	if (m_MainPlayer)
+		(m_MainPlayer->GetmyBulletList())->LateUpdate(fDeltaTime);
 	return 0;
 }
 
@@ -257,7 +264,7 @@ void CScene::Collision(float fDeltaTime)
 void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 {
 
-	// ¹è°æ Ãâ·Â
+	// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (m_bSlide == true)
 	{
 		// Back Image Render 
@@ -277,28 +284,25 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 			m_imgLT.x, m_imgLT.y, m_imgSize.x, m_imgSize.y);
 	}
 
-	// ¸ó½ºÅÍ Ãâ·Â
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		(*it)->Render(mainhDC, hDC, fDeltaTime);
 	}
-	//// ¸ó½ºÅÍ ÃÑ¾Ë Ãâ·Â
 	if (Monster_BulletList)
 		Monster_BulletList->RenderAll(mainhDC, hDC, fDeltaTime);
-	// ÇÃ·¹ÀÌ¾î Ãâ·Â
 	if (m_MainPlayer)
 	{
 		m_MainPlayer->Render(mainhDC, hDC, fDeltaTime);
 		//for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		//	(*it)->Render(mainhDC, hDC, fDeltaTime);
 		//}
-		//// ¸ó½ºÅÍ ÃÑ¾Ë Ãâ·Â
+		//// ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½
 		//Monster_BulletList->RenderAll(mainhDC, hDC, fDeltaTime);
 
-		//// º¸½º¸¦ Ãâ·Â
+		//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		//if (m_boss != nullptr) {
 		//	m_boss->Render(mainhDC, hDC, fDeltaTime);
 		//}
-		//// Æ®·¢ÅÍ Ãâ·Â
+		//// Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		//if (m_Tractor != nullptr) {
 		//	m_Tractor->Render(mainhDC, hDC, fDeltaTime);
 		//}
@@ -314,7 +318,7 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 		i != m_ItemList.end(); ++i)
 		(*i)->Render(mainhDC, hDC, fDeltaTime);
 
-	// MemDc ¿¡ ÀÖ´Â È­¸éÀ» main HDC ¿¡ Ãâ·ÂÇÕ´Ï´Ù... < ÃÖÁ¾ Ãâ·Â >
+	// MemDc ï¿½ï¿½ ï¿½Ö´ï¿½ È­ï¿½ï¿½ï¿½ï¿½ main HDC ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½... < ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ >
 	BitBlt(mainhDC, 0, 0, 600, 750, hDC, 0, 0, SRCCOPY);
 
 }
@@ -325,7 +329,3 @@ void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
 
 
 }
-
-
-
-

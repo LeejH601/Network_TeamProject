@@ -103,6 +103,7 @@ void CSceneManager::Update(float fDeltaTime)
 			NextStageNum = 0;
 		}
 	}
+
 	else if (m_Scene_StageClear->GetEnable())
 	{
 
@@ -216,11 +217,30 @@ void CSceneManager::SendMsgChangeScene(SCENE_TYPE nType)
 	tel_ChangeScene.DispatchTime = CTimer::GetInst()->GetTime();
 	tel_ChangeScene.Msg = (int)MESSAGE_TYPE::Msg_changeScene;
 	tel_ChangeScene.Extrainfo = new char[4];
-	int scene_type = (int)nType;
 
-	memcpy(tel_ChangeScene.Extrainfo, &scene_type, sizeof(SCENE_TYPE));
+	memcpy(tel_ChangeScene.Extrainfo, &nType, sizeof(SCENE_TYPE));
 
-	CObject::SendMessageToClient(tel_ChangeScene);
+	if (CCore::GetInst()->m_hPlayer1)
+	{
+		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer1, nullptr))->second);
+		EnterCriticalSection(&c_cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
+		p->AddMessage(tel_ChangeScene);
+		LeaveCriticalSection(&c_cs);
+	}
+
+	if (CCore::GetInst()->m_hPlayer2)
+	{
+		CRITICAL_SECTION& c_cs = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
+		EnterCriticalSection(&c_cs);
+		CNetworkDevice* p;
+		p = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+		p->AddMessage(tel_ChangeScene);
+		LeaveCriticalSection(&c_cs);
+	}
+
+	delete tel_ChangeScene.Extrainfo;
 }
 
 bool CSceneManager::HandleMessage(const Telegram& telegram)
@@ -256,20 +276,16 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			CRITICAL_SECTION& c_cs2 = const_cast<CRITICAL_SECTION&>(client_cs.find(CS_PAIR(CCore::GetInst()->m_hPlayer2, nullptr))->second);
 
 			EnterCriticalSection(&c_cs1);
-			EnterCriticalSection(&c_cs2);
-
 			CNetworkDevice* p1;
-			CNetworkDevice* p2;
-
 			p1 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer1);
-			p2 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
-
 			m_Player2->SendCreateMessage(p1, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-
-			m_Player2->SendCreateMessage(p2, OBJECT_TYPE::OBJ_PLAYER);
-			m_Player1->SendCreateMessage(p2, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-
 			LeaveCriticalSection(&c_cs1);
+			
+			EnterCriticalSection(&c_cs2);
+			CNetworkDevice* p2;
+			p2 = Locator.GetNetworkDevice(CCore::GetInst()->m_hPlayer2);
+			m_Player1->SendCreateMessage(p2, OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+			m_Player2->SendCreateMessage(p2, OBJECT_TYPE::OBJ_PLAYER);
 			LeaveCriticalSection(&c_cs2);
 
 			CCore::GetInst()->SnapshotInit(CCore::GetInst()->m_hPlayer2);
