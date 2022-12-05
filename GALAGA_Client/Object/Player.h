@@ -12,7 +12,7 @@ private:
 private:
 	float		m_LastFireTime = 0.f;
 	int			m_BulletShotCount;
-	int			m_BulletNum = 1;		 // 총알 개수(아이템을 통해 총알 개수 증가)
+	int			m_BulletNum = 5;		 // 총알 개수(아이템을 통해 총알 개수 증가)
 private:
 	std::list<class CBulletInfo> m_BulletList;
 	class CBulletList* m_myBulletList;
@@ -30,7 +30,7 @@ public:
 	}
 public:
 	CPlayer(int id);
-
+	~CPlayer();
 	float GetSpeed()
 	{
 		return m_fSpeed;
@@ -51,6 +51,13 @@ public:
 	{
 		return m_MyType;
 	}
+	void AddBullet() // Item 충돌시 불렛 개수 증가
+	{
+		if (++m_BulletNum >= 5)
+			m_BulletNum = 5;
+	}
+	void SendMsgAddBullet();
+
 
 	virtual bool Init() { return true; }
 	virtual bool Init(int type);
@@ -58,5 +65,7 @@ public:
 	virtual	void Update(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
 	virtual void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
+
+
 
 };

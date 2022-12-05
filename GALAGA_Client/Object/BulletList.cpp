@@ -7,10 +7,6 @@ CBulletList::CBulletList()
 
 }
 
-CBulletList::CBulletList(int id)
-{
-}
-
 CBulletList::~CBulletList()
 {
 
@@ -43,7 +39,7 @@ void CBulletList::AddBullet(int id, POSITION MonsterLT, _SIZE MonsterSize, POSIT
 
 int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize)
 {
-	int CollisionN = 0; // Ãæµ¹ È½¼ö
+	int CollisionN = 0; // ï¿½æµ¹ È½ï¿½ï¿½
 
 	for (CBullet* pBullet : m_listBulletList) {
 		if (pBullet->Collision(fDeltatime, ObjectLT, ObjectSize)) {
@@ -56,7 +52,7 @@ int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize
 
 void CBulletList::Update(float fDeltaTime)
 {
-	// BulletListÀÇ ¿ø¼ÒÀÎ ¸ðµç Bullet °Å¸® ÀÌµ¿
+	// BulletListï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Bullet ï¿½Å¸ï¿½ ï¿½Ìµï¿½
 	for (CBullet* pBullet : m_listBulletList) {
 		if (pBullet)
 			pBullet->Update(fDeltaTime);
@@ -115,7 +111,3 @@ bool CBulletList::EraseAll()
 	return true;
 }
 
-void CBulletList::Set_Object(int id)
-{
-	ObjectId = id;
-}

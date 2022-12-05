@@ -52,7 +52,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		POSITION BulletSize = { 18,30 };
 		memcpy(&ObjectType, msg.Extrainfo, sizeof(int));
 		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
-		if (ObjectType == (int)OBJECT_TYPE::PLAYER_BULLET) // Bullet »ý¼º
+		if (ObjectType == (int)OBJECT_TYPE::PLAYER_BULLET) // Bullet ï¿½ï¿½ï¿½ï¿½
 		{
 			m_myBulletList->AddBullet(Position, BulletSize, 800.0f);
 		}

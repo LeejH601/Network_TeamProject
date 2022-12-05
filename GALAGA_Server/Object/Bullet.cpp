@@ -33,8 +33,7 @@ bool CBullet::HandleMessage(const Telegram& msg)
 		memcpy(&ObjectState, msg.Extrainfo, sizeof(int));
 		return true;
 	}
-	default:
-		return true;
+
 	}
 
 	return false;

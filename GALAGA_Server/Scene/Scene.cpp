@@ -3,6 +3,7 @@
 #include "../Object/Item.h"
 #include "../Object/Monster.h"
 #include "../Object/BulletList.h"
+#include "../Object/Bullet.h"
 #include "SceneManager.h"
 #include "Scene.h"
 
@@ -342,93 +343,52 @@ void CScene::Collision(float fDeltaTime)
 			Item->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize());
 		}
 	}
+	
+	for (CMonster* Monster : *m_MonsterList)
+	{	
+		if (m_Player1 && (!(Monster->GetState() == MONSTER_STATE::DONDESTORY || Monster->GetIsDie()))) {
+			// 몬스터 - 플레이어 총알
+			if (m_Player1->GetmyBulletList()->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
+			{
+				std::cout << "Player1 불렛, 몬스터 충돌" << std::endl;
+			}
+			// 몬스터 - 플레이어
+			if (m_Player1->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
+			{
+				std::cout << "Player1, 몬스터 충돌" << std::endl;
+			}
+		}
 
+		if (m_Player2 && (!(Monster->GetState() == MONSTER_STATE::DONDESTORY || Monster->GetIsDie()))) {
+			// 몬스터 - 플레이어 총알
+			if(m_Player2->GetmyBulletList()->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
+			{
+				std::cout << "Player2 불렛, 몬스터 충돌" << std::endl;
+			}
+			// 몬스터 - 플레이어
+			if (m_Player2->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
+			{
+				std::cout << "Player2, 몬스터 충돌" << std::endl;
+			}
+		}
+	}
 
-	//if (m_Player == nullptr)
-	//	return;
-
-
-	//if (m_Player)
-	//	m_Player->Collision(fDeltaTime, { 0,0 }, { 0,0 });
-
-
-	//// ���Ϳ� �÷��̾��� �Ѿ˰� �浹üũ �մϴ�...
-	//for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++)
-	//{
-	//	if ((*it)->GetState() == MONSTER_STATE::DONDESTORY || (*it)->GetIsDie() == true)
-	//		continue;
-	//	// ���Ϳ� �÷��̾� �Ѿ˰� �浹üũ �մϴ�... 
-	//	(*it)->Collision(fDeltaTime, m_Player->GetmyBulletList());
-
-	//	// �浹 �� ������ ���°� DESTROY �̸� �����մϴ�...
-	//	if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
-	//		(*it)->~CMonster();
-	//		it = m_MonsterList->erase(it);
-	//		if (it != m_MonsterList->begin())
-	//			it--;
-	//		else if (it == m_MonsterList->end()) {
-	//			break;
-	//		}
-	//	}
-	//}
-
-	//if (m_Tractor)
-	//	m_Tractor->Collision(fDeltaTime, m_Player->GetmyBulletList());
-
-
-	//if (m_boss)
-	//{
-	//	// ������ �׾��ٸ� 
-	//	m_boss->Collision(fDeltaTime, m_Player->GetmyBulletList());
-	//	//	m_bEndScene = true;
-	//	if (m_boss->GetState() == MONSTER_STATE::DESTORY)
-	//		m_bEndScene = true;
-
-	//}
-
-	//// �÷��̾�� ���� �Ѿ˰� �浹üũ �մϴ�...
-	//if (m_Player)
-	//{
-	//	m_Player->Collision(fDeltaTime, Monster_BulletList);
-
-	//	// ������ �Ѿ˰� �浹üũ �մϴ�...
-	//	if (m_boss)
-	//		m_Player->Collision(fDeltaTime, m_boss->GetMyBulletList());
-
-	//	// Ʈ���� ���� �扟üũ �մϴ�... 
-	//	if (m_Tractor)
-	//	{
-
-	//		bool bCollisionCheck = false;
-	//		if (m_Player)
-	//		{
-	//			if (m_Player->GetINVINVIBILITY() == false)
-	//			{
-	//				//m_Tractor->Collision(fDeltaTime, m_Player->GetmyBulletList());
-	//				bCollisionCheck = m_Player->Collision(fDeltaTime, m_Tractor->GetMyBulletList(), 0);
-	//				if (m_Tractor->GetState() == MONSTER_STATE::DESTORY)
-	//					delete m_Tractor;
-
-	//			}
-	//			//bCollisionCheck = m_Player->Collision(fDeltaTime, m_Tractor->GetMyBulletList(), 0);
-	//		}
-
-	//		if (bCollisionCheck == true)
-	//			m_Player->SetHitTractorBeam(true);
-	//		//else if (bCollisionCheck == false)
-	//		//	m_Player->SetHitTractorBeam(false);
-
-	//	}
-	//	else
-	//		m_Player->SetHitTractorBeam(false);
-
-
-
-	//	// �����۰��� �浹 üũ 
-
-	//	if (m_ItemList)
-	//		m_ItemList->Collision(fDeltaTime, m_Player->GetPos(), m_Player->GetSize(), m_Player);
-	//}
+	
+	// 몬스터 총알 - 플레이어
+	if (m_Player1) {
+		if (Monster_BulletList->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
+		{
+			std::cout << "Player1, 몬스터 불렛 충돌" << std::endl;
+		}
+	}
+	if (m_Player2) {
+		if (Monster_BulletList->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
+		{
+			std::cout << "Player2, 몬스터 불렛 충돌" << std::endl;
+		}
+	}
+	
+	
 }
 
 void CScene::UpdateMaxDistance(double distance)
