@@ -7,7 +7,7 @@ class CPlayer : public CObject
 private:
 	bool			m_bDie = true;
 	float			m_fSpeed;	// Player �� �ӵ� �Դϴ�
-
+	int				m_BulletNum = 5;		 // 총알 개수(아이템을 통해 총알 개수 증가)
 private:
 	class CBulletList* m_myBulletList;
 
@@ -31,7 +31,11 @@ public:
 	{
 		m_fSpeed = Speed;
 	}
-
+	void AddBullet() // Item 충돌시 불렛 개수 증가
+	{
+		if (++m_BulletNum >= 5)
+			m_BulletNum = 5;
+	}
 	virtual	void Update(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
 };

@@ -45,8 +45,6 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 	{
 	case MESSAGE_TYPE::Msg_objectCreate:// extrainfo: ObjectType, Position
 	{
-		std::cout << "Msg_objectCreate\n";
-
 		int ObjectType;
 		POSITION Position;
 		POSITION BulletSize = { 18,30 };
@@ -54,7 +52,10 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
 		if (ObjectType == (int)OBJECT_TYPE::PLAYER_BULLET) // Bullet ����
 		{
-			m_myBulletList->AddBullet(Position, BulletSize, 800.0f);
+			for (int i = 0; i < m_BulletNum; i++) {
+				POSITION BulletLTPos = { Position.x + m_tSize.x / 2 - BulletSize.x / 2 + ((i + 1) / 2) * (13.f) * (float)pow(-1, i), Position.y };
+				m_myBulletList->AddBullet(BulletLTPos, BulletSize, 800.0f);
+			}
 		}
 		return true;
 	}
