@@ -28,7 +28,7 @@ int CPlayer::Init()
 	POSITION PlayerLT = { 600 / 2 - PlayerSize.x , 400 };
 
 	m_tLTPos = PlayerLT;
-
+	m_tSize = PlayerSize;
 	m_bDie = false;
 	m_fSpeed = 300.0f;
 

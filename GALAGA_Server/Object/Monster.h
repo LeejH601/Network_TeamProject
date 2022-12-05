@@ -22,8 +22,8 @@ protected:
 	bool		d_triger = true; // ����� ���Ͽ��� ����ϴ� ������ȯ Ʈ����
 	int			count; // ���� ������ ������Ʈ�� ���� ī��Ʈ
 	float		update_count; // ���� ���� ������Ʈ�� ���� �ð���
-	float			t_count;
-	float			d_count;
+	float		t_count;
+	float		d_count;
 	float		ceta; // 1���� ���� ��ȯ�ÿ� ������ �����ϱ� ���� ����
 	float		c_det;
 	float		fire_delay = 500.0f;

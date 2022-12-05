@@ -197,18 +197,19 @@ int CScene::Update(float fDeltaTime)
 
 			if (m_StageNum == 1)
 			{
-				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
-
+				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+				m_MonsterList->push_back(m_boss);
 			}
 			else if (m_StageNum == 2)
 			{
-				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+				m_MonsterList->push_back(m_boss);
 
 			}
 			else if (m_StageNum == 3)
 			{
-				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
-
+				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+				m_MonsterList->push_back(m_boss);
 			}
 		}
 	}
@@ -304,7 +305,7 @@ int CScene::LateUpdate(float fDeltaTime)
 		(m_Player2->GetmyBulletList())->LateUpdate(fDeltaTime);
 
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
-		if ((*it)->GetState() == MONSTER_STATE::DESTORY) {
+		if ((*it)->GetObjectState() == OBJECT_STATE::DESTORY) {
 			CMonster* pMonster = *it;
 			(*it)->~CMonster();
 			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
@@ -340,38 +341,44 @@ void CScene::Collision(float fDeltaTime)
 
 	for (CItem* Item : m_ItemList) {
 		if (m_Player1) {
-			Item->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize());
+			if (Item->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
+			{
+
+			}
 		}
 		if (m_Player2) {
-			Item->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize());
+			if (Item->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
+			{
+
+			}
 		}
 	}
 	
 	for (CMonster* Monster : *m_MonsterList)
 	{	
-		if (m_Player1 && (!(Monster->GetState() == MONSTER_STATE::DONDESTORY || Monster->GetIsDie()))) {
+		if (m_Player1 && (Monster->GetObjectState() == OBJECT_STATE::IDLE || Monster->GetIsDie())) {
 			// 몬스터 - 플레이어 총알
 			if (m_Player1->GetmyBulletList()->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
 			{
-				std::cout << "Player1 불렛, 몬스터 충돌" << std::endl;
+				//std::cout << "Player1 불렛, 몬스터 충돌" << std::endl;
 			}
 			// 몬스터 - 플레이어
 			if (m_Player1->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
 			{
-				std::cout << "Player1, 몬스터 충돌" << std::endl;
+				//std::cout << "Player1, 몬스터 충돌" << std::endl;
 			}
 		}
 
-		if (m_Player2 && (!(Monster->GetState() == MONSTER_STATE::DONDESTORY || Monster->GetIsDie()))) {
+		if (m_Player2 && (Monster->GetObjectState() == OBJECT_STATE::IDLE || Monster->GetIsDie())) {
 			// 몬스터 - 플레이어 총알
 			if(m_Player2->GetmyBulletList()->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
 			{
-				std::cout << "Player2 불렛, 몬스터 충돌" << std::endl;
+				//std::cout << "Player2 불렛, 몬스터 충돌" << std::endl;
 			}
 			// 몬스터 - 플레이어
 			if (m_Player2->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
 			{
-				std::cout << "Player2, 몬스터 충돌" << std::endl;
+				//std::cout << "Player2, 몬스터 충돌" << std::endl;
 			}
 		}
 	}
@@ -381,13 +388,13 @@ void CScene::Collision(float fDeltaTime)
 	if (m_Player1) {
 		if (Monster_BulletList->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
 		{
-			std::cout << "Player1, 몬스터 불렛 충돌" << std::endl;
+			//std::cout << "Player1, 몬스터 불렛 충돌" << std::endl;
 		}
 	}
 	if (m_Player2) {
 		if (Monster_BulletList->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
 		{
-			std::cout << "Player2, 몬스터 불렛 충돌" << std::endl;
+			//std::cout << "Player2, 몬스터 불렛 충돌" << std::endl;
 		}
 	}
 	

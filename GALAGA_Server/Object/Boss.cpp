@@ -12,6 +12,8 @@ CBoss::~CBoss()
 
 bool CBoss::Init(POSITION LTpos, const OBJECT_TYPE& type, POSITION Vector, int stageNum)
 {
+	CObject::SetObjType(type);
+
 	float AttackRate = 0.0f;
 	switch (stageNum)
 	{
@@ -44,8 +46,6 @@ bool CBoss::Init(POSITION LTpos, const OBJECT_TYPE& type, POSITION Vector, int s
 		break;
 	}
 
-	CObject::SendMsgCreateObject(type, LTpos);
-
 	return true;
 }
 
@@ -58,7 +58,6 @@ void CBoss::Update(float fDeltaTime)
 	else {
 		
 	}
-	SendMsgMoveObject();
 }
 
 

@@ -352,7 +352,7 @@ void CMonster::Update(float fDeltaTime)
 
 	if (m_Path.GetPathEnd()) {
 		SetState(OBJECT_STATE::ERASE); // 수정 해야할 수도?
-		SendMsgChangeState(OBJECT_STATE::DESTORY);
+		//SendMsgChangeState(OBJECT_STATE::DESTORY);
 	}
 
 	CObject::Update(fDeltaTime);
