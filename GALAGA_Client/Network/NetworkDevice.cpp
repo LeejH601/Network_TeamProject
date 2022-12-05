@@ -125,6 +125,8 @@ bool CNetworkDevice::SendToNetwork()
 	// �����͸� AddDataSize(����� ������ ũ��)��ŭ ����
 	int LeftDataSize = AddDataSize; // �̼��� ������ ũ��
 	int BufSize = BUFSIZE;
+	int BufPointer = 0;
+
 	while (LeftDataSize > 0)
 	{
 		if (LeftDataSize < BUFSIZE)
@@ -133,8 +135,9 @@ bool CNetworkDevice::SendToNetwork()
 			BufSize = BUFSIZE;
 
 		// ������ ������ (���� ����) - ������ ����
-		retval = send(m_sock, Data, BufSize, 0);
+		retval = send(m_sock, Data + BufPointer, BufSize, 0);
 		//if (retval == SOCKET_ERROR) err_display("send() - ������ ����");
+		BufPointer += retval;
 		LeftDataSize -= BufSize;
 
 	}
@@ -183,7 +186,7 @@ bool CNetworkDevice::RecvByNetwork()
 		if (retval == 0)
 			break;
 
-		memcpy(dataBuf, buf + cpyLocate, retval);
+		memcpy(dataBuf + cpyLocate, buf, retval);
 		cpyLocate += retval;
 
 		remainData -= retval;

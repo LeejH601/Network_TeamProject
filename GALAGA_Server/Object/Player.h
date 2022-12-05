@@ -11,6 +11,7 @@ private:
 private:
 	class CBulletList* m_myBulletList;
 
+
 public:
 	class CBulletList* GetmyBulletList()
 	{

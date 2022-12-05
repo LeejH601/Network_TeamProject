@@ -121,7 +121,8 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		telegram.Extrainfo = new char[4];
 
 		int current_Scene = (int)CSceneManager::GetInst()->GetCurrentSceneType();
-
+		std::cout << "SceneType - " << current_Scene << std::endl;
+		
 		memcpy(telegram.Extrainfo, &current_Scene, sizeof(SCENE_TYPE));
 
 		network->AddMessage(telegram);
@@ -183,7 +184,7 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		}
 	}
 
-	if (CCore::GetInst()->m_hPlayer1)
+	if (CCore::GetInst()->m_hPlayer2)
 	{
 		CBulletList* pPlayerBulletList = (SCM->GetPlayer2())->GetmyBulletList();
 		for (CBullet* pBullet : *(pPlayerBulletList->GetBulletList())) {
