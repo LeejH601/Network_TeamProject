@@ -58,6 +58,7 @@ int CCore::LateUpdate(float fDeltaTime)
 	//std::cout << "Server LateUpdate" << std::endl;
 	if (CSceneManager::GetInst())
 		CSceneManager::GetInst()->LateUpdate(fDeltaTime);
+
 	return 0;
 }
 

@@ -2,10 +2,12 @@
 #include "../Object/Player.h"
 #include "../Object/Item.h"
 #include "../Object/Monster.h"
+#include "..\Object\Boss.h"
 #include "../Object/BulletList.h"
 #include "../Object/Bullet.h"
 #include "SceneManager.h"
 #include "Scene.h"
+//#include "..\Object\Boss.h"
 
 CScene::CScene() : m_bEnable(false), m_bSlide(false)
 {
@@ -100,79 +102,47 @@ int CScene::Update(float fDeltaTime)
 		}
 	}
 
+	if (m_boss)
+		m_boss->Update(fDeltaTime);
 
-	static float MspawnTime = 500.f;
+	static float MspawnTime = 5.0f;
+	static MONSTER_PATTERN pattern;
+	static bool bIsSpawning = false;
+	static float spawn_delay = 0.3f;
+	static float spawn_count = 0.0f;
+	static int ramain_spawn_mobs = 5;
 
-	if (MspawnTime > 1000.f)
+	if (MspawnTime > 5.0f)
 	{
 		OBJECT_TYPE m_type = (OBJECT_TYPE)((rand() % 2 + 1) * 10000 + (rand() % 4 + 1));
 		//if ((int)m_Player->GetMyType() <= (int)m_type / 10000)
 		//	m_type = (Monster_type)((int)m_type + 10000);
-
-		MONSTER_PATTERN pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
-		//pattern = MONSTER_PATTERN::PAT_STRAIGHT;
-		CMonster* mob = new CMonster;
-		mob->Init(POSITION(0, 0), pattern, m_type, POSITION(0, 1), m_StageNum);
-		m_MonsterList->push_back(mob);
-
-		/*Pattern pattern = (Pattern)(rand() % (int)Pattern::NONE);
-		pattern = Pattern::SIN;
-		if (pattern == Pattern::SIN5) {
-			for (int i = 0; i < 5; i++) {
-				CMonster* t_mon = new CMonster;
-				t_mon->Init(POSITION(100, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-				m_MonsterList->push_back(t_mon);
-				t_mon = new CMonster;
-				t_mon->Init(POSITION(500, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-				m_MonsterList->push_back(t_mon);
-			}
+		if (!bIsSpawning) {
+			pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
+			bIsSpawning = true;
 		}
-		else if (pattern == Pattern::SIN6) {
-			float yPos = float(rand() % 100 + 100);
-			if (rand() % 2 == 0) {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(-100 - i * 40, yPos), pattern, m_type, POSITION(1, 0), m_StageNum);
-					m_MonsterList->push_back(t_mon);
+		{
+			spawn_count -= fDeltaTime;
+			if (spawn_count <= 0.0f) {
+				CMonster* mob = new CMonster;
+				mob->Init(POSITION(0, 0), pattern, m_type, POSITION(0, 1), m_StageNum);
+				m_MonsterList->push_back(mob);
+				ramain_spawn_mobs--;
+				spawn_count = spawn_delay;
+				if (ramain_spawn_mobs < 0) {
+					bIsSpawning = false;
+					spawn_count = 0.0f;
+					MspawnTime = 0.0f;
+					ramain_spawn_mobs = 5;
 				}
 			}
-			else {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(700 + i * 40, yPos), pattern, m_type, POSITION(-1, 0), m_StageNum);
-					m_MonsterList->push_back(t_mon);
-				}
-			}
+			
 		}
-		else if (pattern == Pattern::SIN4) {
-			float xPos = float(rand() % 500 + 50);
-			for (int i = 0; i < 5; i++) {
-				CMonster* t_mon = new CMonster;
-				t_mon->Init(POSITION(xPos, -100 - i * 40), pattern, m_type, POSITION(0, 1), m_StageNum);
-				m_MonsterList->push_back(t_mon);
-			}
-
-		}
-		else {
-			if (rand() % 2 == 0) {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(100, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
-					m_MonsterList->push_back(t_mon);
-				}
-			}
-			else {
-				for (int i = 0; i < 5; i++) {
-					CMonster* t_mon = new CMonster;
-					t_mon->Init(POSITION(500, 100 + i * 100), pattern, m_type, POSITION(0, 1), m_StageNum);
-					m_MonsterList->push_back(t_mon);
-				}
-			}
-		}*/
-		MspawnTime = 0.f;
+		//MspawnTime = 0.f;
 	}
 
-	MspawnTime += 300.0f * fDeltaTime;
+	MspawnTime += fDeltaTime;
+	//MspawnTime += 300.0f * fDeltaTime;
 
 	//Monster Bullet ���� Ȯ�ο�
 	//static float Time = 0.f;
@@ -220,9 +190,26 @@ int CScene::Update(float fDeltaTime)
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);
 
-		if (m_Distance >= m_MaxDistance)
+		if (m_boss == nullptr && m_Distance >= m_MaxDistance)
 		{
-			m_bEndScene = true;
+			//m_bEndScene = true;
+			m_boss = new CBoss;
+
+			if (m_StageNum == 1)
+			{
+				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 2)
+			{
+				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 3)
+			{
+				m_boss->Init(POSITION{ 300,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+
+			}
 		}
 	}
 
@@ -231,9 +218,25 @@ int CScene::Update(float fDeltaTime)
 	else
 	{
 		UpdateMaxDistance(fDeltaTime * 300.0f);
-		if (m_Distance >= m_MaxDistance)
+		if (m_Distance >= m_MaxDistance && m_boss == nullptr)
 		{
-			m_bEndScene = true;
+			//m_bEndScene = true;
+			m_boss = new CBoss;
+
+			if (m_StageNum == 1)
+			{
+				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 2)
+			{
+				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+
+			}
+			else if (m_StageNum == 3)
+			{
+				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+			}
 		}
 	}
 

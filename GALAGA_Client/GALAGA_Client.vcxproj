@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -147,6 +147,7 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="MessageDispatcher\CMessageDispatcher.h" />
     <ClInclude Include="Network\NetworkDevice.h" />
+    <ClInclude Include="Object\Boss.h" />
     <ClInclude Include="Object\BulletList.h" />
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Bullet.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="GALAGA_Client.cpp" />
     <ClCompile Include="MessageDispatcher\CMessageDispatcher.cpp" />
     <ClCompile Include="Network\NetworkDevice.cpp" />
+    <ClCompile Include="Object\Boss.cpp" />
     <ClCompile Include="Object\BulletList.cpp" />
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Bullet.cpp" />

@@ -8,25 +8,26 @@ public:
 public:
 	CObject();
 	CObject(const CObject& obj);
-	virtual ~CObject();					//  ¼Ò¸êÀÚ¸¦ °¡»óÇÔ¼ö·Î ¼³Á¤ÇÕ´Ï´Ù..
+	virtual ~CObject();					//  ï¿½Ò¸ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½..
 protected:
 	int m_iObjID;
 
-	POSITION	m_tLTPos;				//  È­¸é¿¡ ¹èÄ¡µÉ Left top ±âÁØ À§Ä¡
-	POSITION	m_tVector;				//  Object °¡ ¿òÁ÷ÀÏ ¹æÇâ
-	_SIZE		m_tSize;				//  obj ÀÇ Å©±â 
+	POSITION	m_tLTPos;				//  È­ï¿½é¿¡ ï¿½ï¿½Ä¡ï¿½ï¿½ Left top ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+	POSITION	m_tVector;				//  Object ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	_SIZE		m_tSize;				//  obj ï¿½ï¿½ Å©ï¿½ï¿½ 
 
-	bool		m_bLife;				//  obj ÀÇ »ý»ç¿©ºÎ
-	float		m_fHP;					//  Object ÀÇ HP 
+	bool		m_bLife;				//  obj ï¿½ï¿½ ï¿½ï¿½ï¿½ç¿©ï¿½ï¿½
+	float		m_fHP;					//  Object ï¿½ï¿½ HP 
 private:
-	TRIBE_TYPE m_MyType;			// Á¾Á· ±¸ºÐ enum class
+	TRIBE_TYPE m_MyType;			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ enum class
 	OBJECT_TYPE m_eObjType;
+	OBJECT_STATE m_eObjState = OBJECT_STATE::IDLE;
 
 public:
-	// ±âº» ±¸µ¿ ÇÔ¼ö
-	// CObject ¸¦ »ó¼ÓÇÏ´Â ¸ðµç Å¬·¡½º´Â ÀÌ ±¸µ¿ÇÔ¼ö¸¦ °®°íÀÖÀ¸¸ç °¡»óÇÔ¼ö(virtual)·Î ¼³Á¤ÇÑ´Ù.
+	// ï¿½âº» ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
+	// CObject ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½(virtual)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
-	// init ( È­¸é¿¡ Ãâ·ÂÇÒ ¿ÀºêÁ§Æ® À§Ä¡ , ¿ÀºêÁ§Æ® ¹æÇâ , ¿ÀºêÁ§Æ® »çÀÌÁî , ¿ÀºêÁ§Æ® HP , PLAYER or MONSTER) 
+	// init ( È­ï¿½é¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡ , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® HP , PLAYER or MONSTER) 
 	virtual bool Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYER_TYPE obType);
 	virtual	void Update(float fDeltaTime);
 	virtual	void LateUpdate(float fDeltaTime);
@@ -34,7 +35,7 @@ public:
 
 
 public:
-	// ¿ÜºÎ ¿ÀºêÁ§Æ® »óÅÂ È®ÀÎ ÇÔ¼ö
+	// ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ô¼ï¿½
 	POSITION GetPos() const;
 	POSITION GetVector() const;
 	_SIZE	 GetSize() const;
@@ -43,17 +44,20 @@ public:
 	float	 GetHP() const;
 	int		 GetID() const;
 	OBJECT_TYPE GetObjType() const { return m_eObjType; } ;
+	OBJECT_STATE GetObjectState() const { return m_eObjState; };
 
 public:
-	// ¿ÜºÎ ¿ÀºêÁ§Æ® »óÅÂ ¼³Á¤ ÇÔ¼ö
+	// ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 	void SetPos(const POSITION& tPos);
 	void SetVector(const POSITION& tVector);
 	void SetSize(const _SIZE tSize);
+	void SetState(const OBJECT_STATE state) { m_eObjState = state; };
 
 	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
 	void SetID(const int id);
 	void SetObjType(const OBJECT_TYPE type) { m_eObjType = type; };
+
 	virtual bool HandleMessage(const Telegram& telegram);
 };
 
@@ -67,7 +71,7 @@ public:
 class CObjectManager
 {
 public:
-	// ½Ì±ÛÅæ ¼±¾ð
+	// ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	DECLARE_SINGLE(CObjectManager);
 public:
 	std::set<CObject*, Compare> ObjectSet;

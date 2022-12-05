@@ -13,7 +13,7 @@ private:
 	class CBulletList* Monster_BulletList;
 
 	class CTractor* m_Tractor = nullptr;
-	class Boss* m_boss = nullptr;
+	class CBoss* m_boss = nullptr;
 	class CPlayer* m_MainPlayer;
 	class CPlayer* m_AnotherPlayer;
 private:
