@@ -1,6 +1,7 @@
 #pragma once
 
 class CItem;
+class CBulletList;
 class CScene
 {
 private:
@@ -14,7 +15,7 @@ private:
 
 private:
 	list<class CMonster*>* m_MonsterList; // 출현할 몬스터 정보
-	class CBulletList* Monster_BulletList;
+	CBulletList* Monster_BulletList;
 
 	class CTractor* m_Tractor = nullptr;
 	class CBoss* m_boss = nullptr;
@@ -77,6 +78,7 @@ public:
 	}
 
 	std::list<CItem*>* GetItemList() { return &m_ItemList; };
+	CBulletList* GetBulletList() { return Monster_BulletList; };
 	void UpdateMaxDistance(double distance);
 
 

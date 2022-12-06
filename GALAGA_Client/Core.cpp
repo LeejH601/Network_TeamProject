@@ -220,7 +220,15 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (true)
 	{
+		float deltaTime = 0.0f;
+		while (deltaTime >= 0.03333333f)
+		{
+			deltaTime += CTimer::GetInst()->GetDeltaTime();
+		}
+
 		CCore::GetInst()->SendSnapShot();
+
+
 		CNetworkDevice::GetInst()->SendToNetwork();
 		CNetworkDevice::GetInst()->RecvByNetwork();
 		CNetworkDevice::GetInst()->GetTelegram();

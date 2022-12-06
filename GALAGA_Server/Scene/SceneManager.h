@@ -6,6 +6,7 @@ class CSceneManager : public CObject
 private:
 	friend class CPlayer;
 	friend class CItem;
+	friend class CBullet;
 
 public:
 	// 싱글톤으로 선언
@@ -47,6 +48,7 @@ public:
 	}
 
 	std::list<CItem*>* GetItemlistFromSceneType(SCENE_TYPE type);
+	std::list<CBullet*>* GetBulletListFromSceneType(SCENE_TYPE type);
 
 	// 몬스터 정보 List 를 전부 삭제합니다. 
 	void DeleteAllMonster()

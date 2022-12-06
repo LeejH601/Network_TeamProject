@@ -5,6 +5,7 @@
 #include "../Network/NetworkDevice.h"
 #include "../Locator.h"
 #include "../Object/Player.h"
+#include "..\Object\\BulletList.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -51,6 +52,9 @@ bool CSceneManager::Init()
 
 	m_Player1->Init();
 	m_Player2->Init();
+
+	Locator.SetPlayer(0, m_Player1);
+	Locator.SetPlayer(1, m_Player2);
 
 	// Init Scene
 	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
@@ -185,6 +189,38 @@ std::list<CItem*>* CSceneManager::GetItemlistFromSceneType(SCENE_TYPE type)
 	}
 	if (scene)
 		return scene->GetItemList();
+	return nullptr;
+}
+
+std::list<CBullet*>* CSceneManager::GetBulletListFromSceneType(SCENE_TYPE type)
+{
+	CScene* scene;
+	switch (type)
+	{
+	case SCENE_TYPE::ST_BEGIN:
+		scene = m_Scene_Begin;
+		break;
+	case SCENE_TYPE::ST_STAGE1:
+		scene = m_Scene_Stage1;
+		break;
+	case SCENE_TYPE::ST_STAGE2:
+		scene = m_Scene_stage2;
+		break;
+	case SCENE_TYPE::ST_STAGE3:
+		scene = m_Scene_stage3;
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		scene = m_Scene_StageClear;
+		break;
+	case SCENE_TYPE::ST_END:
+		scene = m_Scene_End;
+		break;
+	default:
+		scene = nullptr;
+		break;
+	}
+	if (scene)
+		return scene->GetBulletList()->GetBulletList();
 	return nullptr;
 }
 
