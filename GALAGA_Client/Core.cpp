@@ -221,7 +221,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	while (true)
 	{
 		float deltaTime = 0.0f;
-		while (deltaTime >= 0.03333333f)
+		while (deltaTime >= 0.02222222f)
 		{
 			deltaTime += CTimer::GetInst()->GetDeltaTime();
 		}
