@@ -247,7 +247,7 @@ int CScene::Update(float fDeltaTime)
 			lBegin != m_ItemList.end(); ++lBegin)
 		{
 			if ((*lBegin))
-				(*lBegin)->Update(fDeltaTime * 300.0f);
+				(*lBegin)->Update(fDeltaTime);
 		}
 	}
 
@@ -320,7 +320,7 @@ int CScene::LateUpdate(float fDeltaTime)
 	}
 
 	for (list<CItem*>::iterator it = m_ItemList.begin(); it != m_ItemList.end(); it++) {
-		if (!(*it)->GetEnbale()) {
+		if (!(*it)->GetEnbale() && (*it)->GetObjectState() == OBJECT_STATE::ERASE) {
 			CItem* pItem = *it;
 			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
 			it = m_ItemList.erase(it);
@@ -343,13 +343,13 @@ void CScene::Collision(float fDeltaTime)
 		if (m_Player1) {
 			if (Item->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
 			{
-
+				Item->SetDestroy();
 			}
 		}
 		if (m_Player2) {
 			if (Item->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
 			{
-
+				Item->SetDestroy();
 			}
 		}
 	}

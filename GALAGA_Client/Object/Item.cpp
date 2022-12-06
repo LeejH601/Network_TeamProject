@@ -120,25 +120,6 @@ void CItem::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 bool CItem::HandleMessage(const Telegram& telegram)
 {
-	switch (static_cast<MESSAGE_TYPE>(telegram.Msg))
-	{
-	case MESSAGE_TYPE::Msg_objectChangeState:
-		switch(static_cast<OBJECT_STATE>((int&)(telegram.Extrainfo)))
-		{
-		case OBJECT_STATE::ERASE:
-			CObjectManager::GetInst()->RemoveObject(this);
-			m_bEnable = false;
-			return true;
-		default:
-			break;
-		}
-		break;
-	case MESSAGE_TYPE::Msg_objectMove:
-		CObject::HandleMessage(telegram);
-		return true;
-	default:
-		break;
-	}
-
+	CObject::HandleMessage(telegram);
 	return false;
 }

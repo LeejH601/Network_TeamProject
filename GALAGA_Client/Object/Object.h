@@ -24,6 +24,7 @@ protected:
 
 	bool		m_bLife;				//  obj 의 생사여부
 	float		m_fHP;					//  Object 의 HP 
+	bool		m_bEnable;
 
 private:
 	WCHAR*		m_imgText;
@@ -31,7 +32,8 @@ private:
 
 protected:
 	TRIBE_TYPE m_MyType;			// 종족 구분 enum class
-
+	OBJECT_TYPE m_eObjType;
+	OBJECT_STATE m_eObjState = OBJECT_STATE::IDLE;
 public:
 	// 기본 구동 함수
 	// CObject 를 상속하는 모든 클래스는 이 구동함수를 갖고있으며 가상함수(virtual)로 설정한다.
@@ -58,7 +60,15 @@ public:
 	bool	 GetLife() const;
 	float	 GetHP() const;
 	int		 GetID() const;
+	bool GetEnbale()
+	{
+		return m_bEnable;
+	}
+	void SetEnalbeFalse()
+	{
+		m_bEnable = false;
 
+	}
 public:
 	// 외부 오브젝트 상태 설정 함수
 	void SetPos(const POSITION& tPos);

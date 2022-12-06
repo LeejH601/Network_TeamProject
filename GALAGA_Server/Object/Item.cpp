@@ -13,6 +13,13 @@ CItem::~CItem()
 {
 }
 
+void CItem::SetDestroy()
+{
+	SetState(OBJECT_STATE::DESTORY);
+	m_fStateTerm = 0.0f;
+	m_bEnable = false;
+}
+
 bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 {
 	m_bEnable = true;
@@ -105,10 +112,25 @@ void CItem::Update(float fDeltaTime)
 {
 	if (m_bEnable)
 	{
-		CObject::m_tLTPos.y += fDeltaTime * 2.5f;
+		CObject::m_tLTPos.y += fDeltaTime * 250.0f;
 
-		if (CObject::m_tLTPos.y > 750.0f)
-			m_bEnable = false;
+		if (CObject::m_tLTPos.y > 850.0f)
+		{
+			SetDestroy();
+		}
+	}
+	else
+	{
+		switch (m_eObjState) {
+		case OBJECT_STATE::DESTORY:
+			m_fStateTerm += fDeltaTime;
+			// 3초 뒤 State가 Erase로 바뀜
+			if (m_fStateTerm >= 3.0f)
+				SetState(OBJECT_STATE::ERASE);
+			break;
+		case OBJECT_STATE::ERASE:
+			break;
+		}
 	}
 }
 

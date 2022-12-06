@@ -17,12 +17,12 @@ protected:
 	_SIZE		m_tSize;				//  obj �� ũ�� 
 
 	bool		m_bLife;				//  obj �� ���翩��
-	float		m_fHP;					//  Object �� HP 
-private:
+	float		m_fHP;					//  Object �� HP
+	float		m_fStateTerm;
+protected:
 	TRIBE_TYPE m_MyType;			// ���� ���� enum class
 	OBJECT_TYPE m_eObjType;
 	OBJECT_STATE m_eObjState = OBJECT_STATE::IDLE;
-
 public:
 	// �⺻ ���� �Լ�
 	// CObject �� ����ϴ� ��� Ŭ������ �� �����Լ��� ���������� �����Լ�(virtual)�� �����Ѵ�.

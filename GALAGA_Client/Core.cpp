@@ -64,8 +64,7 @@ int CCore::Update(float fDeltaTime)
 int CCore::LateUpdate(float fDeltaTime)
 {
 	// LateUpdate를 처리합니다.
-	/*CSceneManager::GetInst()->LateUpdate(fDeltaTime);*/
-
+	CSceneManager::GetInst()->LateUpdate(fDeltaTime);
 	return 0;
 }
 

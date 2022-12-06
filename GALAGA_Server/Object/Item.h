@@ -20,7 +20,7 @@ private:
 	bool m_bEnable;
 
 public:
-
+	void SetDestroy();
 	bool GetEnbale()
 	{
 		return m_bEnable;
