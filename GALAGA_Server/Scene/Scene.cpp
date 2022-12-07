@@ -99,12 +99,14 @@ int CScene::Update(float fDeltaTime)
 		(*it)->Update(fDeltaTime);
 		if ((*it)->GetFireDelay() <= FLT_EPSILON)
 		{
-			(*it)->CreateBullet(&Monster_BulletList);
+			(*it)->CreateBullet(Monster_BulletList);
 		}
 	}
 
 	if (m_boss)
 		m_boss->Update(fDeltaTime);
+
+	Monster_BulletList->Update(fDeltaTime);
 
 	static float MspawnTime = 5.0f;
 	static MONSTER_PATTERN pattern;

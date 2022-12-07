@@ -51,7 +51,7 @@ public:
 	}
 
 	virtual bool HandleMessage(const Telegram& telegram);
-	void CreateBullet(class CBulletList** _bulletList);
+	void CreateBullet(class CBulletList* _bulletList);
 
 
 	virtual  bool Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum);

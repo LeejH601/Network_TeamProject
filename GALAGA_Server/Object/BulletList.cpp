@@ -28,8 +28,11 @@ void CBulletList::AddBullet(POSITION MonsterLT, _SIZE MonsterSize, POSITION Bull
 	POSITION BulletSize = { MonsterSize.x, MonsterSize.y };
 	POSITION BulletLTPos = { MonsterLT.x + MonsterSize.x / 2 - BulletSize.x / 2, MonsterLT.y - BulletSize.y };
 
+	
+
 	CBullet* pBullet = new CBullet();
 	pBullet->Init(BulletLTPos, BulletSize, BulletVector, Speed);
+	pBullet->SetObjType(OBJECT_TYPE::MONSTER_BULLET);
 	m_listBulletList.push_back(pBullet);
 }
 

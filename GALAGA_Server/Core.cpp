@@ -195,6 +195,16 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	}
 
 	// 블릿 생성 메시지
+
+	std::list<CBullet*>* bullet_list = SCM->GetBulletListFromSceneType(SCM->GetCurrentSceneType());
+	if (bullet_list) {
+		for (CBullet* bullet : *bullet_list) {
+			GenerateMsgCreate(p, bullet);
+			GenerateMsgMove(p, bullet);
+		}
+	}
+	
+
 	if (CCore::GetInst()->m_hPlayer1)
 	{
 		CBulletList* pPlayerBulletList = (SCM->GetPlayer1())->GetmyBulletList();
@@ -212,6 +222,7 @@ void CCore::SnapshotRun(DWORD hPlayer)
 			GenerateMsgMove(p, pBullet);
 		}
 	}
+
 	// 플레이어 무브 메시지
 
 }
