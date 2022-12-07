@@ -186,9 +186,12 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	// 아이템 생성 메시지
 	std::list<CItem*>* item_list = SCM->GetItemlistFromSceneType(SCM->GetCurrentSceneType());
 	for (CItem* item : *item_list) {
-		GenerateMsgCreate(p, item);
+		if (item->GetObjectState() == OBJECT_STATE::IDLE)
+		{
+			GenerateMsgCreate(p, item);
+			GenerateMsgMove(p, item);
+		}
 		GenerateMsgChangeState(p, item);
-		GenerateMsgMove(p, item);
 	}
 
 	// 블릿 생성 메시지

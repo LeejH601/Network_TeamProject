@@ -23,7 +23,6 @@ void CItem::SetDestroy()
 bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)
 {
 	m_bEnable = true;
-
 	if (itemType == OBJECT_TYPE::IT_RANDOM)
 	{
 		int SetItem = 1 + rand() % 4;

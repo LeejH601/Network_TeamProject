@@ -37,7 +37,7 @@ private:
 
 	int m_StageNum = 0;
 	int TractorCount_Render = 0;
-	float fItemSpawn = 500.0f;
+	float fItemSpawn = 0.5f;
 
 public:
 	// 배경 이미지 ,플레이어 , 몬스터 설정 
@@ -52,8 +52,6 @@ public:
 	int		Update(float fDeltaTime);
 	int		LateUpdate(float fDeltaTime);
 	void	Collision(float fDeltaTime);
-
-
 
 
 public:
