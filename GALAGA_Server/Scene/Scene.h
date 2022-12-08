@@ -79,6 +79,9 @@ public:
 
 	std::list<CItem*>* GetItemList() { return &m_ItemList; };
 	CBulletList* GetBulletList() { return Monster_BulletList; };
+
+	void UpdateBulletListWithBoss();
+
 	void UpdateMaxDistance(double distance);
 
 

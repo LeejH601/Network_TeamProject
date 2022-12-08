@@ -312,7 +312,7 @@ void CMonster::CreateBullet(CBulletList* _bulletList)
 		POSITION b_vector = (player->GetPos() + (player->GetSize() / 3)) - CObject::GetPos();
 		b_vector = b_vector / (sqrt(b_vector.x * b_vector.x + b_vector.y * b_vector.y));
 
-		std::cout << "bullet" << std::endl;
+		//std::cout << "bullet" << std::endl;
 
 		(_bulletList)->AddBullet(CObject::GetPos(), { 15,15 }, b_vector, float(rand() % 200) + 50.f);
 		(_bulletList)->SetAttack(50.0f);

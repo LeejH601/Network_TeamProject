@@ -98,12 +98,14 @@ int CScene::Update(float fDeltaTime)
 		(*it)->Update(fDeltaTime);
 		if ((*it)->GetFireDelay() <= FLT_EPSILON)
 		{
-			(*it)->CreateBullet(Monster_BulletList);
+			//(*it)->CreateBullet(Monster_BulletList);
 		}
 	}
 
-	if (m_boss)
-		m_boss->Update(fDeltaTime);
+	if (m_boss) {
+		//m_boss->Update(fDeltaTime);
+		UpdateBulletListWithBoss();
+	}
 
 	Monster_BulletList->Update(fDeltaTime);
 
@@ -217,31 +219,31 @@ int CScene::Update(float fDeltaTime)
 	}
 
 
-	// Need To Delete
-	else
-	{
-		UpdateMaxDistance(fDeltaTime * 300.0f);
-		if (m_Distance >= m_MaxDistance && m_boss == nullptr)
-		{
-			//m_bEndScene = true;
-			m_boss = new CBoss;
+	//// Need To Delete
+	//else
+	//{
+	//	UpdateMaxDistance(fDeltaTime * 300.0f);
+	//	if (m_Distance >= m_MaxDistance && m_boss == nullptr && m_StageNum > 0)
+	//	{
+	//		//m_bEndScene = true;
+	//		m_boss = new CBoss;
 
-			if (m_StageNum == 1)
-			{
-				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+	//		if (m_StageNum == 1)
+	//		{
+	//			m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
 
-			}
-			else if (m_StageNum == 2)
-			{
-				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+	//		}
+	//		else if (m_StageNum == 2)
+	//		{
+	//			m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
 
-			}
-			else if (m_StageNum == 3)
-			{
-				m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
-			}
-		}
-	}
+	//		}
+	//		else if (m_StageNum == 3)
+	//		{
+	//			m_boss->Init(POSITION{ 250,-100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+	//		}
+	//	}
+	//}
 
 	if (!m_ItemList.empty())
 	{
@@ -401,6 +403,18 @@ void CScene::Collision(float fDeltaTime)
 	}
 	
 	
+}
+
+void CScene::UpdateBulletListWithBoss()
+{
+	if (m_boss) {
+		std::list<CBullet*>* bulletList = m_boss->GetBulletList()->GetBulletList();
+
+		for (CBullet* bullet : *bulletList) {
+			Monster_BulletList->GetBulletList()->push_back(bullet);
+		}
+		bulletList->clear();
+	}
 }
 
 void CScene::UpdateMaxDistance(double distance)
