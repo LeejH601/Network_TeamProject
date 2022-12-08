@@ -146,8 +146,9 @@ bool CObject::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize
 	RECT CollisionPos = { ObjectLT.x + (ObjectSize.x / 4), ObjectLT.y , ObjectLT.x + ObjectSize.x - (ObjectSize.x / 4), ObjectLT.y + ObjectSize.y - (ObjectSize.y / 4) };
 	RECT rcTemp;
 
-	return IntersectRect(&rcTemp, &mypos, &CollisionPos);
-
+	if (m_eObjState == OBJECT_STATE::IDLE)
+		return IntersectRect(&rcTemp, &mypos, &CollisionPos);
+	return false;
 }
 
 bool CObject::HandleMessage(const Telegram& telegram)

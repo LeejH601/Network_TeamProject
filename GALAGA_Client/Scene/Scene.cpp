@@ -247,7 +247,8 @@ int CScene::Update(float fDeltaTime)
 {
 	if (m_MainPlayer)
 		m_MainPlayer->Update(fDeltaTime);
-
+	if (m_AnotherPlayer)
+		m_AnotherPlayer->Update(fDeltaTime);
 	/*m_Player->Update(fDeltaTime);*/
 	return 0;
 }

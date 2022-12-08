@@ -34,10 +34,25 @@ int CPlayer::Init()
 
 	return m_iObjID;
 }
+void CPlayer::SetDondestroy()
+{
+	m_fDondestroyTime = 1.5f;
+	SetState(OBJECT_STATE::DONDESTORY);
+}
 void CPlayer::Update(float fDeltaTime)
 {
 	if (m_myBulletList)
 		m_myBulletList->Update(fDeltaTime);
+	switch (m_eObjState)
+	{
+	case OBJECT_STATE::DONDESTORY:
+		m_fDondestroyTime -= fDeltaTime;
+		if (m_fDondestroyTime < FLT_EPSILON)
+			SetState(OBJECT_STATE::IDLE);
+		break;
+	default:
+		break;
+	}
 }
 bool CPlayer::HandleMessage(const Telegram& msg)
 {

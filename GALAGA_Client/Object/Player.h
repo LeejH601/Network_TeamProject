@@ -8,10 +8,14 @@ private:
 	float			m_fSpeed; // Player �ӵ�
 	float			m_fHP_prototype; // Player Hp
 	POSITION		m_tLastLTPos;
+	CImage			m_Invincibility_img;
 	//Bullet
 private:
 	float		m_LastFireTime = 0.f;
 	int			m_BulletShotCount;
+	float		AnimationTimer = 0.1f;
+	int			AnimationX = 0;
+	int			AnimationY = 0;
 private:
 	std::list<class CBulletInfo> m_BulletList;
 	class CBulletList* m_myBulletList;

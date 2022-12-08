@@ -43,7 +43,7 @@ bool CSceneManager::Init()
 	wcscpy_s(m_img_Text[0], L"../Image/Item_img/Bullets.png");
 	wcscpy_s(m_img_Text[1], L"../Image/Item_img/icon_ATKSPDUP.png");
 	wcscpy_s(m_img_Text[2], L"../Image/Item_img/icon_HPUP.png");
-	wcscpy_s(m_img_Text[3], L"../Image/Item_img/invincibility (2).png");
+	wcscpy_s(m_img_Text[3], L"../Image/Item_img/icon_INVINCIBILITY.png");
 	wcscpy_s(m_img_Text[4], L"../Image/Item_img/icon_PowUp.png");
 
 	wcscpy_s(m_img_Text[5], L"../Image/Terran_img/Wraith.png");;
@@ -75,7 +75,7 @@ bool CSceneManager::Init()
 		images[0].Load(L"./Image/Item_img/Bullets.png");
 		images[1].Load(L"./Image/Item_img/icon_ATKSPDUP.png");
 		images[2].Load(TEXT("./Image/Item_img/icon_HPUP.png"));
-		images[3].Load(TEXT("./Image/Item_img/invincibility (2).png"));
+		images[3].Load(TEXT("./Image/Item_img/icon_INVINCIBILITY.png"));
 		images[4].Load(TEXT("./Image/Item_img/icon_PowUp.png"));
 
 		// protoss

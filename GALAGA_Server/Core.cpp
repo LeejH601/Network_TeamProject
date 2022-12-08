@@ -155,11 +155,14 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	{
 		((CObject*)SCM->GetPlayer1())->SetObjType(OBJECT_TYPE::OBJ_PLAYER);
 		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
+		GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer1());
+	
 		if (CCore::GetInst()->m_hPlayer2)
 		{
 			((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
 			GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
 			GenerateMsgMove(p, (CObject*)SCM->GetPlayer2());
+			GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer2());
 		}
 	}
 
@@ -167,11 +170,13 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	{
 		((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_PLAYER);
 		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
+		GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer2());
 		if (CCore::GetInst()->m_hPlayer1)
 		{
 			((CObject*)SCM->GetPlayer1())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
 			GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
 			GenerateMsgMove(p, (CObject*)SCM->GetPlayer1());
+			GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer1());
 		}
 	}
 
