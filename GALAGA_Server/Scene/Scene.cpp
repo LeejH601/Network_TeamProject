@@ -393,12 +393,14 @@ void CScene::Collision(float fDeltaTime)
 	if (m_Player1 && CCore::GetInst()->m_hPlayer1 && m_Player1->GetObjectState() == OBJECT_STATE::IDLE) {
 		if (Monster_BulletList->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
 		{
+			m_Player1->SetRespawn();
 			//std::cout << "Player1, 몬스터 불렛 충돌" << std::endl;
 		}
 	}
 	if (m_Player2 && CCore::GetInst()->m_hPlayer2 && m_Player2->GetObjectState() == OBJECT_STATE::IDLE) {
 		if (Monster_BulletList->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
 		{
+			m_Player2->SetRespawn();
 			//std::cout << "Player2, 몬스터 불렛 충돌" << std::endl;
 		}
 	}

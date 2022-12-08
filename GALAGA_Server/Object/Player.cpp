@@ -39,6 +39,11 @@ void CPlayer::SetDondestroy()
 	m_fDondestroyTime = 1.5f;
 	SetState(OBJECT_STATE::DONDESTORY);
 }
+void CPlayer::SetRespawn()
+{
+	m_fDondestroyTime = 1.5f;
+	SetState(OBJECT_STATE::RESPAWN);
+}
 void CPlayer::Update(float fDeltaTime)
 {
 	if (m_myBulletList)
@@ -46,6 +51,7 @@ void CPlayer::Update(float fDeltaTime)
 	switch (m_eObjState)
 	{
 	case OBJECT_STATE::DONDESTORY:
+	case OBJECT_STATE::RESPAWN:
 		m_fDondestroyTime -= fDeltaTime;
 		if (m_fDondestroyTime < FLT_EPSILON)
 			SetState(OBJECT_STATE::IDLE);

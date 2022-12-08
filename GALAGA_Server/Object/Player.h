@@ -39,6 +39,7 @@ public:
 			m_BulletNum = 5;
 	}
 	void SetDondestroy();
+	void SetRespawn();
 	virtual	void Update(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
 };

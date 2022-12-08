@@ -83,6 +83,19 @@ void CPlayer::Update(float fDeltaTime)
 			}
 		}
 		break;
+	case OBJECT_STATE::RESPAWN:
+		AnimationTimer -= fDeltaTime;
+		if (AnimationTimer < FLT_EPSILON)
+		{
+			AnimationTimer = 0.1f;
+			AnimationX += 1;
+			if (AnimationX >= 5)
+			{
+				AnimationX = 0;
+				AnimationY = (AnimationY + 1) % 3;
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -175,6 +188,8 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		AnimationY = 0;
 		AnimationTimer = 0.1f;
 		m_eObjState = *state;
+		if (m_eObjState == OBJECT_STATE::RESPAWN)
+			SetPos(POSITION{ 300, 600 });
 		delete state;
 	}
 	return true;
@@ -186,7 +201,7 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 
 void CPlayer::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
-	if (m_eObjState == OBJECT_STATE::DONDESTORY)
+	if (m_eObjState == OBJECT_STATE::DONDESTORY || m_eObjState == OBJECT_STATE::RESPAWN)
 	{
 		m_Invincibility_img.Draw(hdc, CObject::m_tLTPos.x - (m_tSize.x / 3) - 10,
 			CObject::m_tLTPos.y - (m_tSize.y / 3) - 10, CObject::m_tSize.x + (m_tSize.x / 2) + 20,
