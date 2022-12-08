@@ -240,13 +240,16 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 void CScene::Input(float fDeltaTime, CScene* NextScene)
 {
 	if (m_MainPlayer)
-		m_MainPlayer->Input(fDeltaTime);
+		m_MainPlayer->Input(fDeltaTime, this);
 }
 
 int CScene::Update(float fDeltaTime)
 {
 	if (m_MainPlayer)
+	{
+		imgLT_Move_Auto(fDeltaTime);//배경화면이 자동으로 이동합니다...
 		m_MainPlayer->Update(fDeltaTime);
+	}
 
 	/*m_Player->Update(fDeltaTime);*/
 	return 0;

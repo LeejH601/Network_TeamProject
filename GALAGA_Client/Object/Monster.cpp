@@ -23,7 +23,7 @@ bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& t
 
 	if (m_Explode_img == NULL)
 	{
-		m_Explode_img.Load(TEXT("../Image/Scene_Back_img/Explode(2).png"));
+		m_Explode_img.Load(L"./Image/Scene_Back_img/Explode(2).png");
 		m_Explode_img_LT = { 0,0 };
 		m_Explode_img_Size = { 256,200 };
 

@@ -77,5 +77,6 @@ public:
 	void	SetEnable(bool enable) { m_bEnable = enable; }
 	int		GetCurSceneMaxDistance() { return m_MaxDistance; }
 	void	UpdateMaxDistance(double distance, CScene* NextScene);
+
 };
 

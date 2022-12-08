@@ -3,6 +3,7 @@
 #include	"BulletList.h"
 #include	"../Core/Timer.h"
 #include	"../Network/NetworkDevice.h"
+#include	"../Scene/Scene.h"
 
 CPlayer::CPlayer(int id)
 {
@@ -65,10 +66,11 @@ bool CPlayer::Init(int type)
 
 void CPlayer::Update(float fDeltaTime)
 {
+
 }
 
 
-void CPlayer::Input(float fDeltaTime)
+void CPlayer::Input(float fDeltaTime, CScene* CurScene)
 {
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
@@ -91,10 +93,13 @@ void CPlayer::Input(float fDeltaTime)
 	}
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		CObject::m_tLTPos.y -= fDeltaTime * m_fSpeed;
+		//CObject::m_tLTPos.y -= fDeltaTime * m_fSpeed;
 
 		if (CObject::m_tLTPos.y >= 750 / 2 + 250)
 			CObject::m_tLTPos.y -= fDeltaTime * m_fSpeed;
+
+
+		CurScene->imgLT_Move(fDeltaTime);
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
