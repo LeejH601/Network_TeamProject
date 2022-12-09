@@ -16,19 +16,7 @@ public:
 
 private:
 	OBJECT_TYPE m_myType;
-	bool m_bEnable;
-
 public:
-
-	bool GetEnbale()
-	{
-		return m_bEnable;
-	}
-	void SetEnalbeFalse()
-	{
-		m_bEnable = false;
-
-	}
 	OBJECT_TYPE GetType()
 	{
 		return m_myType;

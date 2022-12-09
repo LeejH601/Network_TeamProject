@@ -256,6 +256,19 @@ int CScene::LateUpdate(float fDeltaTime)
 {
 	/*if (m_MainPlayer)
 		(m_MainPlayer->GetmyBulletList())->LateUpdate(fDeltaTime);*/
+	for (list<CItem*>::iterator it = m_ItemList.begin(); it != m_ItemList.end(); it++) {
+		if (!(*it)->GetEnbale()) {
+			CItem* pItem = *it;
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+			it = m_ItemList.erase(it);
+			SAFE_DELETE(pItem);
+			if (it != m_ItemList.begin())
+				it--;
+			else if (it == m_ItemList.end()) {
+				break;
+			}
+		}
+	}
 	return 0;
 }
 
@@ -324,8 +337,10 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 
 	for (auto i = m_ItemList.begin();
 		i != m_ItemList.end(); ++i)
-		(*i)->Render(mainhDC, hDC, fDeltaTime);
-
+	{
+		if ((*i)->GetEnbale())
+			(*i)->Render(mainhDC, hDC, fDeltaTime);
+	}
 
 	// MemDc �� �ִ� ȭ���� main HDC �� ����մϴ�... < ���� ��� >
 	BitBlt(mainhDC, 0, 0, 600, 750, hDC, 0, 0, SRCCOPY);

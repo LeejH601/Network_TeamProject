@@ -300,7 +300,7 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 			m_Scene_stage3->Set_MainPlayer(m_MainPlayer);
 			return true;
 		}
-
+		
 		if (*obj_type == OBJECT_TYPE::OBJ_ANOTHER_PLAYER) { // Player 생성
 			m_AnotherPlayer = new CPlayer(id);
 			m_AnotherPlayer->Init(3);

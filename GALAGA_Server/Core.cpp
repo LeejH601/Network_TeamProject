@@ -121,9 +121,25 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		telegram.Extrainfo = new char[4];
 
 		int current_Scene = (int)CSceneManager::GetInst()->GetCurrentSceneType();
-		//std::cout << "SceneType - " << current_Scene << std::endl;
 		
 		memcpy(telegram.Extrainfo, &current_Scene, sizeof(SCENE_TYPE));
+
+		network->AddMessage(telegram);
+		delete[] telegram.Extrainfo;
+	};
+
+	auto GenerateMsgChangeState = [](CNetworkDevice* network, CObject* obj) {
+
+		Telegram telegram;
+		telegram.Sender = obj->GetID();
+		telegram.Receiver = obj->GetID();
+		telegram.DispatchTime = CTimer::GetInst()->GetTime();
+		telegram.Msg = (int)MESSAGE_TYPE::Msg_objectChangeState;
+		telegram.Extrainfo = new char[4];
+
+		int current_State = (int)(obj->GetObjectState());
+
+		memcpy(telegram.Extrainfo, &current_State, sizeof(OBJECT_TYPE));
 
 		network->AddMessage(telegram);
 		delete[] telegram.Extrainfo;
@@ -170,8 +186,12 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	// 아이템 생성 메시지
 	std::list<CItem*>* item_list = SCM->GetItemlistFromSceneType(SCM->GetCurrentSceneType());
 	for (CItem* item : *item_list) {
-		GenerateMsgCreate(p, item);
-		GenerateMsgMove(p, item);
+		if (item->GetObjectState() == OBJECT_STATE::IDLE)
+		{
+			GenerateMsgCreate(p, item);
+			GenerateMsgMove(p, item);
+		}
+		GenerateMsgChangeState(p, item);
 	}
 
 	// 블릿 생성 메시지

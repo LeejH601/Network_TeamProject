@@ -212,6 +212,29 @@ bool CObject::HandleMessage(const Telegram& telegram)
 		delete pos;
 	}
 	return true;
+	case MESSAGE_TYPE::Msg_objectChangeState:
+	{	OBJECT_STATE* state = new OBJECT_STATE;
+		memcpy(state, telegram.Extrainfo, sizeof(OBJECT_STATE));
+
+		if (m_eObjState == *state)
+		{
+			delete state;
+			return true;
+		}
+
+		switch (*state)
+		{
+		case OBJECT_STATE::DESTORY:
+			m_eObjState = OBJECT_STATE::DESTORY;
+			m_bEnable = false;
+			break;
+		case OBJECT_STATE::ERASE:
+			m_eObjState = OBJECT_STATE::ERASE;
+			break;
+		}
+		delete state;
+		return true;
+	}
 	default:
 		break;
 	}
