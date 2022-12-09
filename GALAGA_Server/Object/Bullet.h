@@ -30,7 +30,7 @@ protected:
 
 public:
 	bool GetEnbale() { return GetObjectState() != OBJECT_STATE::ERASE; }
-	void SetEnalbeFalse() { SetState(OBJECT_STATE::ERASE); }
+	void SetEnalbeFalse() { SetState(OBJECT_STATE::DESTORY); }
 
 
 };

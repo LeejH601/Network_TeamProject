@@ -94,7 +94,7 @@ void CCore::SnapshotRun(DWORD hPlayer)
 
 		delete[] telegram.Extrainfo;
 	};
-	
+
 	auto GenerateMsgMove = [](CNetworkDevice* network, CObject* obj) {
 		Telegram telegram;
 		telegram.Sender = obj->GetID();
@@ -121,7 +121,7 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		telegram.Extrainfo = new char[4];
 
 		int current_Scene = (int)CSceneManager::GetInst()->GetCurrentSceneType();
-		
+
 		memcpy(telegram.Extrainfo, &current_Scene, sizeof(SCENE_TYPE));
 
 		network->AddMessage(telegram);
@@ -199,18 +199,26 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	std::list<CBullet*>* bullet_list = SCM->GetBulletListFromSceneType(SCM->GetCurrentSceneType());
 	if (bullet_list) {
 		for (CBullet* bullet : *bullet_list) {
-			GenerateMsgCreate(p, bullet);
-			GenerateMsgMove(p, bullet);
+			if (bullet->GetObjectState() == OBJECT_STATE::IDLE)
+			{
+				GenerateMsgCreate(p, bullet);
+				GenerateMsgMove(p, bullet);
+			}
+			GenerateMsgChangeState(p, bullet);
 		}
 	}
-	
+
 
 	if (CCore::GetInst()->m_hPlayer1)
 	{
 		CBulletList* pPlayerBulletList = (SCM->GetPlayer1())->GetmyBulletList();
 		for (CBullet* pBullet : *(pPlayerBulletList->GetBulletList())) {
-			GenerateMsgCreate(p, pBullet);
-			GenerateMsgMove(p, pBullet);
+			if (pBullet->GetObjectState() == OBJECT_STATE::IDLE)
+			{
+				GenerateMsgCreate(p, pBullet);
+				GenerateMsgMove(p, pBullet);
+			}
+			GenerateMsgChangeState(p, pBullet);
 		}
 	}
 
@@ -218,8 +226,12 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	{
 		CBulletList* pPlayerBulletList = (SCM->GetPlayer2())->GetmyBulletList();
 		for (CBullet* pBullet : *(pPlayerBulletList->GetBulletList())) {
-			GenerateMsgCreate(p, pBullet);
-			GenerateMsgMove(p, pBullet);
+			if (pBullet->GetObjectState() == OBJECT_STATE::IDLE)
+			{
+				GenerateMsgCreate(p, pBullet);
+				GenerateMsgMove(p, pBullet);
+			}
+			GenerateMsgChangeState(p, pBullet);
 		}
 	}
 

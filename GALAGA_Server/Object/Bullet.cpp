@@ -6,7 +6,7 @@
 
 CBullet::CBullet()
 {
-
+	m_fStateTerm = 0.0f;
 }
 
 CBullet::~CBullet()
@@ -76,6 +76,12 @@ void CBullet::Update(float fDeltaTime)
 
 	if (m_Range >= m_MaxRange)
 		SetEnalbeFalse();
+
+	if (GetObjectState() == OBJECT_STATE::DESTORY) {
+		m_fStateTerm += fDeltaTime;
+		if (m_fStateTerm >= 3.0f)
+			SetState(OBJECT_STATE::ERASE);
+	}
 }
 
 bool CBullet::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)

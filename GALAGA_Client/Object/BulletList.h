@@ -62,5 +62,8 @@ public:
 	}
 private:
 	std::list<class CBullet*> m_listBulletList;
+
+public:
+	std::list<class CBullet*>* GetBulletList() { return &m_listBulletList; }
 };
 

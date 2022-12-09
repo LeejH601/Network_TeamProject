@@ -310,7 +310,7 @@ int CScene::LateUpdate(float fDeltaTime)
 		(m_Player2->GetmyBulletList())->LateUpdate(fDeltaTime);
 
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
-		if ((*it)->GetObjectState() == OBJECT_STATE::DESTORY) {
+		if ((*it)->GetObjectState() == OBJECT_STATE::ERASE) {
 			CMonster* pMonster = *it;
 			(*it)->~CMonster();
 			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
