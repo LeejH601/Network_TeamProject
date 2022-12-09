@@ -351,12 +351,14 @@ void CScene::Collision(float fDeltaTime)
 		if (m_Player1 && CCore::GetInst()->m_hPlayer1) {
 			if (Item->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
 			{
+				Item->SetEffect(m_Player1);
 				Item->SetDestroy();
 			}
 		}
 		if (m_Player2 && CCore::GetInst()->m_hPlayer2) {
 			if (Item->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
 			{
+				Item->SetEffect(m_Player2);
 				Item->SetDestroy();
 			}
 		}
@@ -393,15 +395,17 @@ void CScene::Collision(float fDeltaTime)
 
 
 	// 몬스터 총알 - 플레이어
-	if (m_Player1 && CCore::GetInst()->m_hPlayer1) {
+	if (m_Player1 && CCore::GetInst()->m_hPlayer1 && m_Player1->GetObjectState() == OBJECT_STATE::IDLE) {
 		if (Monster_BulletList->Collision(fDeltaTime, m_Player1->GetPos(), m_Player1->GetSize()))
 		{
+			m_Player1->SetRespawn();
 			//std::cout << "Player1, 몬스터 불렛 충돌" << std::endl;
 		}
 	}
-	if (m_Player2 && CCore::GetInst()->m_hPlayer2) {
+	if (m_Player2 && CCore::GetInst()->m_hPlayer2 && m_Player2->GetObjectState() == OBJECT_STATE::IDLE) {
 		if (Monster_BulletList->Collision(fDeltaTime, m_Player2->GetPos(), m_Player2->GetSize()))
 		{
+			m_Player2->SetRespawn();
 			//std::cout << "Player2, 몬스터 불렛 충돌" << std::endl;
 		}
 	}

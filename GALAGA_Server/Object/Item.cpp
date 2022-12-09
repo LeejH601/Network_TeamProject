@@ -1,3 +1,5 @@
+#include "Player.h"
+#include "BulletList.h"
 #include "Item.h"
 #include "../Core/Timer.h"
 
@@ -18,6 +20,27 @@ void CItem::SetDestroy()
 	SetState(OBJECT_STATE::DESTORY);
 	m_fStateTerm = 0.0f;
 	m_bEnable = false;
+}
+
+void CItem::SetEffect(CPlayer* pPlayer)
+{
+	switch (m_eObjType)
+	{
+	case OBJECT_TYPE::IT_STEAMPACK:
+		pPlayer->AddBullet();
+		break;
+	case OBJECT_TYPE::IT_HPUP:
+		pPlayer->SetDondestroy();
+		break;
+	case OBJECT_TYPE::IT_INVINVIBILITY:
+		pPlayer->SetDondestroy();
+		break;
+	case OBJECT_TYPE::IT_POWERUP:
+		pPlayer->GetmyBulletList()->AddAttack();
+		break;
+	default:
+		break;
+	}
 }
 
 bool CItem::Init(OBJECT_TYPE itemType, POSITION LTpos)

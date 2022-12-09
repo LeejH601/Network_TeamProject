@@ -70,6 +70,7 @@ enum class SCENE_TYPE
 
 enum class OBJECT_STATE {
 	DONDESTORY,
+	RESPAWN,
 	IDLE,
 	DESTORY,
 	ERASE

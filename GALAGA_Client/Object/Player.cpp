@@ -27,6 +27,9 @@ bool CPlayer::Init(int type)
 	m_fHP_prototype = 1000.0f;
 	m_fSpeed = 300.0f;
 
+	if (m_Invincibility_img == NULL)
+		m_Invincibility_img.Load(TEXT("./Image/Item_img/invincibility (2).png"));
+
 	SetType(type); // OT_TERRAN
 
 	switch (m_MyType)
@@ -65,6 +68,37 @@ bool CPlayer::Init(int type)
 
 void CPlayer::Update(float fDeltaTime)
 {
+	switch (m_eObjState)
+	{
+	case OBJECT_STATE::DONDESTORY:
+		AnimationTimer -= fDeltaTime;
+		if (AnimationTimer < FLT_EPSILON)
+		{
+			AnimationTimer = 0.1f;
+			AnimationX += 1;
+			if (AnimationX >= 5)
+			{
+				AnimationX = 0;
+				AnimationY = (AnimationY + 1) % 3;
+			}
+		}
+		break;
+	case OBJECT_STATE::RESPAWN:
+		AnimationTimer -= fDeltaTime;
+		if (AnimationTimer < FLT_EPSILON)
+		{
+			AnimationTimer = 0.1f;
+			AnimationX += 1;
+			if (AnimationX >= 5)
+			{
+				AnimationX = 0;
+				AnimationY = (AnimationY + 1) % 3;
+			}
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -106,7 +140,7 @@ void CPlayer::Input(float fDeltaTime)
 
 	}
 
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		float currentTime = clock();
 		if (m_LastFireTime == NULL || currentTime - m_LastFireTime >= 100) {
@@ -129,9 +163,9 @@ void CPlayer::Input(float fDeltaTime)
 
 bool CPlayer::HandleMessage(const Telegram& msg)
 {
-	switch ((MESSAGE_TYPE)msg.Msg)
+	switch (static_cast<MESSAGE_TYPE>(msg.Msg))
 	{
-	case MESSAGE_TYPE::Msg_objectMove: //extrainfo: ObjectType, Position (4byte + 12byte)
+	case MESSAGE_TYPE::Msg_objectMove:
 	{
 		POSITION* pos = new POSITION;
 		memcpy(pos, msg.Extrainfo, sizeof(POSITION));
@@ -139,22 +173,41 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		SetPos(*pos);
 		delete pos;
 	}
-	case MESSAGE_TYPE::Msg_objectChangeState: //extrainfo: ObjectState
-	{
-		int ObjectState;
-		memcpy(&ObjectState, msg.Extrainfo, sizeof(int));
-		return true;
+	return true;
+	case MESSAGE_TYPE::Msg_objectChangeState:
+	{	
+		OBJECT_STATE* state = new OBJECT_STATE;
+		memcpy(state, msg.Extrainfo, sizeof(OBJECT_STATE));
+
+		if (m_eObjState == *state)
+		{
+			delete state;
+			return true;
+		}
+		AnimationX = 0;
+		AnimationY = 0;
+		AnimationTimer = 0.1f;
+		m_eObjState = *state;
+		if (m_eObjState == OBJECT_STATE::RESPAWN)
+			SetPos(POSITION{ 300, 600 });
+		delete state;
 	}
+	return true;
 	default:
 		break;
 	}
-
 	return false;
-
 }
 
 void CPlayer::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
+	if (m_eObjState == OBJECT_STATE::DONDESTORY || m_eObjState == OBJECT_STATE::RESPAWN)
+	{
+		m_Invincibility_img.Draw(hdc, CObject::m_tLTPos.x - (m_tSize.x / 3) - 10,
+			CObject::m_tLTPos.y - (m_tSize.y / 3) - 10, CObject::m_tSize.x + (m_tSize.x / 2) + 20,
+			CObject::m_tSize.y + (m_tSize.y / 2) + 10, AnimationX * 190, AnimationY * 190, 190, 190);
+	}
+
 	CObject::Render(mainhDC, hdc, fDeltaTime);
 	if (m_myBulletList)
 		m_myBulletList->RenderAll(mainhDC, hdc, fDeltaTime);

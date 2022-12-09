@@ -2,7 +2,7 @@
 #include "Object.h"
 
 
-
+class CPlayer;
 class CItem : public CObject
 {
 public:
@@ -21,6 +21,7 @@ private:
 
 public:
 	void SetDestroy();
+	void SetEffect(CPlayer* pPlayer);
 	bool GetEnbale()
 	{
 		return m_bEnable;
@@ -30,13 +31,6 @@ public:
 		m_bEnable = false;
 
 	}
-	OBJECT_TYPE GetType()
-	{
-		return m_myType;
-
-	}
-
-
 public:
 	// 기본 구동 함수들 입니다...
 	// CObject 를 상속하는 모든 클래스는 이 구동함수를 갖고있으며 가상함수(virtual)로 설정한다.

@@ -29,7 +29,7 @@ public:
 
 
 private:
-	float m_fAttack = 100; // ÃÑ¾Ë °ø°Ý·Â 
+	float m_fAttack = 100.f; // ÃÑ¾Ë °ø°Ý·Â 
 
 
 public:
@@ -47,7 +47,6 @@ public:
 	void AddAttack()
 	{
 		m_fAttack += 50.0f;
-
 	}
 	
 	bool Empty()
