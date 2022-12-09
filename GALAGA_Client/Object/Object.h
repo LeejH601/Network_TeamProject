@@ -22,7 +22,6 @@ protected:
 	POSITION	m_tVector;				//  Object 가 움직일 방향
 	_SIZE		m_tSize;				//  obj 의 크기 
 
-	bool		m_bLife;				//  obj 의 생사여부
 	float		m_fHP;					//  Object 의 HP 
 	bool		m_bEnable;
 
@@ -57,9 +56,13 @@ public:
 	POSITION GetVector() const;
 	_SIZE	 GetSize() const;
 
-	bool	 GetLife() const;
 	float	 GetHP() const;
 	int		 GetID() const;
+
+	OBJECT_STATE GetState() {
+		return m_eObjState;
+	}
+
 	bool GetEnbale()
 	{
 		return m_bEnable;
@@ -75,7 +78,6 @@ public:
 	void SetVector(const POSITION& tVector);
 	void SetSize(const _SIZE tSize);
 
-	void SetLife(const bool bLife);
 	void SetHP(const float fHP);
 	void SetID(const int id);
 

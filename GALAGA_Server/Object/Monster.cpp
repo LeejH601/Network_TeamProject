@@ -356,6 +356,20 @@ void CMonster::Update(float fDeltaTime)
 			SetState(OBJECT_STATE::DESTORY);
 			return;
 		}
+
+		else
+		{
+			fire_delay -= (fDeltaTime);
+			m_Path.Update(fDeltaTime * 2.0f);
+			SetPos(m_Path.GetNextPos());
+
+			if (m_Path.GetPathEnd()) {
+				m_fStateTerm = 0.0f;
+				m_bDie = true;
+				SetState(OBJECT_STATE::DESTORY); // 수정 해야할 수도?
+				//SendMsgChangeState(OBJECT_STATE::DESTORY);
+			}
+		}
 	}
 	else
 	{
@@ -370,20 +384,8 @@ void CMonster::Update(float fDeltaTime)
 			break;
 		}
 	}
-	fire_delay -= (fDeltaTime);
-
-	m_Path.Update(fDeltaTime * 2.0f);
-	SetPos(m_Path.GetNextPos());
-
-	if (m_Path.GetPathEnd()) {
-		m_fStateTerm = 0.0f;
-		SetState(OBJECT_STATE::DESTORY); // 수정 해야할 수도?
-		//SendMsgChangeState(OBJECT_STATE::DESTORY);
-	}
 
 	CObject::Update(fDeltaTime);
-
-
 }
 
 void CMonster::LateUpdate(float fDeltaTime)

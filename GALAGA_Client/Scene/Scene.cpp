@@ -272,6 +272,19 @@ int CScene::LateUpdate(float fDeltaTime)
 			}
 		}
 	}
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		if ((*it)->GetState() == OBJECT_STATE::ERASE) {
+			CMonster* pItem = *it;
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+			it = m_MonsterList->erase(it);
+			SAFE_DELETE(pItem);
+			if (it != m_MonsterList->begin())
+				it--;
+			else if (it == m_MonsterList->end()) {
+				break;
+			}
+		}
+	}
 	return 0;
 }
 

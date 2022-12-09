@@ -40,7 +40,6 @@ protected:
 	int			fire_delay;
 	int			fire_rate;
 	float		B_speed = 300.0f;
-	MONSTER_STATE m_state = MONSTER_STATE::DONDESTORY;
 	float		LastFireTime = NULL;
 	float		TracterBimSize = 0;
 
@@ -85,10 +84,6 @@ public:
 	virtual	void Update(float fDeltaTime);
 	virtual	void LateUpdate(float fDeltaTime);
 	virtual	void Render(HDC mainhDC, HDC hdc, float fDeltaTime);
-
-	MONSTER_STATE GetState() {
-		return m_state;
-	}
 
 	int GetFireDelay() {
 		return fire_delay;
