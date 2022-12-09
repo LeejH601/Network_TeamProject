@@ -77,12 +77,17 @@ void CBulletList::LateUpdate(float fDeltaTime)
 {
 	for (std::list<class CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++)
 	{
-		/*if (!((*it)->GetEnbale()))
-		{
+		if (!(*it)->GetEnbale()) {
 			CBullet* pBullet = *it;
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
 			it = m_listBulletList.erase(it);
 			SAFE_DELETE(pBullet);
-		}*/
+			if (it != m_listBulletList.begin())
+				it--;
+			else if (it == m_listBulletList.end()) {
+				break;
+			}
+		}
 	}
 }
 

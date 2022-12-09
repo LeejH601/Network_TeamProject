@@ -24,8 +24,6 @@ public:
 	virtual	bool Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize);
 
 private:
-	bool	m_bEnable; // false일 경우 삭제
-
 	float	m_fSpeed;	// 총알 스피드
 	float	m_MaxRange;// 총알 사정거리 
 	float	m_Range;

@@ -271,19 +271,10 @@ int CScene::LateUpdate(float fDeltaTime)
 		}
 	}
 
-	for (list<CBullet*>::iterator it = Monster_BulletList->GetBulletList()->begin(); it != Monster_BulletList->GetBulletList()->end(); it++) {
-		if (!(*it)->GetEnbale()) {
-			CBullet* pBullet = *it;
-			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
-			it = Monster_BulletList->GetBulletList()->erase(it);
-			SAFE_DELETE(pBullet);
-			if (it != Monster_BulletList->GetBulletList()->begin())
-				it--;
-			else if (it == Monster_BulletList->GetBulletList()->end()) {
-				break;
-			}
-		}
-	}
+	Monster_BulletList->LateUpdate(fDeltaTime);
+	if(m_MainPlayer)
+		m_MainPlayer->GetmyBulletList()->LateUpdate(fDeltaTime);
+	//m_AnotherPlayer->GetmyBulletList()->LateUpdate(fDeltaTime);
 	return 0;
 }
 
