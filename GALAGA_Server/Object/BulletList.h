@@ -20,7 +20,7 @@ public:
 
 	// Bullet Collision
 	// 반환값: 충돌 횟수, 인자: 오브젝트 위치, 사이즈
-	int Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize);
+	int Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize, CObject* pObject = NULL);
 
 	
 	// Bullet Erase

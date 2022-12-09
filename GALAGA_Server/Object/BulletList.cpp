@@ -36,7 +36,7 @@ void CBulletList::AddBullet(POSITION MonsterLT, _SIZE MonsterSize, POSITION Bull
 	m_listBulletList.push_back(pBullet);
 }
 
-int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize)
+int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize, CObject* pObject)
 {
 	int CollisionN = 0; // Ãæµ¹ È½¼ö
 
@@ -45,6 +45,13 @@ int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize
 			CollisionN++;
 			//Erase(pBullet);
 		}
+	}
+
+	if (pObject)
+	{
+		float fHp = pObject->GetHP();
+		fHp -= CollisionN * GetAttack();
+		pObject->SetHP(fHp);
 	}
 	return CollisionN;
 }

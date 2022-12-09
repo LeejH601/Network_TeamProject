@@ -21,7 +21,7 @@ CMonster::~CMonster()
 
 bool CMonster::Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT_TYPE& type, POSITION Vector, int StageNum)
 {
-
+	m_fHP = 1.f;
 	//if (m_Explode_img == NULL)
 	//{
 	//	m_Explode_img.Load(TEXT("./Image/Scene_Back_img/Explode(2).png"));
@@ -184,6 +184,7 @@ bool CMonster::Init(POSITION LTpos, const MONSTER_PATTERN& pattern, const OBJECT
 
 bool CMonster::Init(POSITION LTpos, POSITION Vector, _SIZE Size, float HP, PLAYER_TYPE obType)
 {
+	m_fHP = 1.f;
 	//MONSTER_PATTERN Pattern = (MONSTER_PATTERN)(rand() % (int)MONSTER_PATTERN::END_ENUM);
 
 	//RESOLUTION Resol = CCore::GetInst()->GetResolution();
@@ -346,16 +347,37 @@ void CMonster::Input(float fDeltaTime)
 
 void CMonster::Update(float fDeltaTime)
 {
-	/*if (m_bDie == true)
-		return;*/
-
+	if (m_bDie == false)
+	{
+		if (CObject::m_fHP <= 0)
+		{
+			m_fStateTerm = 0.0f;
+			m_bDie = true;
+			SetState(OBJECT_STATE::DESTORY);
+			return;
+		}
+	}
+	else
+	{
+		switch (m_eObjState) {
+		case OBJECT_STATE::DESTORY:
+			m_fStateTerm += fDeltaTime;
+			// 3초 뒤 State가 Erase로 바뀜
+			if (m_fStateTerm >= 3.0f)
+				SetState(OBJECT_STATE::ERASE);
+			break;
+		case OBJECT_STATE::ERASE:
+			break;
+		}
+	}
 	fire_delay -= (fDeltaTime);
 
 	m_Path.Update(fDeltaTime * 2.0f);
 	SetPos(m_Path.GetNextPos());
 
 	if (m_Path.GetPathEnd()) {
-		SetState(OBJECT_STATE::ERASE); // 수정 해야할 수도?
+		m_fStateTerm = 0.0f;
+		SetState(OBJECT_STATE::DESTORY); // 수정 해야할 수도?
 		//SendMsgChangeState(OBJECT_STATE::DESTORY);
 	}
 
@@ -366,6 +388,7 @@ void CMonster::Update(float fDeltaTime)
 
 void CMonster::LateUpdate(float fDeltaTime)
 {
+
 }
 
 bool CMonster::Collision(float fDeltaTime, POSITION ObjectLT, POSITION ObjectSize)

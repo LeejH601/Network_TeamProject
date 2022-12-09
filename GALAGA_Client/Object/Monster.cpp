@@ -390,7 +390,6 @@ void CMonster::LateUpdate(float fDeltaTime)
 
 void CMonster::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
-
 	if (m_bDie == true)
 	{
 		RenderExplode(mainhDC, hdc, fDeltaTime);
