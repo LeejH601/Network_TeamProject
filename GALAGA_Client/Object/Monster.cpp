@@ -23,7 +23,7 @@ bool CMonster::Init(POSITION LTpos, const Pattern& pattern, const OBJECT_TYPE& t
 
 	if (m_Explode_img == NULL)
 	{
-		m_Explode_img.Load(TEXT("../Image/Scene_Back_img/Explode(2).png"));
+		m_Explode_img.Load(L"./Image/Scene_Back_img/Explode(2).png");
 		m_Explode_img_LT = { 0,0 };
 		m_Explode_img_Size = { 256,200 };
 
@@ -390,8 +390,7 @@ void CMonster::LateUpdate(float fDeltaTime)
 
 void CMonster::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
-
-	if (m_bDie == true)
+	if (m_bEnable == false)
 	{
 		RenderExplode(mainhDC, hdc, fDeltaTime);
 	}
@@ -403,7 +402,6 @@ void CMonster::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 void CMonster::RenderExplode(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
-
 	m_Explode_img_Count += 1;
 
 	m_Explode_img.Draw(hdc, CObject::m_tLTPos.x - (CObject::m_tSize.x / 2), CObject::m_tLTPos.y - (CObject::m_tSize.y / 2),
@@ -423,8 +421,7 @@ void CMonster::RenderExplode(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 	// 출력이미지를 전부 출력했을 때 몬스터를 삭제합니다... 
 	if (m_Explode_img_Count == 300)
-		m_state = MONSTER_STATE::DESTORY;
-
+		m_eObjState = OBJECT_STATE::ERASE;
 }
 
 bool CMonster::HandleMessage(const Telegram& msg)

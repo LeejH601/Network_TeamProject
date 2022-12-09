@@ -241,16 +241,20 @@ void CScene::AddObject(int id, OBJECT_TYPE obj_Type, POSITION pos)
 void CScene::Input(float fDeltaTime, CScene* NextScene)
 {
 	if (m_MainPlayer)
-		m_MainPlayer->Input(fDeltaTime);
+		m_MainPlayer->Input(fDeltaTime, this);
 }
 
 int CScene::Update(float fDeltaTime)
 {
 	if (m_MainPlayer)
+	{
+		imgLT_Move_Auto(fDeltaTime);//배경화면이 자동으로 이동합니다...
 		m_MainPlayer->Update(fDeltaTime);
+	}
+
 	if (m_AnotherPlayer)
 		m_AnotherPlayer->Update(fDeltaTime);
-	/*m_Player->Update(fDeltaTime);*/
+
 	return 0;
 }
 
@@ -276,6 +280,20 @@ int CScene::LateUpdate(float fDeltaTime)
 	if(m_MainPlayer)
 		m_MainPlayer->GetmyBulletList()->LateUpdate(fDeltaTime);
 	//m_AnotherPlayer->GetmyBulletList()->LateUpdate(fDeltaTime);
+
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		if ((*it)->GetState() == OBJECT_STATE::ERASE) {
+			CMonster* pItem = *it;
+			CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+			it = m_MonsterList->erase(it);
+			SAFE_DELETE(pItem);
+			if (it != m_MonsterList->begin())
+				it--;
+			else if (it == m_MonsterList->end()) {
+				break;
+			}
+		}
+	}
 	return 0;
 }
 

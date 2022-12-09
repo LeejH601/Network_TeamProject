@@ -184,8 +184,12 @@ void CCore::SnapshotRun(DWORD hPlayer)
 	std::list<CMonster*>* mob_list = SCM->GetMonsterList();
 
 	for (CMonster* mob : *mob_list) {
-		GenerateMsgCreate(p, mob);
-		GenerateMsgMove(p, mob);
+		if (mob->GetObjectState() == OBJECT_STATE::IDLE)
+		{
+			GenerateMsgCreate(p, mob);
+			GenerateMsgMove(p, mob);
+		}
+		GenerateMsgChangeState(p, mob);
 	}
 
 	// 아이템 생성 메시지

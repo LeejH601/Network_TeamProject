@@ -57,7 +57,7 @@ public:
 	
 	virtual bool Init() { return true; }
 	virtual bool Init(int type);
-	virtual void Input(float fDeltaTime);
+	virtual void Input(float fDeltaTime, class CScene* CurScene);
 	virtual	void Update(float fDeltaTime);
 	virtual bool HandleMessage(const Telegram& msg);
 	virtual void Render(HDC mainhDC, HDC hdc, float fDeltaTime);

@@ -66,11 +66,6 @@ _SIZE CObject::GetSize() const
 	return m_tSize;
 }
 
-bool CObject::GetLife() const
-{
-	return m_bLife;
-}
-
 float CObject::GetHP() const
 {
 	return m_fHP;
@@ -96,12 +91,6 @@ void CObject::SetVector(const POSITION& tVector)
 void CObject::SetSize(const _SIZE tSize)
 {
 	m_tSize = tSize;
-
-}
-
-void CObject::SetLife(const bool bLife)
-{
-	m_bLife = bLife;
 
 }
 
@@ -149,7 +138,7 @@ bool CObject::Init(const WCHAR* imgText, POSITION LTpos, POSITION Vector, _SIZE 
 	m_tVector = Vector;
 	m_tSize = Size;
 	m_fHP = HP;
-	m_bLife = true;
+	m_bEnable = true;
 
 
 	m_img_Size = imgSize;
