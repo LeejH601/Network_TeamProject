@@ -42,6 +42,7 @@ int CBulletList::Collision(float fDeltatime, POSITION ObjectLT, _SIZE ObjectSize
 
 	for (CBullet* pBullet : m_listBulletList) {
 		if (pBullet->Collision(fDeltatime, ObjectLT, ObjectSize)) {
+			pBullet->SetEnalbeFalse();
 			CollisionN++;
 			//Erase(pBullet);
 		}

@@ -77,7 +77,7 @@ void CBoss::Update(float fDeltaTime)
 				break;
 			case Pattern::SIN2:
 				pattern_count = 3;
-				fire_rate = 0.4f;
+				fire_rate = 0.2f;
 				break;
 			case Pattern::SIN3:
 				pattern_count = 72;
@@ -85,12 +85,12 @@ void CBoss::Update(float fDeltaTime)
 				break;
 			case Pattern::SIN4:
 				pattern_count = 360;
-				fire_rate = 0.004f;
+				fire_rate = 0.008f;
 				break;
 			case Pattern::SIN5:
 				accum_ceta = 10;
 				pattern_count = 45;
-				fire_rate = 0.4f;
+				fire_rate = 0.2f;
 				break;
 			case Pattern::SIN6:
 				pattern_count = 108;
@@ -139,7 +139,7 @@ bool CBoss::HandleMessage(const Telegram& telegram)
 void CBoss::CreateBullet(Pattern _pattern)
 {
 	if (GetObjectState() != OBJECT_STATE::DONDESTORY && GetObjectState() != OBJECT_STATE::DESTORY) {
-		std::cout << "boss bullet" << std::endl;
+		//std::cout << "boss bullet" << std::endl;
 		switch (_pattern)
 		{
 		case Pattern::SIN:

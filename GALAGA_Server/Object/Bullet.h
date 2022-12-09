@@ -29,8 +29,8 @@ protected:
 
 
 public:
-	bool GetEnbale() { return m_bEnable; }
-	void SetEnalbeFalse() { m_bEnable = false; }
+	bool GetEnbale() { return GetObjectState() != OBJECT_STATE::ERASE; }
+	void SetEnalbeFalse() { SetState(OBJECT_STATE::ERASE); }
 
 
 };

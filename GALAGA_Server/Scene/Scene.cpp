@@ -336,6 +336,10 @@ int CScene::LateUpdate(float fDeltaTime)
 			}
 		}
 	}
+
+	Monster_BulletList->LateUpdate(fDeltaTime);
+	std::cout << Monster_BulletList->GetBulletList()->size() << std::endl;
+
 	return 0;
 }
 
