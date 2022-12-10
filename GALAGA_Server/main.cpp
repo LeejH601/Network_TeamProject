@@ -17,9 +17,6 @@ struct ThreadArgument {
 
 DWORD WINAPI ProcessGameLoop(LPVOID arg)
 {
-	HANDLE hThread = arg;
-
-	// ������ �ʱ�ȭ �մϴ�. 
 	if (!CCore::GetInst()->Init())
 	{
 		CCore::DestroyInst();
@@ -107,6 +104,7 @@ int main(int argc, char* argv[])
 	int len;
 	char buf[BUFSIZE + 1];
 
+	HANDLE hGameThread = CreateThread(NULL, 0, ProcessGameLoop, nullptr, 0, NULL);
 
 	while (true)
 	{
@@ -126,7 +124,6 @@ int main(int argc, char* argv[])
 
 		else {
 			if (!g_bisPlaying) {
-				HANDLE hGameThread = CreateThread(NULL, 0, ProcessGameLoop, &hThread, 0, NULL);
 				g_bisPlaying = true;
 				CloseHandle(hGameThread);
 			}

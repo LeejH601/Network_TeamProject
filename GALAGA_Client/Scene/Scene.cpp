@@ -409,10 +409,3 @@ void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 	BitBlt(mainhDC, 0, 0, 600, 750, hDC, 0, 0, SRCCOPY);
 
 }
-
-void CScene::UpdateMaxDistance(double distance, CScene* NextScene)
-{
-
-
-
-}

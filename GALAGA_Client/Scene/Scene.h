@@ -68,8 +68,6 @@ public:
 	// CScene ȭ�� Ȱ��ȭ ���� ��ȯ
 	bool	GetEnable() { return m_bEnable; }
 	void	SetEnable(bool enable) { m_bEnable = enable; }
-	int		GetCurSceneMaxDistance() { return m_MaxDistance; }
-	void	UpdateMaxDistance(double distance, CScene* NextScene);
 	void	SetPreScene(CScene* pScene){ m_pPreScene = pScene; }
 };
 

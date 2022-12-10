@@ -44,7 +44,6 @@ void CCore::Logic()
 	Input(fDeltaTime);			// * 입력
 	Update(fDeltaTime);			// * 업데이트
 	LateUpdate(fDeltaTime);		// * 업데이트 후처리 
-	Collision(fDeltaTime);		// * 충돌 처리
 	Render(fDeltaTime);			// * 출력
 }
 
@@ -66,13 +65,6 @@ int CCore::LateUpdate(float fDeltaTime)
 	// LateUpdate를 처리합니다.
 	CSceneManager::GetInst()->LateUpdate(fDeltaTime);
 	return 0;
-}
-
-void CCore::Collision(float fDeltaTime)
-{
-	// Collision을 처리합니다.
-	/*CSceneManager::GetInst()->Collision(fDeltaTime);*/
-
 }
 
 void CCore::Render(float fDeltaTime)

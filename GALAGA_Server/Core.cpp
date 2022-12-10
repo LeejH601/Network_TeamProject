@@ -121,7 +121,6 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		telegram.Extrainfo = new char[4];
 
 		int current_Scene = (int)CSceneManager::GetInst()->GetCurrentSceneType();
-
 		memcpy(telegram.Extrainfo, &current_Scene, sizeof(SCENE_TYPE));
 
 		network->AddMessage(telegram);

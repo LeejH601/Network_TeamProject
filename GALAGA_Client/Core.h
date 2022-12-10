@@ -18,16 +18,6 @@ private:
 	HBITMAP		m_hBackBufferBitmap;
 	HBITMAP		m_hOldBackBufferBitmap;
 	bool		bConnected;
-public:
-	void SetEnd()
-	{
-		m_bLoop = false;
-
-	}
-	void proc_tmp()
-	{
-
-	}
 private:
 	void SetDoubleBufferDC()
 	{

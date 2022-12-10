@@ -42,8 +42,6 @@ public:
 	virtual void LateUpdate(float fDeltaTime);
 	virtual void Render(HDC mainhDC, HDC hDC, float fDeltaTime);
 
-	void Collision(float fDeltaTime);
-
 	CPlayer* GetPlayer();
 public:
 	CImage* GetCimage(const WCHAR* imgText)

@@ -196,33 +196,6 @@ void CSceneManager::LateUpdate(float fDeltaTime)
 	}
 }
 
-void CSceneManager::Collision(float fDeltaTime)
-{
-	switch (m_CurrentScene)
-	{
-	case SCENE_TYPE::ST_BEGIN:
-		m_Scene_Begin->Collision(fDeltaTime);
-		break;
-	case SCENE_TYPE::ST_STAGE1:
-		m_Scene_Stage1->Collision(fDeltaTime);
-		break;
-	case SCENE_TYPE::ST_STAGE2:
-		m_Scene_stage2->Collision(fDeltaTime);
-		break;
-	case SCENE_TYPE::ST_STAGE3:
-		m_Scene_stage3->Collision(fDeltaTime);
-		break;
-	case SCENE_TYPE::ST_CLEAR:
-		m_Scene_StageClear->Collision(fDeltaTime);
-		break;
-	case SCENE_TYPE::ST_END:
-		m_Scene_End->Collision(fDeltaTime);
-		break;
-	default:
-		break;
-	}
-}
-
 void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 {
 	switch (m_CurrentScene)
