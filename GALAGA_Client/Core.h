@@ -5,7 +5,7 @@ extern HWND my_hDlg;
 
 class CCore
 {
-private:
+public:
 	static bool		m_bLoop;
 private:
 	HINSTANCE	m_hInst;

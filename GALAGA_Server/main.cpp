@@ -42,23 +42,29 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	Network_Device.init((SOCKET)Arg);
 	Locator.SetNetworkDevice(GetCurrentThreadId(), &Network_Device);
 
-	CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient++);
-
-	int iTimeout = 1000;
-	setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
-	DWORD optval = 1;
-	setsockopt((SOCKET)arg, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
-	std::cout << "connect client" << std::endl;
-
-	while (true)
+	if (g_nPlayClient < 2)
 	{
-		Network_Device.RecvByNetwork();
-		EnterCriticalSection(&main_loop_cs);
-		CCore::GetInst()->SnapshotRun(GetCurrentThreadId());
-		LeaveCriticalSection(&main_loop_cs);
-		Network_Device.SendToNetwork();
-	}
+		CCore::GetInst()->SetPlayerHandle(GetCurrentThreadId(), g_nPlayClient++);
 
+		int iTimeout = 1000;
+		setsockopt((SOCKET)arg, SOL_SOCKET, SO_RCVTIMEO, (const char*)&iTimeout, sizeof(iTimeout));
+		DWORD optval = 1;
+		setsockopt((SOCKET)arg, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
+		std::cout << "connect client" << std::endl;
+
+		while (true)
+		{
+			if (!Network_Device.RecvByNetwork())
+			{
+				CCore::GetInst()->DelPlayerHandle(GetCurrentThreadId());
+				break;
+			}
+			EnterCriticalSection(&main_loop_cs);
+			CCore::GetInst()->SnapshotRun(GetCurrentThreadId());
+			LeaveCriticalSection(&main_loop_cs);
+			Network_Device.SendToNetwork();
+		}
+	}
 	return 0;
 }
 

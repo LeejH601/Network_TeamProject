@@ -209,7 +209,8 @@ void CPlayer::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 			CObject::m_tSize.y + (m_tSize.y / 2) + 10, AnimationX * 190, AnimationY * 190, 190, 190);
 	}
 
-	CObject::Render(mainhDC, hdc, fDeltaTime);
+	if (m_eObjState != OBJECT_STATE::DESTORY)
+		CObject::Render(mainhDC, hdc, fDeltaTime);
 
 	if (m_myBulletList)
 		m_myBulletList->RenderAll(mainhDC, hdc, fDeltaTime);

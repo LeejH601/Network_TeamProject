@@ -4,24 +4,16 @@
 
 class CCore
 {
-
-
 private:
 	static bool		m_bLoop;
 public:
 	DWORD m_hPlayer1 = 0;
 	DWORD m_hPlayer2 = 0;
 
-	void SetPlayerHandle(DWORD threadID, int nPlayer)
-	{
-		if (!nPlayer)
-			m_hPlayer1 = threadID;
-		else
-			m_hPlayer2 = threadID;
-	}
+	void SetPlayerHandle(DWORD threadID, int nPlayer);
+	void DelPlayerHandle(DWORD threadID);
 private:
 	RESOLUTION	m_tRS;
-
 public:
 	void SetEnd()
 	{

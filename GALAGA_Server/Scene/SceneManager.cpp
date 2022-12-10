@@ -51,6 +51,7 @@ bool CSceneManager::Init()
 	m_Player2 = new CPlayer;
 
 	m_Player1->Init();
+	m_Player1->SetState(OBJECT_STATE::IDLE);
 	m_Player2->Init();
 
 	Locator.SetPlayer(0, m_Player1);

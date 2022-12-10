@@ -31,7 +31,7 @@ int CPlayer::Init()
 	m_tSize = PlayerSize;
 	m_bDie = false;
 	m_fSpeed = 300.0f;
-
+	m_eObjState = OBJECT_STATE::DESTORY;
 	return m_iObjID;
 }
 void CPlayer::SetDondestroy()

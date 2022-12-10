@@ -157,13 +157,10 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
 		GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer1());
 	
-		if (CCore::GetInst()->m_hPlayer2)
-		{
-			((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-			GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
-			GenerateMsgMove(p, (CObject*)SCM->GetPlayer2());
-			GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer2());
-		}
+		((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
+		GenerateMsgMove(p, (CObject*)SCM->GetPlayer2());
+		GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer2());
 	}
 
 	if (CCore::GetInst()->m_hPlayer2 == hPlayer)
@@ -171,13 +168,11 @@ void CCore::SnapshotRun(DWORD hPlayer)
 		((CObject*)SCM->GetPlayer2())->SetObjType(OBJECT_TYPE::OBJ_PLAYER);
 		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer2());
 		GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer2());
-		if (CCore::GetInst()->m_hPlayer1)
-		{
-			((CObject*)SCM->GetPlayer1())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
-			GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
-			GenerateMsgMove(p, (CObject*)SCM->GetPlayer1());
-			GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer1());
-		}
+
+		((CObject*)SCM->GetPlayer1())->SetObjType(OBJECT_TYPE::OBJ_ANOTHER_PLAYER);
+		GenerateMsgCreate(p, (CObject*)SCM->GetPlayer1());
+		GenerateMsgMove(p, (CObject*)SCM->GetPlayer1());
+		GenerateMsgChangeState(p, (CObject*)SCM->GetPlayer1());
 	}
 
 	// 몬스터 생성 메시지
@@ -246,6 +241,33 @@ void CCore::SnapshotRun(DWORD hPlayer)
 
 	// 플레이어 무브 메시지
 
+}
+
+void CCore::SetPlayerHandle(DWORD threadID, int nPlayer)
+{
+	if (!nPlayer)
+	{
+		m_hPlayer1 = threadID;
+	}
+	else
+	{
+		m_hPlayer2 = threadID;
+		CSceneManager::GetInst()->GetPlayer2()->SetState(OBJECT_STATE::IDLE);
+	}
+}
+
+void CCore::DelPlayerHandle(DWORD threadID)
+{
+	if (m_hPlayer1 == threadID)
+	{
+		m_hPlayer1 = NULL;
+		CSceneManager::GetInst()->GetPlayer1()->SetState(OBJECT_STATE::DESTORY);
+	}
+	if (m_hPlayer2 == threadID)
+	{
+		m_hPlayer2 = NULL;
+		CSceneManager::GetInst()->GetPlayer2()->SetState(OBJECT_STATE::DESTORY);
+	}
 }
 
 bool CCore::Init()

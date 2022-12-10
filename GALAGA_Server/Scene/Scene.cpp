@@ -88,7 +88,7 @@ int CScene::Update(float fDeltaTime)
 		(*it)->Update(fDeltaTime);
 		if ((*it)->GetFireDelay() <= FLT_EPSILON)
 		{
-			//(*it)->CreateBullet(Monster_BulletList);
+			(*it)->CreateBullet(Monster_BulletList);
 		}
 	}
 

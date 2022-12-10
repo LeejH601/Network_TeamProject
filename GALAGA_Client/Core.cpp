@@ -229,7 +229,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 
 		CNetworkDevice::GetInst()->SendToNetwork();
-		CNetworkDevice::GetInst()->RecvByNetwork();
+		if (!CNetworkDevice::GetInst()->RecvByNetwork())
+		{
+			CCore::m_bLoop = false;
+			break;
+		}
 		CNetworkDevice::GetInst()->GetTelegram();
 		CMessageDispatcher::GetInst()->DispatchMessages();
 	}
