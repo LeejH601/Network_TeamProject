@@ -32,6 +32,7 @@ private:
 private:
 	class CPlayer* m_MainPlayer;
 	class CPlayer* m_AnotherPlayer;
+	SCENE_TYPE m_CurrentScene;
 	list<class CMonster*> m_MonsterList; // 출현할 몬스터 정보
 public:
 	bool Init();

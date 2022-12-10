@@ -36,4 +36,4 @@ using namespace std;
 //#pragma  comment(lib, "fmodex_vc.lib")
 
 #define BUFSIZE 8096
-extern CRITICAL_SECTION Bullet_CS;
+extern CRITICAL_SECTION Game_CS;

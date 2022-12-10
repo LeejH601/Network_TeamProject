@@ -13,9 +13,6 @@ private:
 private:
 	float		m_LastFireTime = 0.f;
 	int			m_BulletShotCount;
-	float		AnimationTimer = 0.1f;
-	int			AnimationX = 0;
-	int			AnimationY = 0;
 private:
 	std::list<class CBulletInfo> m_BulletList;
 	class CBulletList* m_myBulletList;

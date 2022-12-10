@@ -21,33 +21,8 @@ CScene::CScene() : m_bEnable(false), m_bSlide(false)
 
 CScene::~CScene()
 {
-	if (m_MonsterList != nullptr)
-		(*m_MonsterList).clear();
-
-	Monster_BulletList->EraseAll();
-	delete Monster_BulletList;
-
-	for (std::list<CItem*>::iterator p = m_ItemList.begin();
-		p != m_ItemList.end(); ++p)
-	{
-		CObjectManager::GetInst()->RemoveObject((*p)->GetID());
-		delete (*p);
-	}
-
-	m_ItemList.clear();
-	//delete m_ItemList;
-
-	//if (m_boss)
-	//	delete m_boss;
-	//m_boss = nullptr;
-
-	//if (m_Tractor)
-	//	delete m_Tractor;
-	//m_Tractor = nullptr;
-
-
-
-
+	ReleaseObjects();
+	SAFE_DELETE(Monster_BulletList);
 }
 
 bool CScene::Init(class CPlayer* player1, class CPlayer* player2, long long MaxDistance, bool enable, int stageNum)
@@ -95,6 +70,20 @@ int CScene::Update(float fDeltaTime)
 		m_Player2->Update(fDeltaTime);
 	}
 
+	if (m_boss) {
+		//m_boss->Update(fDeltaTime);
+		UpdateBulletListWithBoss();
+		if (m_boss->GetObjectState() == OBJECT_STATE::DESTORY)
+		{
+			for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+				(*it)->Update(fDeltaTime);
+				if ((*it)->GetObjectState() != OBJECT_STATE::DESTORY)
+					(*it)->SetState(OBJECT_STATE::DESTORY);
+			}
+			return 1;
+		}
+	}
+
 	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
 		(*it)->Update(fDeltaTime);
 		if ((*it)->GetFireDelay() <= FLT_EPSILON)
@@ -103,10 +92,6 @@ int CScene::Update(float fDeltaTime)
 		}
 	}
 
-	if (m_boss) {
-		//m_boss->Update(fDeltaTime);
-		UpdateBulletListWithBoss();
-	}
 
 	Monster_BulletList->Update(fDeltaTime);
 
@@ -188,7 +173,7 @@ int CScene::Update(float fDeltaTime)
 		pItem->Init(OBJECT_TYPE::IT_RANDOM, { 25.f + rand() % 525, 30 });
 		m_ItemList.push_back(pItem);
 
-		fItemSpawn = 0.5f;
+		fItemSpawn = 3.0f;
 	}
 
 	if (m_StageNum)
@@ -202,18 +187,18 @@ int CScene::Update(float fDeltaTime)
 
 			if (m_StageNum == 1)
 			{
-				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300, -100 }, OBJECT_TYPE::OBJ_BOSS_ONE, { 0,1 }, m_StageNum);
 				m_MonsterList->push_back(m_boss);
 			}
 			else if (m_StageNum == 2)
 			{
-				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300, -100 }, OBJECT_TYPE::OBJ_BOSS_TWO, { 0,1 }, m_StageNum);
 				m_MonsterList->push_back(m_boss);
 
 			}
 			else if (m_StageNum == 3)
 			{
-				m_boss->Init(POSITION{ 300,100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
+				m_boss->Init(POSITION{ 300, -100 }, OBJECT_TYPE::OBJ_BOSS_THREE, { 0,1 }, m_StageNum);
 				m_MonsterList->push_back(m_boss);
 			}
 		}
@@ -367,7 +352,7 @@ void CScene::Collision(float fDeltaTime)
 	for (CMonster* Monster : *m_MonsterList)
 	{
 		int  CollisionCheckNum;
-		if (m_Player1 && CCore::GetInst()->m_hPlayer1 && (Monster->GetObjectState() == OBJECT_STATE::IDLE || Monster->GetIsDie())) {
+		if (m_Player1 && CCore::GetInst()->m_hPlayer1 && (Monster->GetObjectState() == OBJECT_STATE::IDLE)) {
 			// 몬스터 - 플레이어 총알
 			
 			if (m_Player1->GetmyBulletList()->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize(), Monster) )
@@ -381,7 +366,7 @@ void CScene::Collision(float fDeltaTime)
 			}
 		}
 
-		if (m_Player2 && CCore::GetInst()->m_hPlayer2 && (Monster->GetObjectState() == OBJECT_STATE::IDLE || Monster->GetIsDie(), Monster)) {
+		if (m_Player2 && CCore::GetInst()->m_hPlayer2 && (Monster->GetObjectState() == OBJECT_STATE::IDLE)) {
 			// 몬스터 - 플레이어 총알
 			if (m_Player2->GetmyBulletList()->Collision(fDeltaTime, Monster->GetPos(), Monster->GetSize()))
 			{
@@ -412,6 +397,41 @@ void CScene::Collision(float fDeltaTime)
 		}
 	}
 
+}
+
+void CScene::ReleaseObjects()
+{
+	if (m_Player1)
+		(m_Player1->GetmyBulletList())->EraseAll();
+	if (m_Player2)
+		(m_Player2->GetmyBulletList())->EraseAll();
+
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		CMonster* pMonster = *it;
+		(*it)->~CMonster();
+		CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+		it = m_MonsterList->erase(it);
+		SAFE_DELETE(pMonster);
+		if (it != m_MonsterList->begin())
+			it--;
+		else if (it == m_MonsterList->end()) {
+			break;
+		}
+	}
+
+	for (list<CItem*>::iterator it = m_ItemList.begin(); it != m_ItemList.end(); it++) {
+		CItem* pItem = *it;
+		CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+		it = m_ItemList.erase(it);
+		SAFE_DELETE(pItem);
+		if (it != m_ItemList.begin())
+			it--;
+		else if (it == m_ItemList.end()) {
+			break;
+		}
+	}
+
+	Monster_BulletList->EraseAll();
 }
 
 void CScene::UpdateBulletListWithBoss()

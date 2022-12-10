@@ -73,10 +73,40 @@ bool CPlayer::HandleMessage(const Telegram& msg)
 		memcpy(&Position, (char*)msg.Extrainfo + sizeof(int), sizeof(POSITION));
 		if (ObjectType == (int)OBJECT_TYPE::PLAYER_BULLET) // Bullet ����
 		{
-			for (int i = 0; i < m_BulletNum; i++) {
-				POSITION BulletLTPos = { Position.x + m_tSize.x / 2 - BulletSize.x / 2 + ((i + 1) / 2) * (13.f) * (float)pow(-1, i), Position.y };
-				m_myBulletList->AddBullet(BulletLTPos, BulletSize, 800.0f);
+			switch (m_BulletNum)
+			{
+			case 1:
+				m_myBulletList->AddBullet(m_tLTPos, m_tSize, 800.0f);
+				break;
+			case 2:
+				m_myBulletList->AddBullet(m_tLTPos, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x - 13, m_tLTPos.y }, m_tSize, 800.0f);
+				break;
+			case 3:
+				m_myBulletList->AddBullet(m_tLTPos, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x - 13, m_tLTPos.y }, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x + 13, m_tLTPos.y }, m_tSize, 800.0f);
+				break;
+			case 4:
+				m_myBulletList->AddBullet(m_tLTPos, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x - 13, m_tLTPos.y }, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x + 13, m_tLTPos.y }, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x + 26, m_tLTPos.y }, m_tSize, 800.0f);
+				break;
+			case 5:
+				m_myBulletList->AddBullet(m_tLTPos, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x - 26, m_tLTPos.y }, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x - 13, m_tLTPos.y }, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x + 13, m_tLTPos.y }, m_tSize, 800.0f);
+				m_myBulletList->AddBullet({ m_tLTPos.x + 26, m_tLTPos.y }, m_tSize, 800.0f);
+				break;
+			default:
+				break;
 			}
+			/*for (int i = 0; i < m_BulletNum; i++) {
+				POSITION BulletLTPos = { Position.x - ((i + 1) / 2) * (13.f) * (float)pow(-1, i), Position.y };
+				m_myBulletList->AddBullet(BulletLTPos, BulletSize, 800.0f);
+			}*/
 		}
 		return true;
 	}

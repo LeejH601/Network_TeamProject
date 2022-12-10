@@ -24,7 +24,9 @@ protected:
 
 	float		m_fHP;					//  Object ÀÇ HP 
 	bool		m_bEnable;
-
+	float		AnimationTimer = 0.1f;
+	int			AnimationX = 0;
+	int			AnimationY = 0;
 private:
 	WCHAR*		m_imgText;
 

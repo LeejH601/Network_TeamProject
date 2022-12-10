@@ -6,7 +6,7 @@
 
 class CMonster : public CObject
 {
-private:
+protected:
 	bool m_bDie = false;
 
 	CPath m_Path;

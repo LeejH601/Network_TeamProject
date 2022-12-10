@@ -13,7 +13,7 @@ class CBoss : public CMonster
 	CBulletList* m_bulletList;
 
 	POSITION b_vector = POSITION(0.f, 1.f);
-
+	bool bMoveRight = true;
 public:
 	CBoss();
 	virtual ~CBoss();

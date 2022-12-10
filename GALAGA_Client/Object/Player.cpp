@@ -126,13 +126,10 @@ void CPlayer::Input(float fDeltaTime, CScene* CurScene)
 	}
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		//CObject::m_tLTPos.y -= fDeltaTime * m_fSpeed;
+		CObject::m_tLTPos.y -= fDeltaTime * m_fSpeed;
 
 		if (CObject::m_tLTPos.y >= 750 / 2 + 250)
 			CObject::m_tLTPos.y -= fDeltaTime * m_fSpeed;
-
-
-		CurScene->imgLT_Move(fDeltaTime);
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
@@ -151,10 +148,10 @@ void CPlayer::Input(float fDeltaTime, CScene* CurScene)
 			POSITION BulletSize = { 18,30 };
 			POSITION BulletLTPos = { m_tLTPos.x + m_tSize.x / 2 - BulletSize.x / 2, m_tLTPos.y - BulletSize.y };
 
-			EnterCriticalSection(&Bullet_CS);
+			EnterCriticalSection(&Game_CS);
 
 			m_BulletList.push_back(CBulletInfo{ BulletLTPos });
-			LeaveCriticalSection(&Bullet_CS);
+			LeaveCriticalSection(&Game_CS);
 			
 			m_LastFireTime = currentTime;
 			m_BulletShotCount = 100;
@@ -213,6 +210,7 @@ void CPlayer::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 	}
 
 	CObject::Render(mainhDC, hdc, fDeltaTime);
+
 	if (m_myBulletList)
 		m_myBulletList->RenderAll(mainhDC, hdc, fDeltaTime);
 }

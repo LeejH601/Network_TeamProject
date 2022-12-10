@@ -205,7 +205,7 @@ bool CObject::HandleMessage(const Telegram& telegram)
 	{	OBJECT_STATE* state = new OBJECT_STATE;
 		memcpy(state, telegram.Extrainfo, sizeof(OBJECT_STATE));
 
-		if (m_eObjState == *state)
+		if (m_eObjState == *state || m_eObjState == OBJECT_STATE::ERASE)
 		{
 			delete state;
 			return true;
@@ -221,6 +221,10 @@ bool CObject::HandleMessage(const Telegram& telegram)
 			m_eObjState = OBJECT_STATE::ERASE;
 			break;
 		}
+
+		AnimationX = 0;
+		AnimationY = 0;
+		AnimationTimer = 0.1f;
 		delete state;
 		return true;
 	}

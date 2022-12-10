@@ -136,6 +136,39 @@ void CScene::Set_AnotherPlayer(CPlayer* pPlayer)
 	m_AnotherPlayer = pPlayer;
 }
 
+void CScene::ReleaseObjects()
+{
+	if (m_MainPlayer)
+		(m_MainPlayer->GetmyBulletList())->EraseAll();
+
+	for (list<CMonster*>::iterator it = m_MonsterList->begin(); it != m_MonsterList->end(); it++) {
+		CMonster* pMonster = *it;
+		(*it)->~CMonster();
+		CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+		it = m_MonsterList->erase(it);
+		SAFE_DELETE(pMonster);
+		if (it != m_MonsterList->begin())
+			it--;
+		else if (it == m_MonsterList->end()) {
+			break;
+		}
+	}
+
+	for (list<CItem*>::iterator it = m_ItemList.begin(); it != m_ItemList.end(); it++) {
+		CItem* pItem = *it;
+		CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+		it = m_ItemList.erase(it);
+		SAFE_DELETE(pItem);
+		if (it != m_ItemList.begin())
+			it--;
+		else if (it == m_ItemList.end()) {
+			break;
+		}
+	}
+
+	Monster_BulletList->EraseAll();
+}
+
 bool CScene::Init(const WCHAR* imgBackText, CPlayer* mainplayer, CPlayer* anotherplayer, long long MaxDistance, bool enable, int stageNum)
 {
 	m_StageNum = stageNum;
@@ -305,6 +338,11 @@ void CScene::Collision(float fDeltaTime)
 
 void CScene::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 {
+	if (m_pPreScene && m_pPreScene->GetEnable())
+	{
+		m_pPreScene->ReleaseObjects();
+		m_pPreScene->SetEnable(false);
+	}
 
 	// ��� ���
 	if (m_bSlide == true)

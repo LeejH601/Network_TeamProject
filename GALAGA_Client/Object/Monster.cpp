@@ -402,26 +402,32 @@ void CMonster::Render(HDC mainhDC, HDC hdc, float fDeltaTime)
 
 void CMonster::RenderExplode(HDC mainhDC, HDC hdc, float fDeltaTime)
 {
-	m_Explode_img_Count += 1;
-
-	m_Explode_img.Draw(hdc, CObject::m_tLTPos.x - (CObject::m_tSize.x / 2), CObject::m_tLTPos.y - (CObject::m_tSize.y / 2),
-		CObject::m_tSize.x + (CObject::m_tSize.x / 2), CObject::m_tSize.y + (CObject::m_tSize.y / 2),
-		m_Explode_img_LT.x, m_Explode_img_LT.y, m_Explode_img_Size.x, m_Explode_img_Size.y);
-
-	if (m_Explode_img_Count % 30 == 0)
+	if (m_eObjState == OBJECT_STATE::DESTORY)
 	{
-		m_Explode_img_LT.x = m_Explode_img_LT.x + m_Explode_img_Size.x;
+		AnimationTimer -= fDeltaTime;
 
-	}
-	if (m_Explode_img_Count % (30 * 4) == 0)
-	{
-		m_Explode_img_LT.x = 5;
-		m_Explode_img_LT.y = m_Explode_img_LT.y + m_Explode_img_Size.y;
-	}
+		if (AnimationTimer < FLT_EPSILON)
+		{
+			AnimationTimer = 0.1f;
+			AnimationX += 1;
+			if (AnimationX >= 4)
+			{
+				AnimationX = 0;
+				AnimationY += 1;
+			}
+		}
 
-	// 출력이미지를 전부 출력했을 때 몬스터를 삭제합니다... 
-	if (m_Explode_img_Count == 300)
+		m_Explode_img.Draw(hdc, CObject::m_tLTPos.x - (CObject::m_tSize.x / 2), CObject::m_tLTPos.y - (CObject::m_tSize.y / 2),
+			CObject::m_tSize.x + (CObject::m_tSize.x / 2), CObject::m_tSize.y + (CObject::m_tSize.y / 2),
+			AnimationX * m_Explode_img_Size.x, AnimationY * m_Explode_img_Size.y, m_Explode_img_Size.x, m_Explode_img_Size.y);
+	}
+	
+	if (AnimationY >= 3)
 		m_eObjState = OBJECT_STATE::ERASE;
+	
+	/*char buf[256];
+	sprintf_s(buf, sizeof(buf), "ObjectID: %d, AnimationX: %d, AnimationY: %d\n", m_iObjID, AnimationX, AnimationY);
+	OutputDebugStringA(buf);*/
 }
 
 bool CMonster::HandleMessage(const Telegram& msg)

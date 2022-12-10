@@ -99,165 +99,155 @@ bool CSceneManager::Init()
 	//m_Player->Init();
 
 	// 플레이어 생성 메세지를 받아 생성하기 떄문에 nullptr로 초기화
+	m_CurrentScene = SCENE_TYPE::ST_BEGIN;
     m_Scene_Begin->Init(L"./Image/Scene_Back_img/StartScene_Back.png", nullptr, nullptr, 0, true, 0);
 	m_Scene_Stage1->Init(L"./Image/Scene_Back_img/Stage1_Back.png", nullptr, nullptr,3000, false, 1);
+	m_Scene_Stage1->SetPreScene(m_Scene_Begin);
 	m_Scene_stage2->Init(L"./Image/Scene_Back_img/Stage2_Back.png", nullptr, nullptr,3000, false, 2);
+	m_Scene_stage2->SetPreScene(m_Scene_Stage1);
 	m_Scene_stage3->Init(L"./Image/Scene_Back_img/Stage3_Back.png", nullptr, nullptr,3000, false, 3);
+	m_Scene_stage3->SetPreScene(m_Scene_stage2);
 	m_Scene_StageClear->Init(L"./Image/Scene_Back_img/Stage_Clear.png", nullptr, nullptr, 0, false, 0);
+	m_Scene_StageClear->SetPreScene(m_Scene_stage3);
 	m_Scene_End->Init(L"./Image/Scene_Back_img/End1.png", nullptr, nullptr, 0, false, 0);
+	m_Scene_End->SetPreScene(m_Scene_stage3);
 
 	return true;
 }
 
 void CSceneManager::Input(float fDeltaTime)
 {
-	if (m_Scene_Begin->GetEnable())
-		m_Scene_Begin->Input(fDeltaTime, m_Scene_Stage1);
-
-	else if (m_Scene_Stage1->GetEnable())
-		m_Scene_Stage1->Input(fDeltaTime, m_Scene_stage2);
-
-	else if (m_Scene_stage2->GetEnable())
+	switch (m_CurrentScene)
+	{
+	case SCENE_TYPE::ST_BEGIN:
+		m_Scene_Begin->Input(fDeltaTime, nullptr);
+		break;
+	case SCENE_TYPE::ST_STAGE1:
+		m_Scene_Stage1->Input(fDeltaTime, nullptr);
+		break;
+	case SCENE_TYPE::ST_STAGE2:
 		m_Scene_stage2->Input(fDeltaTime, nullptr);
-
-	else if (m_Scene_stage3->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE3:
 		m_Scene_stage3->Input(fDeltaTime, nullptr);
-
-	else if (m_Scene_End->GetEnable())
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		m_Scene_StageClear->Input(fDeltaTime, nullptr);
+		break;
+	case SCENE_TYPE::ST_END:
 		m_Scene_End->Input(fDeltaTime, nullptr);
-
-	//��� ��ȯ
-	//if (m_Player->GetMyType() != OBJECT_TYPE::OT_NONE)
-	//{
-	//	if (GetAsyncKeyState(VK_SPACE))
-	//	{
-	//		if (m_Scene_Begin->GetEnable() == true)
-	//		{
-	//			m_Scene_Begin->SetEnable(false);
-	//			m_Scene_Stage1->SetEnable(true);
-	//			CSoundManager::GetInst()->playSound(OBJECT_TYPE::OT_TERRAN, 1);
-	//		}
-	//		else if (m_Scene_End->GetEnable() == true)
-	//		{
-	//			m_Scene_End->SetEnable(false);
-	//			CCore::GetInst()->SetEnd();
-	//		}
-	//	}
-	//}
-	//if (m_Player->GetMyType() == OBJECT_TYPE::OT_NONE)
-	//{
-	//	if (GetAsyncKeyState('1') & 0x8000)
-	//	{
-	//		m_Player->SetType(1);
-	//		m_Player->Init();
-	//	}
-	//	if (GetAsyncKeyState('2') & 0x8000)
-	//	{
-	//		m_Player->SetType(2);
-	//		m_Player->Init();
-	//	}
-	//	if (GetAsyncKeyState('3') & 0x8000)
-	//	{
-	//		m_Player->SetType(3);
-	//		m_Player->Init();
-	//	}
-	//}
+		break;
+	default:
+		break;
+	}
 }
 
 void CSceneManager::Update(float fDeltaTime)
 {
-	if (m_Scene_Begin->GetEnable())
+	switch (m_CurrentScene)
+	{
+	case SCENE_TYPE::ST_BEGIN:
 		m_Scene_Begin->Update(fDeltaTime);
-
-	else if (m_Scene_Stage1->GetEnable())
-	{
-		// �� ����
-		if (m_Scene_Stage1->Update(fDeltaTime) == 1)
-		{
-			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
-		}
-
-	}
-	else if (m_Scene_StageClear->GetEnable())
-	{
-		
-	}
-	else if (m_Scene_stage2->GetEnable())
-	{
-		if (m_Scene_stage2->Update(fDeltaTime) == 1)
-		{
-			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
-		}
-	}
-	else if (m_Scene_stage3->GetEnable())
-	{
-		if (m_Scene_stage3->Update(fDeltaTime) == 1)
-		{
-			CSoundManager::GetInst()->playSound(TRIBE_TYPE::OT_TERRAN, 4);
-		}
-	}
-
-	else if (m_Scene_End->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE1:
+		m_Scene_Stage1->Update(fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_STAGE2:
+		m_Scene_stage2->Update(fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_STAGE3:
+		m_Scene_stage3->Update(fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		m_Scene_StageClear->Update(fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_END:
 		m_Scene_End->Update(fDeltaTime);
-
+		break;
+	default:
+		break;
+	}
 }
 
 void CSceneManager::LateUpdate(float fDeltaTime)
 {
-	if (m_Scene_Begin->GetEnable())
+	switch (m_CurrentScene)
+	{
+	case SCENE_TYPE::ST_BEGIN:
 		m_Scene_Begin->LateUpdate(fDeltaTime);
-
-	else if (m_Scene_Stage1->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE1:
 		m_Scene_Stage1->LateUpdate(fDeltaTime);
-
-	else if (m_Scene_stage2->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE2:
 		m_Scene_stage2->LateUpdate(fDeltaTime);
-
-	else if (m_Scene_stage3->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE3:
 		m_Scene_stage3->LateUpdate(fDeltaTime);
-
-	else if (m_Scene_End->GetEnable())
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		m_Scene_StageClear->LateUpdate(fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_END:
 		m_Scene_End->LateUpdate(fDeltaTime);
+		break;
+	default:
+		break;
+	}
 }
 
 void CSceneManager::Collision(float fDeltaTime)
 {
-	if (m_Scene_Begin->GetEnable())
+	switch (m_CurrentScene)
+	{
+	case SCENE_TYPE::ST_BEGIN:
 		m_Scene_Begin->Collision(fDeltaTime);
-
-	else if (m_Scene_Stage1->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE1:
 		m_Scene_Stage1->Collision(fDeltaTime);
-
-	else if (m_Scene_stage2->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE2:
 		m_Scene_stage2->Collision(fDeltaTime);
-
-	else if (m_Scene_stage3->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE3:
 		m_Scene_stage3->Collision(fDeltaTime);
-
-	else if (m_Scene_End->GetEnable())
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		m_Scene_StageClear->Collision(fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_END:
 		m_Scene_End->Collision(fDeltaTime);
+		break;
+	default:
+		break;
+	}
 }
 
 void CSceneManager::Render(HDC mainhDC, HDC hDC, float fDeltaTime)
 {
-
-	if (m_Scene_Begin->GetEnable())
+	switch (m_CurrentScene)
+	{
+	case SCENE_TYPE::ST_BEGIN:
 		m_Scene_Begin->Render(mainhDC, hDC, fDeltaTime);
-
-	else if (m_Scene_StageClear->GetEnable())
-		m_Scene_StageClear->Render(mainhDC, hDC, fDeltaTime);
-
-	else if (m_Scene_Stage1->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE1:
 		m_Scene_Stage1->Render(mainhDC, hDC, fDeltaTime);
-
-	else if (m_Scene_stage2->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE2:
 		m_Scene_stage2->Render(mainhDC, hDC, fDeltaTime);
-
-	else if (m_Scene_stage3->GetEnable())
+		break;
+	case SCENE_TYPE::ST_STAGE3:
 		m_Scene_stage3->Render(mainhDC, hDC, fDeltaTime);
-
-	else if (m_Scene_End->GetEnable())
+		break;
+	case SCENE_TYPE::ST_CLEAR:
+		m_Scene_StageClear->Render(mainhDC, hDC, fDeltaTime);
+		break;
+	case SCENE_TYPE::ST_END:
 		m_Scene_End->Render(mainhDC, hDC, fDeltaTime);
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -334,61 +324,42 @@ bool CSceneManager::HandleMessage(const Telegram& telegram)
 		char* tmp = (char*)telegram.Extrainfo;
 		int* scene_type = new int;
 		memcpy(scene_type, tmp, sizeof(int));
+		
+		if ((int)m_CurrentScene == *scene_type)
+		{
+			delete scene_type;
+			return true;
+		}
 
 		switch (*scene_type)
 		{
 		case (int)SCENE_TYPE::ST_BEGIN:
+			m_CurrentScene = SCENE_TYPE::ST_BEGIN;
 			m_Scene_Begin->SetEnable(true);
-			m_Scene_Stage1->SetEnable(false);
-			m_Scene_stage2->SetEnable(false);
-			m_Scene_stage3->SetEnable(false);
-			m_Scene_StageClear->SetEnable(false);
-			m_Scene_End->SetEnable(false);
 			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_STAGE1:
-			m_Scene_Begin->SetEnable(false);
+			m_CurrentScene = SCENE_TYPE::ST_STAGE1;
 			m_Scene_Stage1->SetEnable(true);
-			m_Scene_stage2->SetEnable(false);
-			m_Scene_stage3->SetEnable(false);
-			m_Scene_StageClear->SetEnable(false);
-			m_Scene_End->SetEnable(false);
 			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_STAGE2:
-			m_Scene_Begin->SetEnable(false);
-			m_Scene_Stage1->SetEnable(false);
+			m_CurrentScene = SCENE_TYPE::ST_STAGE2;
 			m_Scene_stage2->SetEnable(true);
-			m_Scene_stage3->SetEnable(false);
-			m_Scene_StageClear->SetEnable(false);
-			m_Scene_End->SetEnable(false);
 			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_STAGE3:
-			m_Scene_Begin->SetEnable(false);
-			m_Scene_Stage1->SetEnable(false);
-			m_Scene_stage2->SetEnable(false);
+			m_CurrentScene = SCENE_TYPE::ST_STAGE3;
 			m_Scene_stage3->SetEnable(true);
-			m_Scene_StageClear->SetEnable(false);
-			m_Scene_End->SetEnable(false);
 			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_CLEAR:
-			m_Scene_Begin->SetEnable(false);
-			m_Scene_Stage1->SetEnable(false);
-			m_Scene_stage2->SetEnable(false);
-			m_Scene_stage3->SetEnable(false);
+			m_CurrentScene = SCENE_TYPE::ST_CLEAR;
 			m_Scene_StageClear->SetEnable(true);
-			m_Scene_End->SetEnable(false);
 			delete scene_type;
 			return true;
 		case (int)SCENE_TYPE::ST_END:
-			m_Scene_Begin->SetEnable(false);
-			m_Scene_Stage1->SetEnable(false);
-			m_Scene_stage2->SetEnable(false);
-			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(false);
-			m_Scene_End->SetEnable(true);
 			delete scene_type;
 			return true;
 		}

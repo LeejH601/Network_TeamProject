@@ -60,52 +60,90 @@ void CBoss::Update(float fDeltaTime)
 {
 	CObject::Update(fDeltaTime);
 
-	if(GetPos().y > 100)
-		SetPos(GetPos() + POSITION(0, 1) * fDeltaTime * 20.0f);
-	else {
-		
-	}
-
-	if (fire_delay <= 0.f) {
-		if (pattern_count <= 0) {
-			m_Pattern = (Pattern)(rand() % 6);
-			//b_pattern = Pattern::SIN5;
-			switch (m_Pattern)
-			{
-			case Pattern::SIN:
-				pattern_count = 1;
-				break;
-			case Pattern::SIN2:
-				pattern_count = 3;
-				fire_rate = 0.2f;
-				break;
-			case Pattern::SIN3:
-				pattern_count = 72;
-				fire_rate = 0.08f;
-				break;
-			case Pattern::SIN4:
-				pattern_count = 360;
-				fire_rate = 0.008f;
-				break;
-			case Pattern::SIN5:
-				accum_ceta = 10;
-				pattern_count = 45;
-				fire_rate = 0.2f;
-				break;
-			case Pattern::SIN6:
-				pattern_count = 108;
-				fire_rate = 0.08f;
-				is_reverseCeta = (rand() % 2 == 0) ? true : false;
-				break;
-			default:
-				break;
-			}
+	if (m_bDie == false)
+	{
+		if (CObject::m_fHP <= 0)
+		{
+			m_fStateTerm = 0.0f;
+			m_bDie = true;
+			SetState(OBJECT_STATE::DESTORY);
+			return;
 		}
-		CreateBullet(m_Pattern);
-		fire_delay = fire_rate;
+
+		else
+		{
+			if (GetPos().y < 100)
+				SetPos(GetPos() + POSITION(0, 1) * fDeltaTime * 35.0f);
+			else {
+				if (bMoveRight)
+				{
+					SetPos(GetPos() + POSITION(1, 0) * fDeltaTime * 35.0f);
+					if (GetPos().x > 500)
+						bMoveRight = false;
+				}
+				else
+				{
+					SetPos(GetPos() + POSITION(-1, 0) * fDeltaTime * 35.0f);
+					if (GetPos().x < 100)
+						bMoveRight = true;
+				}
+			}
+
+			if (fire_delay <= 0.f) {
+				if (pattern_count <= 0) {
+					m_Pattern = (Pattern)(rand() % 6);
+					//b_pattern = Pattern::SIN5;
+					switch (m_Pattern)
+					{
+					case Pattern::SIN:
+						pattern_count = 1;
+						break;
+					case Pattern::SIN2:
+						pattern_count = 3;
+						fire_rate = 0.2f;
+						break;
+					case Pattern::SIN3:
+						pattern_count = 72;
+						fire_rate = 0.08f;
+						break;
+					case Pattern::SIN4:
+						pattern_count = 360;
+						fire_rate = 0.008f;
+						break;
+					case Pattern::SIN5:
+						accum_ceta = 10;
+						pattern_count = 45;
+						fire_rate = 0.2f;
+						break;
+					case Pattern::SIN6:
+						pattern_count = 108;
+						fire_rate = 0.08f;
+						is_reverseCeta = (rand() % 2 == 0) ? true : false;
+						break;
+					default:
+						break;
+					}
+				}
+				CreateBullet(m_Pattern);
+				fire_delay = fire_rate;
+			}
+			else
+				fire_delay -= fDeltaTime;
+		}
 	}
 	else
-		fire_delay -= fDeltaTime;
+	{
+		switch (m_eObjState) {
+		case OBJECT_STATE::DESTORY:
+			m_fStateTerm += fDeltaTime;
+			// 3초 뒤 State가 Erase로 바뀜
+			if (m_fStateTerm >= 3.0f)
+				SetState(OBJECT_STATE::ERASE);
+			break;
+		case OBJECT_STATE::ERASE:
+			break;
+		}
+	}
 }
 
 

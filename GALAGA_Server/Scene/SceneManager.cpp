@@ -58,9 +58,9 @@ bool CSceneManager::Init()
 
 	// Init Scene
 	m_Scene_Begin->Init(nullptr, nullptr, 0, true, 0);
-	m_Scene_Stage1->Init(m_Player1, m_Player2, 100, false, 1);
-	m_Scene_stage2->Init(m_Player1, m_Player2, 100, false, 2);
-	m_Scene_stage3->Init(m_Player1, m_Player2, 100, false, 3);
+	m_Scene_Stage1->Init(m_Player1, m_Player2, 8000, false, 1);
+	m_Scene_stage2->Init(m_Player1, m_Player2, 8000, false, 2);
+	m_Scene_stage3->Init(m_Player1, m_Player2, 8000, false, 3);
 	m_Scene_StageClear->Init(nullptr, nullptr, 0, false, 0);
 	m_Scene_End->Init(nullptr, nullptr, 0, false, 0);
 
@@ -83,13 +83,12 @@ void CSceneManager::Update(float fDeltaTime)
 			m_Scene_Stage1->SetEnable(false);
 			m_Scene_stage2->SetEnable(true);
 			NextStageNum = 2;
-
 		}
 
 	}
 	else if (m_Scene_stage2->GetEnable())
 	{
-		if (m_Scene_stage2->Update(fDeltaTime) == 1)
+		if (m_Scene_stage2->Update(fDeltaTime))
 		{
 			m_Scene_stage2->SetEnable(false);
 			m_Scene_stage3->SetEnable(true);
@@ -99,7 +98,7 @@ void CSceneManager::Update(float fDeltaTime)
 
 	else if (m_Scene_stage3->GetEnable())
 	{
-		if (m_Scene_stage3->Update(fDeltaTime) == 1)
+		if (m_Scene_stage3->Update(fDeltaTime))
 		{
 			m_Scene_stage3->SetEnable(false);
 			m_Scene_StageClear->SetEnable(true);

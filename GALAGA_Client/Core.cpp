@@ -14,7 +14,7 @@ bool CCore::m_bLoop = true;
 
 HWND my_hDlg;
 HINSTANCE my_hInstance;
-CRITICAL_SECTION Bullet_CS;
+CRITICAL_SECTION Game_CS;
 
 CCore::CCore()
 {
@@ -110,7 +110,7 @@ void CCore::SendSnapShot()
 		
 		if (!(myPlayer->GetmyBulletInfoList())->empty())
 		{
-			EnterCriticalSection(&Bullet_CS);
+			EnterCriticalSection(&Game_CS);
 			for (const CBulletInfo& bulletInfo : *(myPlayer->GetmyBulletInfoList()))
 			{
 				telegram.DispatchTime = CTimer::GetInst()->GetTime();
@@ -122,7 +122,7 @@ void CCore::SendSnapShot()
 
 			}
 			(myPlayer->GetmyBulletInfoList())->clear();
-			LeaveCriticalSection(&Bullet_CS);
+			LeaveCriticalSection(&Game_CS);
 		}
 	}
 }
@@ -196,7 +196,7 @@ LRESULT CCore::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	// 윈도우 종료시킬 때 들어오는 메시지
 	case WM_DESTROY:
 		m_bLoop = false;
-		DeleteCriticalSection(&Bullet_CS);
+		DeleteCriticalSection(&Game_CS);
 		PostQuitMessage(0);
 		break;
 	default:
@@ -289,7 +289,7 @@ bool CCore::Init(HINSTANCE hInst)
 	// 화면 DC 를 만들어준다.
 	m_hDC = GetDC(m_hWnd);
 	SetDoubleBufferDC();
-	InitializeCriticalSection(&Bullet_CS);
+	InitializeCriticalSection(&Game_CS);
 
 	// 타이머를 초기화 합니다. 
 	if (!CTimer::GetInst()->Init())

@@ -12,6 +12,7 @@ private:
 	list<class CItem*> m_ItemList;
 	class CBulletList* Monster_BulletList;
 
+	class CScene* m_pPreScene = nullptr;
 	class CTractor* m_Tractor = nullptr;
 	class CBoss* m_boss = nullptr;
 	class CPlayer* m_MainPlayer;
@@ -45,23 +46,15 @@ private:
 	int					TractorCount_Render = 0;
 
 public:
+	void ReleaseObjects();
 
 	void imgLT_Move(float fDeltaTime);
 	void imgLT_Move_Auto(float fDeltaTime);
-
-
-
-
-
-
-
-
 
 	void Set_MainPlayer(CPlayer* pPlayer);
 	void Set_AnotherPlayer(CPlayer* pPlayer);
 public:
 	bool Init(const WCHAR* imgBackText, class CPlayer* mainplayer, class CPlayer* anotherplayer, long long  MaxDistance, bool enable, int stageNum);
-
 public:
 	void AddObject(int id, OBJECT_TYPE type_Item, POSITION pos);
 public:
@@ -77,6 +70,6 @@ public:
 	void	SetEnable(bool enable) { m_bEnable = enable; }
 	int		GetCurSceneMaxDistance() { return m_MaxDistance; }
 	void	UpdateMaxDistance(double distance, CScene* NextScene);
-
+	void	SetPreScene(CScene* pScene){ m_pPreScene = pScene; }
 };
 

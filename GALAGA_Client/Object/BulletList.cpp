@@ -109,10 +109,19 @@ void CBulletList::Erase(CBullet* delNode)
 
 bool CBulletList::EraseAll()
 {
-	for (CBullet* p : m_listBulletList)
-		SAFE_DELETE(p);
+	for (list<CBullet*>::iterator it = m_listBulletList.begin(); it != m_listBulletList.end(); it++) {
+		CBullet* pBullet = *it;
+		(*it)->~CBullet();
+		CObjectManager::GetInst()->RemoveObject((*it)->GetID());
+		it = m_listBulletList.erase(it);
+		SAFE_DELETE(pBullet);
+		if (it != m_listBulletList.begin())
+			it--;
+		else if (it == m_listBulletList.end()) {
+			break;
+		}
+	}
 	m_listBulletList.clear();
-
 	return true;
 }
 
